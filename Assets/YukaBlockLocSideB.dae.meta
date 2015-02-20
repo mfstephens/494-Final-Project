@@ -1,0 +1,94 @@
+fileFormatVersion: 2
+guid: 0f5fa9d7c79ef42849f02716919a494f
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: YukaBlockLocSideB
+    100002: //RootNode
+    100004: YukaBlockLocSideB1
+    100006: YukaBlockLocSideB10
+    100008: YukaBlockLocSideB11
+    100010: YukaBlockLocSideB12
+    100012: YukaBlockLocSideB13
+    100014: YukaBlockLocSideB14
+    100016: YukaBlockLocSideB15
+    100018: YukaBlockLocSideB2
+    100020: YukaBlockLocSideB3
+    100022: YukaBlockLocSideB4
+    100024: YukaBlockLocSideB5
+    100026: YukaBlockLocSideB6
+    100028: YukaBlockLocSideB7
+    100030: YukaBlockLocSideB8
+    100032: YukaBlockLocSideB9
+    400000: YukaBlockLocSideB
+    400002: //RootNode
+    400004: YukaBlockLocSideB1
+    400006: YukaBlockLocSideB10
+    400008: YukaBlockLocSideB11
+    400010: YukaBlockLocSideB12
+    400012: YukaBlockLocSideB13
+    400014: YukaBlockLocSideB14
+    400016: YukaBlockLocSideB15
+    400018: YukaBlockLocSideB2
+    400020: YukaBlockLocSideB3
+    400022: YukaBlockLocSideB4
+    400024: YukaBlockLocSideB5
+    400026: YukaBlockLocSideB6
+    400028: YukaBlockLocSideB7
+    400030: YukaBlockLocSideB8
+    400032: YukaBlockLocSideB9
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

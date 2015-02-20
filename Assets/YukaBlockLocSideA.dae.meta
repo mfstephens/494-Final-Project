@@ -1,0 +1,118 @@
+fileFormatVersion: 2
+guid: cb314ee5c1265488994f4f6748e11dfc
+ModelImporter:
+  serializedVersion: 16
+  fileIDToRecycleName:
+    100000: YukaBlockLocSideA
+    100002: //RootNode
+    100004: YukaBlockLocSideA1
+    100006: YukaBlockLocSideA10
+    100008: YukaBlockLocSideA11
+    100010: YukaBlockLocSideA12
+    100012: YukaBlockLocSideA13
+    100014: YukaBlockLocSideA14
+    100016: YukaBlockLocSideA15
+    100018: YukaBlockLocSideA16
+    100020: YukaBlockLocSideA17
+    100022: YukaBlockLocSideA18
+    100024: YukaBlockLocSideA19
+    100026: YukaBlockLocSideA2
+    100028: YukaBlockLocSideA20
+    100030: YukaBlockLocSideA21
+    100032: YukaBlockLocSideA22
+    100034: YukaBlockLocSideA23
+    100036: YukaBlockLocSideA24
+    100038: YukaBlockLocSideA25
+    100040: YukaBlockLocSideA26
+    100042: YukaBlockLocSideA27
+    100044: YukaBlockLocSideA3
+    100046: YukaBlockLocSideA4
+    100048: YukaBlockLocSideA5
+    100050: YukaBlockLocSideA6
+    100052: YukaBlockLocSideA7
+    100054: YukaBlockLocSideA8
+    100056: YukaBlockLocSideA9
+    400000: //RootNode
+    400002: YukaBlockLocSideA
+    400004: YukaBlockLocSideA1
+    400006: YukaBlockLocSideA10
+    400008: YukaBlockLocSideA11
+    400010: YukaBlockLocSideA12
+    400012: YukaBlockLocSideA13
+    400014: YukaBlockLocSideA14
+    400016: YukaBlockLocSideA15
+    400018: YukaBlockLocSideA16
+    400020: YukaBlockLocSideA17
+    400022: YukaBlockLocSideA18
+    400024: YukaBlockLocSideA19
+    400026: YukaBlockLocSideA2
+    400028: YukaBlockLocSideA20
+    400030: YukaBlockLocSideA21
+    400032: YukaBlockLocSideA22
+    400034: YukaBlockLocSideA23
+    400036: YukaBlockLocSideA24
+    400038: YukaBlockLocSideA25
+    400040: YukaBlockLocSideA26
+    400042: YukaBlockLocSideA27
+    400044: YukaBlockLocSideA3
+    400046: YukaBlockLocSideA4
+    400048: YukaBlockLocSideA5
+    400050: YukaBlockLocSideA6
+    400052: YukaBlockLocSideA7
+    400054: YukaBlockLocSideA8
+    400056: YukaBlockLocSideA9
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 

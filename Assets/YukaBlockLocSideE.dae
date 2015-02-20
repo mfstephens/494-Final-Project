@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<COLLADA version="1.5.0" xmlns="http://www.collada.org/2008/03/COLLADASchema">
+	<asset>
+		<contributor>
+			<authoring_tool>BrawlBox</authoring_tool>
+		</contributor>
+		<created>2013-12-01T00:13:15Z</created>
+		<modified>2013-12-01T00:13:15Z</modified>
+		<unit meter="0.01" name="centimeter" />
+		<up_axis>Y_UP</up_axis>
+	</asset>
+	<library_visual_scenes>
+		<visual_scene id="RootNodeID" name="RootNode">
+			<node id="YukaBlockLocSideE-ID" name="YukaBlockLocSideE" sid="YukaBlockLocSideE-ID" type="JOINT">
+				<node id="YukaBlockLocSideE1-ID" name="YukaBlockLocSideE1" sid="YukaBlockLocSideE1-ID" type="JOINT">
+					<translate>-60 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE10-ID" name="YukaBlockLocSideE10" sid="YukaBlockLocSideE10-ID" type="JOINT">
+					<translate>-6 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE11-ID" name="YukaBlockLocSideE11" sid="YukaBlockLocSideE11-ID" type="JOINT" />
+				<node id="YukaBlockLocSideE12-ID" name="YukaBlockLocSideE12" sid="YukaBlockLocSideE12-ID" type="JOINT">
+					<translate>6 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE13-ID" name="YukaBlockLocSideE13" sid="YukaBlockLocSideE13-ID" type="JOINT">
+					<translate>12 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE14-ID" name="YukaBlockLocSideE14" sid="YukaBlockLocSideE14-ID" type="JOINT">
+					<translate>18 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE15-ID" name="YukaBlockLocSideE15" sid="YukaBlockLocSideE15-ID" type="JOINT">
+					<translate>24 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE2-ID" name="YukaBlockLocSideE2" sid="YukaBlockLocSideE2-ID" type="JOINT">
+					<translate>-54 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE3-ID" name="YukaBlockLocSideE3" sid="YukaBlockLocSideE3-ID" type="JOINT">
+					<translate>-48 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE4-ID" name="YukaBlockLocSideE4" sid="YukaBlockLocSideE4-ID" type="JOINT">
+					<translate>-42 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE5-ID" name="YukaBlockLocSideE5" sid="YukaBlockLocSideE5-ID" type="JOINT">
+					<translate>-36 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE6-ID" name="YukaBlockLocSideE6" sid="YukaBlockLocSideE6-ID" type="JOINT">
+					<translate>-30 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE7-ID" name="YukaBlockLocSideE7" sid="YukaBlockLocSideE7-ID" type="JOINT">
+					<translate>-24 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE8-ID" name="YukaBlockLocSideE8" sid="YukaBlockLocSideE8-ID" type="JOINT">
+					<translate>-18 0 0</translate>
+				</node>
+				<node id="YukaBlockLocSideE9-ID" name="YukaBlockLocSideE9" sid="YukaBlockLocSideE9-ID" type="JOINT">
+					<translate>-12 0 0</translate>
+				</node>
+			</node>
+		</visual_scene>
+	</library_visual_scenes>
+	<scene>
+		<instance_visual_scene url="#RootNodeID" />
+	</scene>
+</COLLADA>
