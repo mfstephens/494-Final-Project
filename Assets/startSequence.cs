@@ -14,6 +14,7 @@ public class startSequence : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		setupScreen.SetActive (false);
+		//startSceen.SetActive (true);
 		menuText[textSelect].GetComponent<Text>().color = Color.yellow;
 	}
 	
