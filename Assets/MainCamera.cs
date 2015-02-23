@@ -3,11 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class MainCamera : MonoBehaviour {
-
-	public float dampTime = 0.15f;
+	
 	private Vector3 velocity = Vector3.zero;
 	public GameObject[] players;
-	public GameObject controlledPlayer;
 
 	[SerializeField] 
 	Transform[] targets;
@@ -27,27 +25,6 @@ public class MainCamera : MonoBehaviour {
 		Rect boundingBox = CalculateTargetsBoundingBox();
 		transform.position = CalculateCameraPosition(boundingBox);
 		camera.orthographicSize = CalculateOrthographicSize(boundingBox);
-	}
-
-	// MARK: Player
-	void FixedUpdate () {
-		// switch players
-		if (Input.GetKey(KeyCode.Alpha1) && controlledPlayer.name != "Player1") {
-			switchControlToPlayer (0);
-		} else if (Input.GetKey(KeyCode.Alpha2) && controlledPlayer.name != "Player2") {
-			switchControlToPlayer (1);
-		} else if (Input.GetKey(KeyCode.Alpha3) && controlledPlayer.name != "Player3") {
-			switchControlToPlayer (2);
-		} else if (Input.GetKey(KeyCode.Alpha4) && controlledPlayer.name != "Player4") {
-			switchControlToPlayer (3);
-		}
-	}
-
-	void switchControlToPlayer (int player) {
-		print (players[player].name);
-		Destroy (controlledPlayer.GetComponent ("PlayerMovement"));
-		controlledPlayer = players[player];
-		players [player].AddComponent<PlayerMovement> ();
 	}
 
 	// MARK: Camera view
