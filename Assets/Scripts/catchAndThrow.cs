@@ -11,58 +11,103 @@ public class catchAndThrow : MonoBehaviour {
 
 	public bool possesion = false;
 	public bool isPassing = false;
+	public bool isCatching = false;
 	float timeSoFar = 0;
 	float timeToPass = 0.5f; // how long you want the pass to take.
 	Vector3 startPosition = Vector3.zero;
 	Vector3 finalPosition = Vector3.zero;
+	catchAndThrow teamMateThrow;
+	ballBehavior ballScript;
  
 		
 	// Use this for initialization
 	void Start () {
-	
+		teamMateThrow = teammate.GetComponent<catchAndThrow> ();
+		ballScript = ball.GetComponent<ballBehavior> ();
 	}
-	
+
 	// Update is called once per frame
-	void Update () {  
-		if ((Vector3.Distance (ball.transform.position, this.transform.position) < 10) && !possesion) {
+	void FixedUpdate () {  
+		// catch ball
+		if ((Vector3.Distance (ball.transform.position, this.transform.position) < 30) && !possesion && teamMateThrow.isPassing) {
+			isCatching = true;
 			controlBall();
 		}
-		else if ((Vector3.Distance (ball.transform.position, this.transform.position) >= 10) && possesion) {
-			releaseBall();
+		// pick up ball
+		else if ((Vector3.Distance (ball.transform.position, this.transform.position) < 10) && !ballScript.possessed && !teamMateThrow.isPassing) {
+			controlBall();
 		}
 
+		// control ball flight during pass
 		if (isPassing) {
+			//print (this.gameObject.name);
 			var percent = timeSoFar / timeToPass;
 			ball.transform.position = Vector3.Lerp( startPosition, finalPosition, percent );
 			timeSoFar += Time.deltaTime;
 			if ( timeSoFar >= timeToPass ) {
-				isPassing = false;
+				missedCatch();
 			}
 		}
 
-		if (possesion && !isPassing) {
-			//ball.transform.RotateAround (this.transform.position, Vector3.up, orbitSpeed * Time.deltaTime);
-			ball.transform.position = this.transform.position;
-		}
-		else {
+		// player carrying ball
+		if ((ballScript.owner != null) && ballScript.owner.gameObject.name.Equals(this.gameObject.name) && !isPassing) {
+			print (ball.rigidbody.velocity);
 
+			if (ball.rigidbody.velocity == Vector3.zero) {
+				print ("ball velocity is zerO!!!!!");
+				ball.transform.position = this.transform.position;
+			}
+			else {
+				ball.transform.position = Vector3.Lerp( ball.transform.position, this.transform.position, 0.5f );
+			}
 		}
+
+		// for testing purposes
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			attemptThrow();
+		}
+
+
+	}
+
+	void missedCatch() {
+		isPassing = false;
+		teamMateThrow.isCatching = false;
+		ballScript.owner = null;
+		ballScript.possessed = false;
+		ball.rigidbody.useGravity = true;
+		ball.collider.isTrigger = false;
+		ball.rigidbody.velocity = (finalPosition - startPosition) * 2;
+	}
+
+	void controlBall() {
+		ball.transform.rotation = Quaternion.identity;
+		ball.rigidbody.velocity = Vector3.zero;
+		possesion = true;
+		teamMateThrow.isPassing = false;
+		ballScript.possessed = true;
+		ballScript.owner = this.gameObject;
+		ball.collider.isTrigger = true;
+		ball.rigidbody.useGravity = false;
 	}
 
 	void releaseBall() {
+		print ("release ball");
+		isCatching = false;
 		ball.collider.isTrigger = false;
 		possesion = false;
 		ball.rigidbody.useGravity = true;
+		ballScript.possessed = false;
 	}
 
 	public void ballDropped() {
 		ball.collider.isTrigger = false;
 		possesion = false;
-		ball.rigidbody.useGravity = true;
 	}
 
 	public void attemptThrow(){
-		if (possesion) {
+		if (ballScript.owner.gameObject.name.Equals(this.gameObject.name)) {
+			releaseBall();
 			ball.rigidbody.useGravity = true;
 			StartPass (teammate.transform.position);
 		}
@@ -72,17 +117,6 @@ public class catchAndThrow : MonoBehaviour {
 		if (other.gameObject.name.Equals ("KennySprite_2") || other.gameObject.name.Equals ("KennySprite_3")) {
 			ballDropped();
 		}
-	}
-
-	void controlBall() {
-		ball.GetComponent<ballBehavior> ().possessed = true;
-		ball.GetComponent<ballBehavior> ().owner = this.gameObject;
-		ball.collider.isTrigger = true;
-		ball.rigidbody.useGravity = false;
-		ball.rigidbody.velocity = Vector3.zero;
-		print ("Local Scale: " + ball.transform.localScale);
-		possesion = true;
-		//ball.transform.position = this.transform.position + new Vector3 (10f, 0, 0);
 	}
 
 	void StartPass( Vector3 finalPos ) {
