@@ -5,9 +5,9 @@ public class PlayerTestThrow : MonoBehaviour {
 	public GameObject ball;
 	bool grounded = true;
 	Vector3 vel;
-	public float jumpVel = 30f;
-	public float hSpeed = 30f;
-	public float ballPickupDist = 8f;
+	public float jumpVel;
+	public float hSpeed;
+	public float ballPickupDist;
 	public bool possession = false;
 	// Use this for initialization
 	void Start () {

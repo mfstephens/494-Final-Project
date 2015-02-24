@@ -23,14 +23,19 @@ public class PlayerMovement : MonoBehaviour {
 	private bool flickDown = false;
 	private float flickDownTime = -5f;
 	private InputDevice playerControl;
+	private catchAndThrow throwControl;
 
 	// Use this for initialization
 	void Start () {
 		animator = GetComponent<Animator> ();
 		print (animator);
 		ceilingCheck = transform.FindChild ("Head");
+		throwControl = GetComponent<catchAndThrow> ();
 		if (!ceilingCheck) {
 			Debug.LogError("Head is null");
+		}
+		if (!throwControl) {
+			Debug.LogError("Cant find catch script");
 		}
 		gameObject.SetActive (false);
 	}
@@ -43,6 +48,10 @@ public class PlayerMovement : MonoBehaviour {
 		Collider[] colliders = Physics.OverlapSphere (ceilingCheck.position, ceilingRadius, whatIsCeiling);
 		if (colliders.Length > 0) {
 			colliders[0].isTrigger=true;
+		}
+
+		if (playerControl.Action3.WasPressed) {
+			throwControl.attemptThrow();
 		}
 
 		if (playerControl.Action1.WasPressed) {
