@@ -29,7 +29,7 @@ public class startSequence : MonoBehaviour {
 		if (InputManager.Devices.Count < 4) {
 			Debug.LogError ("Only "+InputManager.Devices.Count+" controllers connected");
 			player1=InputManager.Devices[0];
-			player2=InputManager.Devices[1];
+			//player2=InputManager.Devices[1];
 		} else {
 			player1=InputManager.Devices[0];
 			player2=InputManager.Devices[1];
@@ -84,7 +84,7 @@ public class startSequence : MonoBehaviour {
 				playerReady (3);
 			}*/
 
-			if(numPlayersReady == 2) {
+			if(numPlayersReady == 1) {
 				Invoke("startGame", 2f);
 				numPlayersReady++;
 			}
