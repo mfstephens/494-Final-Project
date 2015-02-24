@@ -76,13 +76,13 @@ public class startSequence : MonoBehaviour {
 				Kenny.GetComponent<PlayerMovement>().setController(1);
 			}
 			//Player 3 is Kyle (for now)
-			else if (Input.GetKeyDown(KeyCode.Alpha3)) {
+			/*else if (Input.GetKeyDown(KeyCode.Alpha3)) {
 				playerReady (2);
 			}
 			//Player 4 is Stan (for now)
 			else if (Input.GetKeyDown(KeyCode.Alpha4)) {
 				playerReady (3);
-			}
+			}*/
 
 			if(numPlayersReady == 2) {
 				Invoke("startGame", 2f);

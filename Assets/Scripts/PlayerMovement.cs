@@ -28,7 +28,6 @@ public class PlayerMovement : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		animator = GetComponent<Animator> ();
-		print (animator);
 		ceilingCheck = transform.FindChild ("Head");
 		throwControl = GetComponent<catchAndThrow> ();
 		if (!ceilingCheck) {
@@ -56,19 +55,24 @@ public class PlayerMovement : MonoBehaviour {
 
 		if (playerControl.Action1.WasPressed) {
 			if(isOnGround){
+				print ("jump while we are on ground");
 				initialJumpPlayerYPosition=transform.position.y;
+				print (initialJumpPlayerYPosition);
 				rigidbody.AddForce(new Vector3(0,initialJump,0));
 				doubleJump = true;
+				return;
 			}
 			else if(doubleJump){
+				print ("Double Jump");
 				doubleJump=false;
 				initialJumpPlayerYPosition=transform.position.y;
 				rigidbody.velocity=new Vector2(rigidbody.velocity.x,0);
 				rigidbody.AddForce(new Vector3(0,initialJump,0));
+				return;
 			}
 
 		}
-		if (playerControl.Action1.IsPressed) {
+		else if (playerControl.Action1.IsPressed) {
 			if(rigidbody.velocity.y<=0 || isOnGround){
 				return;
 			}
@@ -76,7 +80,7 @@ public class PlayerMovement : MonoBehaviour {
 				rigidbody.AddForce(new Vector3(0,jump,0));
 			}
 		}
-		if (playerControl.Action1.WasReleased) {
+		else if (playerControl.Action1.WasReleased) {
 
 		}
 
@@ -127,7 +131,7 @@ public class PlayerMovement : MonoBehaviour {
 			}
 		}
 		else {
-			if(verticalMove<0){
+			if(verticalMove<0 && !isOnGround){
 				rigidbody.AddForce(new Vector3(0,dropSpeed,0));
 			}
 		}
@@ -160,23 +164,36 @@ public class PlayerMovement : MonoBehaviour {
 				doubleJump = true;
 			}
 		}
+
 		if (collision.gameObject.CompareTag ("Wall")) {
 			doubleJump = true;
 			isOnWall = true;
 		}
 
+		if (collision.gameObject.CompareTag ("Base")) {
+			inGroundPound = false;
+			isOnGround = true;
+			doubleJump = true;
+		}
+
 	}
 
 	void OnCollisionStay(Collision collision){
+
 		if (collision.gameObject.CompareTag ("Wall")) {
 			rigidbody.velocity=new Vector2(0,rigidbody.velocity.y);
 		}
+
 		if (collision.gameObject.CompareTag ("Platform")) {
 			if(flickDown){
 				collision.gameObject.collider.isTrigger = true;
 				rigidbody.velocity=new Vector2(rigidbody.velocity.x,-100f);
 				return;
 			}
+		}
+
+		if (collision.gameObject.CompareTag ("Base")) {
+			flickDown=false;
 		}
 	}
 
@@ -186,6 +203,10 @@ public class PlayerMovement : MonoBehaviour {
 		}
 		if(collision.gameObject.CompareTag("Wall")){
 			isOnWall=false;
+		}
+
+		if (collision.gameObject.CompareTag ("Base")) {
+			isOnGround = false;
 		}
 	}
 
