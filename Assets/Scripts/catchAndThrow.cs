@@ -29,12 +29,12 @@ public class catchAndThrow : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate () {  
 		// catch ball
-		if ((Vector3.Distance (ball.transform.position, this.transform.position) < 30) && !possesion && teamMateThrow.isPassing) {
+		if ((Vector3.Distance (ball.transform.position, this.transform.position) < 50) && !possesion && teamMateThrow.isPassing) {
 			isCatching = true;
 			controlBall();
 		}
 		// pick up ball
-		else if ((Vector3.Distance (ball.transform.position, this.transform.position) < 10) && !ballScript.possessed && !teamMateThrow.isPassing) {
+		else if ((Vector3.Distance (ball.transform.position, this.transform.position) < 20) && !ballScript.possessed && !teamMateThrow.isPassing) {
 			controlBall();
 		}
 
@@ -71,6 +71,7 @@ public class catchAndThrow : MonoBehaviour {
 	}
 
 	void missedCatch() {
+		print ("missed the dam ball");
 		isPassing = false;
 		teamMateThrow.isCatching = false;
 		ballScript.owner = null;

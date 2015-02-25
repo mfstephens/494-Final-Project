@@ -148,6 +148,14 @@ public class PlayerMovement : MonoBehaviour {
 		transform.localScale = local;
 	}
 
+	public float movementX(){
+		return playerControl.LeftStickX;
+	}
+
+	public float movementY(){
+		return playerControl.LeftStickX;
+	}
+
 	public void setController(int index){
 		print (index);
 		playerControl = InputManager.Devices [index];
