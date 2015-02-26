@@ -12,6 +12,7 @@ public class catchAndThrow : MonoBehaviour {
 	public bool possesion = false;
 	public bool isPassing = false;
 	public bool isCatching = false;
+	private bool deflected = false;
 	float timeSoFar = 0;
 	float timeToPass = 0.5f; // how long you want the pass to take.
 	Vector3 startPosition = Vector3.zero;
@@ -40,7 +41,6 @@ public class catchAndThrow : MonoBehaviour {
 
 		// control ball flight during pass
 		if (isPassing) {
-			//print (this.gameObject.name);
 			var percent = timeSoFar / timeToPass;
 			ball.transform.position = Vector3.Lerp( startPosition, finalPosition, percent );
 			timeSoFar += Time.deltaTime;
@@ -51,27 +51,17 @@ public class catchAndThrow : MonoBehaviour {
 
 		// player carrying ball
 		if ((ballScript.owner != null) && ballScript.owner.gameObject.name.Equals(this.gameObject.name) && !isPassing) {
-			print (ball.rigidbody.velocity);
 
 			if (ball.rigidbody.velocity == Vector3.zero) {
-				print ("ball velocity is zerO!!!!!");
 				ball.transform.position = this.transform.position;
 			}
 			else {
 				ball.transform.position = Vector3.Lerp( ball.transform.position, this.transform.position, 0.5f );
 			}
 		}
-
-		// for testing purposes
-		if (Input.GetKeyDown (KeyCode.Space)) {
-			attemptThrow();
-		}
-
-
 	}
 
 	void missedCatch() {
-		print ("missed the dam ball");
 		isPassing = false;
 		teamMateThrow.isCatching = false;
 		ballScript.owner = null;
@@ -93,7 +83,6 @@ public class catchAndThrow : MonoBehaviour {
 	}
 
 	void releaseBall() {
-		print ("release ball");
 		isCatching = false;
 		ball.collider.isTrigger = false;
 		possesion = false;

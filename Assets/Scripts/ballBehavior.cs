@@ -6,11 +6,11 @@ public class ballBehavior : MonoBehaviour {
 	public GameObject owner = null;
 	public float orbitSpeed;
 	public bool possessed = false;
-	private Vector3 originalScale;
+	public bool deflected = false;
 
 	// Use this for initialization
 	void Start () {
-		originalScale = transform.lossyScale;
+
 	}
 	
 	// Update is called once per frame
@@ -26,6 +26,10 @@ public class ballBehavior : MonoBehaviour {
 	}
 
 	void onCollisionStay(Collision other){
+
+	}
+
+	void OnCollisionExit(Collision other){
 
 	}
 }

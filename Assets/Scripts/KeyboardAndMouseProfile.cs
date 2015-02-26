@@ -43,6 +43,12 @@ namespace CustomProfileExample
 					Target = InputControlType.Action3,
 					Source = KeyCodeButton (KeyCode.Return)
 				},
+				new InputControlMapping
+				{
+					Handle = "Punch",
+					Target = InputControlType.Action2,
+					Source = KeyCodeButton (KeyCode.RightShift)
+				},
 				/*new InputControlMapping
 				{
 					Handle = "Ground Pound",
