@@ -7,23 +7,29 @@ namespace CustomProfileExample{
 	public class PlayerMovement : MonoBehaviour {
 
 		public float speed = 10.0f;
-		public float jump = 2.0f;
-		public float initialJump = 20f;
-		public float maxJumpHeight = 20f;
+		public float stunnedSpeed = 2.0f;
+		public float jumpSpeed;
+		public float jumpShortSpeed;
 		public float dropSpeed = -150f;
 
 		private Animator animator;
 		private Transform ceilingCheck;
 		[SerializeField] private LayerMask whatIsCeiling;
 		private float ceilingRadius = 1.25f;
-		private float initialJumpPlayerYPosition;
+
 		private bool isHeadHittingCeiling = false;
 		private bool doubleJump = false;
 		private bool isOnGround = false;
-		private bool isOnWall = false;
+		private bool isOnLeftWall = false;
+		private bool isOnRightWall = false;
+		private bool groundPound = false;
 		private bool inGroundPound = false;
 		private bool flickDown = false;
+		private bool fallDown = false;
+		private bool jump = false;
+		private bool jumpCancel = false;
 		private float flickDownTime = -5f;
+
 		private InputDevice playerControl;
 		private catchAndThrow throwControl;
 
@@ -31,82 +37,83 @@ namespace CustomProfileExample{
 		void Start () {
 			animator = GetComponent<Animator> ();
 			ceilingCheck = transform.FindChild ("Head");
-			throwControl = GetComponent<catchAndThrow> ();
-			if (!ceilingCheck) {
-				Debug.LogError("Head is null");
-			}
-			if (!throwControl) {
-				Debug.LogError("Cant find catch script");
-			}
+			//throwControl = GetComponent<catchAndThrow> ();
 			gameObject.SetActive (false);
 		}
 		
 		// Update is called once per frame
 		void Update () {
 
+			if (animator.GetBool("GroundPounded")==true) {
+				return;
+			}
+
+			float move = playerControl.LeftStickX;
+			float verticalMove = playerControl.LeftStickY;
+
+			//Record time user flicks the analog stick down ("make sure they're not trying to move horizontally and that they are on the ground)
+			if (isOnGround) {
+				if (verticalMove < 0 && move < .2 && move > -.2)
+					flickDownTime = Time.time;
+				else if (verticalMove == 0 && move == 0) {
+					if (Time.time - flickDownTime <= .2) 
+						flickDown = true;
+				}
+			}
+			else{
+				if(verticalMove<0 && !isOnGround)
+					fallDown = true;
+			}
+
 			//Check if player is hitting ceiling
 			isHeadHittingCeiling = Physics.CheckSphere (ceilingCheck.position, ceilingRadius, whatIsCeiling);
-			Collider[] colliders = Physics.OverlapSphere (ceilingCheck.position, ceilingRadius, whatIsCeiling);
-			if (colliders.Length > 0) {
-				colliders[0].isTrigger=true;
+			if (isHeadHittingCeiling) {
+				this.collider.isTrigger = true;
 			}
 
 			if (playerControl.Action3.WasPressed) {
-				throwControl.attemptThrow();
+				//throwControl.attemptThrow();
 			}
 
-			if (playerControl.Action1.WasPressed) {
-				if(isOnGround){
-					initialJumpPlayerYPosition=transform.position.y;
-					print (initialJumpPlayerYPosition);
-					rigidbody.AddForce(new Vector3(0,initialJump,0));
-					doubleJump = true;
-					return;
-				}
-				else if(doubleJump){
-					doubleJump=false;
-					initialJumpPlayerYPosition=transform.position.y;
-					rigidbody.velocity=new Vector2(rigidbody.velocity.x,0);
-					rigidbody.AddForce(new Vector3(0,initialJump,0));
-					return;
-				}
-
-			}
-			else if (playerControl.Action1.IsPressed) {
-				if(rigidbody.velocity.y<=0 || isOnGround){
-					return;
-				}
-				if(transform.position.y<initialJumpPlayerYPosition+maxJumpHeight){
-					rigidbody.AddForce(new Vector3(0,jump,0));
-				}
-			}
-			else if (playerControl.Action1.WasReleased) {
-
-			}
+			if (playerControl.Action1.WasPressed)
+				jump = true;
+			if (playerControl.Action1.WasReleased)
+				jumpCancel = true;
 
 			//Ground Pound
-			if (playerControl.LeftStickY < 0 && playerControl.Action2.WasPressed) {
-				inGroundPound=true;
-				rigidbody.velocity=new Vector2(0,0);
-				rigidbody.useGravity=false;
-				Invoke ("GroundPound",.3f);
-				return;
-			}
-			if (playerControl.Action2.WasPressed) {
+			if (playerControl.LeftStickY < 0 && playerControl.Action2.WasPressed)
+				groundPound = true;
+
+			if (playerControl.Action2.WasPressed && !groundPound)
 				animator.SetTrigger("Punch");
-			}
 
 		}
 		
 		void FixedUpdate() {
 
-			//Player cannot move if on the wall
 			float move = playerControl.LeftStickX;
 			float verticalMove = playerControl.LeftStickY;
 
-			if (move < 0 && isOnWall || inGroundPound) {
+			if (groundPound) {
+				inGroundPound = true;
+				rigidbody.velocity=new Vector2(0,0);
+				rigidbody.useGravity=false;
+				Invoke ("GroundPound",.3f);
 				return;
 			}
+			
+			//Player cant keep running into the wall causing clipping and stuck in animation once you are in ground pound
+			if ((move < 0 && isOnLeftWall || move>0 && isOnRightWall) || inGroundPound) {
+				return;
+			}
+
+			//Flip animation if character turns
+			if (move > 0 && transform.localScale.x < 0)
+				Flip ();
+			if(move<0 && transform.localScale.x > 0)
+				Flip();
+
+			//Apply horizontal velocity
 			if (move != 0) {
 				rigidbody.velocity = new Vector2 (move * speed, rigidbody.velocity.y);
 			}
@@ -114,32 +121,42 @@ namespace CustomProfileExample{
 				rigidbody.velocity = new Vector2 (0, rigidbody.velocity.y);
 			}
 
-			if (move > 0 && transform.localScale.x < 0)
-				Flip ();
-			if(move<0 && transform.localScale.x > 0)
-		   		Flip();
+			if (fallDown) {
+				rigidbody.AddForce(new Vector3(0,dropSpeed,0));
+				fallDown = false;
+			}
 
-			//Record time user flicks the analog stick down ("make sure they're not trying to move horizontally and that they are on the ground)
-			if (isOnGround) {
-				if (verticalMove < 0 && move < .2 && move > -.2) {
-					flickDownTime = Time.time;
+
+			if (jump) {
+
+				if(isOnGround){
+					rigidbody.velocity = new Vector2(rigidbody.velocity.x,jumpSpeed);
+					doubleJump = true;
 				}
-				if (verticalMove == 0 && move == 0) {
-					if (Time.time - flickDownTime <= .2) {
-						flickDown = true;
-					}
+				else if (doubleJump){
+					doubleJump=false;
+					rigidbody.velocity=new Vector2(rigidbody.velocity.x,0);
+					rigidbody.velocity = new Vector2(rigidbody.velocity.x,jumpSpeed);
 				}
+				jump = false;
 			}
-			else {
-				if(verticalMove<0 && !isOnGround){
-					rigidbody.AddForce(new Vector3(0,dropSpeed,0));
-				}
+
+			if (jumpCancel) {
+				if(rigidbody.velocity.y > jumpShortSpeed)
+					rigidbody.velocity = new Vector2(rigidbody.velocity.x,jumpShortSpeed);
+				jumpCancel = false;
 			}
+
 		}
 
 		void GroundPound(){
 			rigidbody.useGravity = true;
 			rigidbody.velocity = new Vector2 (0, -200f);
+			groundPound = false;
+		}
+
+		void StunnedFromGroundPound(){
+			animator.SetBool ("GroundPounded", false);
 		}
 
 		void Flip(){
@@ -157,25 +174,27 @@ namespace CustomProfileExample{
 		}
 
 		public void setController(int index){
-			print (index);
 			playerControl = InputManager.Devices [index];
 		}
 
 		void OnCollisionEnter(Collision collision){
+
 			if (collision.gameObject.CompareTag ("Platform")) {
-				if(isHeadHittingCeiling){
-					collision.gameObject.collider.isTrigger = true;
-				}
-				else{
+				if(!isHeadHittingCeiling){
 					inGroundPound = false;
 					isOnGround = true;
 					doubleJump = true;
 				}
 			}
 
-			if (collision.gameObject.CompareTag ("Wall")) {
+			if (collision.gameObject.CompareTag ("LeftWall")){
 				doubleJump = true;
-				isOnWall = true;
+				isOnLeftWall = true;
+			}
+
+			if (collision.gameObject.CompareTag ("RightWall")) {
+				doubleJump = true;
+				isOnRightWall = true;
 			}
 
 			if (collision.gameObject.CompareTag ("Base")) {
@@ -184,19 +203,29 @@ namespace CustomProfileExample{
 				doubleJump = true;
 			}
 
+			if (collision.gameObject.CompareTag ("Player")) {
+				print ("Collided with "+collision.gameObject.name);
+				PlayerMovement opponent = collision.gameObject.GetComponent<PlayerMovement>();
+
+				//Check if you're on ground and opponent is in act of ground pounding
+				if(isOnGround && opponent.groundPound){
+					animator.SetBool("GroundPounded",true);
+					Invoke ("StunnedFromGroundPound",2f);
+				}
+			}
+
 		}
 
 		void OnCollisionStay(Collision collision){
 
-			if (collision.gameObject.CompareTag ("Wall")) {
+			if (collision.gameObject.CompareTag ("LeftWall") || collision.gameObject.CompareTag("RightWall")) {
 				rigidbody.velocity=new Vector2(0,rigidbody.velocity.y);
 			}
 
 			if (collision.gameObject.CompareTag ("Platform")) {
 				if(flickDown){
-					collision.gameObject.collider.isTrigger = true;
+					this.collider.isTrigger = true;
 					rigidbody.velocity=new Vector2(rigidbody.velocity.x,-100f);
-					return;
 				}
 			}
 
@@ -209,22 +238,25 @@ namespace CustomProfileExample{
 			if (collision.gameObject.CompareTag ("Platform")) {
 				isOnGround=false;
 			}
-			if(collision.gameObject.CompareTag("Wall")){
-				isOnWall=false;
+			if(collision.gameObject.CompareTag("LeftWall")){
+				isOnLeftWall=false;
 			}
-
+			if (collision.gameObject.CompareTag ("RightWall")) {
+				isOnRightWall = false;
+			}
 			if (collision.gameObject.CompareTag ("Base")) {
 				isOnGround = false;
 			}
 		}
 
-		void OnTriggerExit(Collider collider){
-			if (collider.gameObject.CompareTag ("Platform")) {
-				collider.isTrigger = false;
+		void OnTriggerExit(Collider colliderObject){
+			if (colliderObject.gameObject.CompareTag ("Platform")) {
+				this.collider.isTrigger = false;
 				flickDown = false;
 			}
 		}
 
+		//Just for testing to see the circle that detects ceiling hit
 		void OnDrawGizmos(){
 			if (ceilingCheck != null) {
 				Gizmos.color = Color.yellow;
