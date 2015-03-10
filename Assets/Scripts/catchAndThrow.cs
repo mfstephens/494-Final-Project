@@ -47,7 +47,6 @@ namespace CustomProfileExample{
 		}
 
 		void controlBall() {
-			ball.transform.rotation = Quaternion.identity;
 			ball.rigidbody.velocity = Vector3.zero;
 			possesion = true;
 			ballScript.possessed = true;

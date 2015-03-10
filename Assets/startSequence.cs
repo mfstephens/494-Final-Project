@@ -135,8 +135,6 @@ namespace CustomProfileExample{
 			setupScreen.SetActive (false);
 			Kenny.SetActive (true);
 			Cartman.SetActive (true);
-			//Kyle.SetActive (true);
-			//Stan.SetActive (true);
 		}
 
 	}
