@@ -263,5 +263,13 @@ namespace CustomProfileExample{
 				Gizmos.DrawSphere (ceilingCheck.position, ceilingRadius);
 			}
 		}
+
+		public float getLeftStickX() {
+			return playerControl.LeftStickX;
+		}
+
+		public float getLeftStickY() {
+			return playerControl.LeftStickY;
+		}
 	}
 }
