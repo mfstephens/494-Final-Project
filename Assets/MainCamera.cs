@@ -20,7 +20,7 @@ public class MainCamera : MonoBehaviour {
 	float zoomSpeed = 20f;
 
 	// Update is called once per frame
-	void Update () 
+	void LateUpdate () 
 	{
 		Rect boundingBox = CalculateTargetsBoundingBox();
 		transform.position = CalculateCameraPosition(boundingBox);
