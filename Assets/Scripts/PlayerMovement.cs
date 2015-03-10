@@ -37,7 +37,7 @@ namespace CustomProfileExample{
 		void Start () {
 			animator = GetComponent<Animator> ();
 			ceilingCheck = transform.FindChild ("Head");
-			//throwControl = GetComponent<catchAndThrow> ();
+			throwControl = GetComponent<catchAndThrow> ();
 			gameObject.SetActive (false);
 		}
 		
@@ -71,9 +71,8 @@ namespace CustomProfileExample{
 				this.collider.isTrigger = true;
 			}
 
-			if (playerControl.Action3.WasPressed) {
-				//throwControl.attemptThrow();
-			}
+			if (playerControl.Action3.WasPressed)
+				throwControl.attemptThrow();
 
 			if (playerControl.Action1.WasPressed)
 				jump = true;
@@ -165,14 +164,6 @@ namespace CustomProfileExample{
 			transform.localScale = local;
 		}
 
-		public float movementX(){
-			return playerControl.LeftStickX;
-		}
-
-		public float movementY(){
-			return playerControl.LeftStickX;
-		}
-
 		public void setController(int index){
 			playerControl = InputManager.Devices [index];
 		}
@@ -204,7 +195,6 @@ namespace CustomProfileExample{
 			}
 
 			if (collision.gameObject.CompareTag ("Player")) {
-				print ("Collided with "+collision.gameObject.name);
 				PlayerMovement opponent = collision.gameObject.GetComponent<PlayerMovement>();
 
 				//Check if you're on ground and opponent is in act of ground pounding
