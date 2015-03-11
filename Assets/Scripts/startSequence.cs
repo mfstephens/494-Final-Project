@@ -38,6 +38,7 @@ namespace CustomProfileExample{
 				print ("Only "+InputManager.Devices.Count+" controllers connected");
 				player1=InputManager.Devices[0];
 				player2=InputManager.Devices[1];
+				player3=InputManager.Devices[2];
 			} 
 			else {
 				player1=InputManager.Devices[0];
@@ -85,20 +86,22 @@ namespace CustomProfileExample{
 					playerReady(1);
 					Kenny.GetComponent<PlayerMovement>().setController(1);
 				}
-				/*
+
 				//Player 3 is Kyle (for now)
 				else if (player3.Action1.WasPressed) {
 					playerReady (2);
 					Kyle.GetComponent<PlayerMovement>().setController(2);
 				}
+
 				//Player 4 is Stan (for now)
 				else if (player4.Action1.WasPressed) {
 					playerReady (3);
 					Stan.GetComponent<PlayerMovement>().setController(3);
 				}
-				*/
-				if(numPlayersReady == 2) {
-					Invoke ("startGame",1f);
+
+
+				if(numPlayersReady == 4) {
+					startGame();
 				}
 			}
 		} 
@@ -126,8 +129,10 @@ namespace CustomProfileExample{
 		}
 
 		void playerReady(int playerNum) {
-			playersReady [playerNum].SetActive (true);
-			numPlayersReady++;
+			if (!playersReady [playerNum].activeSelf) {
+				playersReady[playerNum].SetActive(true);
+				numPlayersReady++;
+			}
 
 		}
 
@@ -135,6 +140,9 @@ namespace CustomProfileExample{
 			setupScreen.SetActive (false);
 			Kenny.SetActive (true);
 			Cartman.SetActive (true);
+			Kyle.SetActive (true);
+			Stan.SetActive (true);
+			GameObject.Find ("Main Camera").GetComponent<GameController> ().InitNewGame ();
 		}
 
 	}

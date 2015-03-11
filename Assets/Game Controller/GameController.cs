@@ -4,13 +4,17 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 
 enum GameStatus {
+	InMenu,
 	PreStart,
 	Started,
 	Ended
 }
 
 public class GameController : MonoBehaviour {
-	float gameLength = 120.0f;
+
+	public static GameController gameController;
+
+	float gameLength = 60.0f;
 	float countdownTimerLength = 3.0f;
 	int numberOfTeams = 2;
 	float team1Score, team2Score;
@@ -30,6 +34,8 @@ public class GameController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		HideGameUI ();
+		status = GameStatus.InMenu;
+		gameController = this;
 	}
 
 	// Update is called once per frame
@@ -40,6 +46,7 @@ public class GameController : MonoBehaviour {
 			ShowGameUI ();
 			if (countdownRemaining <= 0) {
 				StartGame ();
+				ballBehavior.ball.gameObject.SetActive(true);
 			} else if (countdownRemaining <= 0.5) {
 				countdownTimerUI.GetComponent<Text>().text = "GO!";
 			} else {
@@ -116,6 +123,12 @@ public class GameController : MonoBehaviour {
 		// remove countdown timer
 		Destroy(countdownTimerUI);
 
+		//Players can start moving now
+		GameObject.Find ("Kenny").GetComponent<PlayerMovement> ().StartGame ();
+		GameObject.Find ("Cartman").GetComponent<PlayerMovement> ().StartGame ();
+		GameObject.Find ("Kyle").GetComponent<PlayerMovement> ().StartGame ();
+		GameObject.Find("Stan").GetComponent<PlayerMovement>().StartGame();
+
 		// start the game
 		PlayGame ();
 		status = GameStatus.Started;
@@ -124,12 +137,12 @@ public class GameController : MonoBehaviour {
 	// Won't stop ball movement, but will stop player movement. SHould fix to do both later.
 	void PauseGame () {
 		foreach (GameObject player in players) {
-			player.GetComponent<CustomProfileExample.PlayerMovement>().enabled = false;
+			player.GetComponent<PlayerMovement>().enabled = false;
 		}
 	}
 	void PlayGame () {
 		foreach (GameObject player in players) {
-			player.GetComponent<CustomProfileExample.PlayerMovement>().enabled = true;
+			player.GetComponent<PlayerMovement>().enabled = true;
 		}
 	}
 
@@ -139,6 +152,10 @@ public class GameController : MonoBehaviour {
 
 	public void UpdateTeamIDWithBall (int teamID) {
 		teamIDWithBall = teamID;
+	}
+
+	public int getTeamID(){
+		return teamIDWithBall;
 	}
 
 	public void InitNewGame () {

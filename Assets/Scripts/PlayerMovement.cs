@@ -3,7 +3,6 @@ using System.Collections;
 using InControl;
 using System;
 
-namespace CustomProfileExample{
 	public class PlayerMovement : MonoBehaviour {
 
 		public float speed = 10.0f;
@@ -39,6 +38,8 @@ namespace CustomProfileExample{
 			ceilingCheck = transform.FindChild ("Head");
 			throwControl = GetComponent<catchAndThrow> ();
 			gameObject.SetActive (false);
+			speed = 0;
+			jumpSpeed = 0;
 		}
 		
 		// Update is called once per frame
@@ -83,8 +84,14 @@ namespace CustomProfileExample{
 			if (playerControl.LeftStickY < 0 && playerControl.Action2.WasPressed)
 				groundPound = true;
 
-			if (playerControl.Action2.WasPressed && !groundPound)
-				animator.SetTrigger("Punch");
+			//Can not punch if you have the ball or in midst of ground pound
+			if (playerControl.Action2.WasPressed && !groundPound && !throwControl.possesion) {
+				animator.SetTrigger ("Punch");
+				print ("Distance "+Vector3.Distance(ballBehavior.ball.gameObject.transform.position, this.gameObject.transform.position));
+				if ((Vector3.Distance(ballBehavior.ball.gameObject.transform.position, this.gameObject.transform.position) < 10) && ballBehavior.ball.possessed && (ballBehavior.ball.owner != null) && (ballBehavior.ball.owner != this.gameObject)) {
+					throwControl.dropBall();
+				}
+			}
 
 		}
 		
@@ -195,12 +202,39 @@ namespace CustomProfileExample{
 			}
 
 			if (collision.gameObject.CompareTag ("Player")) {
-				PlayerMovement opponent = collision.gameObject.GetComponent<PlayerMovement>();
 
+				catchAndThrow opponent = collision.gameObject.GetComponent<catchAndThrow>();
+				PlayerMovement opponentMovement = collision.gameObject.GetComponent<PlayerMovement>();
+
+				//Teammate does nothing to you right know when ground pounded
+				if(opponent.teamNumber == throwControl.teamNumber){
+					return;
+				}
+
+				if(opponentMovement.animator.GetCurrentAnimatorStateInfo(0).IsName("Punch")){
+					print ("Punched....IN THE FACE");
+
+					/*if(throwControl.possesion){
+						throwControl.dropBall();
+					}*/
+
+					/*
+					if(opponentMovement.rigidbody.velocity.x > rigidbody.velocity.x)
+						rigidbody.AddForce(new Vector3(transform.localPosition.x * 500,0,0));
+					if(opponentMovement.rigidbody.velocity.x < rigidbody.velocity.x)
+						opponentMovement.rigidbody.AddForce(new Vector3(transform.localPosition.x*500,0,0));
+					*/
+				}
+				
 				//Check if you're on ground and opponent is in act of ground pounding
-				if(isOnGround && opponent.groundPound){
-					animator.SetBool("GroundPounded",true);
-					Invoke ("StunnedFromGroundPound",2f);
+				if(isOnGround && opponentMovement.inGroundPound){
+					//If you have the ball, it gets released in a random direction
+					if(throwControl.possesion){
+						throwControl.randomBallVelocity();
+					}
+
+					//animator.SetBool("GroundPounded",true);
+					//Invoke ("StunnedFromGroundPound",2f);
 				}
 
 			}
@@ -223,6 +257,10 @@ namespace CustomProfileExample{
 			if (collision.gameObject.CompareTag ("Base")) {
 				flickDown=false;
 			}
+
+			if(collision.gameObject.CompareTag("Player")){
+				print ("Get off me bro");	
+			}
 		}
 
 		void OnCollisionExit(Collision collision){
@@ -238,6 +276,12 @@ namespace CustomProfileExample{
 			if (collision.gameObject.CompareTag ("Base")) {
 				isOnGround = false;
 			}
+		}
+
+		void OnTriggerEnter(Collider collider){
+		if (collider.gameObject.CompareTag ("Base"))
+			this.rigidbody.collider.isTrigger = false;
+
 		}
 
 		void OnTriggerExit(Collider colliderObject){
@@ -262,5 +306,11 @@ namespace CustomProfileExample{
 		public float getLeftStickY() {
 			return playerControl.LeftStickY;
 		}
+
+		//Allows the players to move because the game is active now
+		public void StartGame(){
+			jumpSpeed = 125f;
+			jumpShortSpeed = 62.5f;
+			speed = 125f;
+		}
 	}
-}
