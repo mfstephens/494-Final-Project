@@ -17,11 +17,6 @@ public class PlayerMove : MonoBehaviour {
 	void Start () {
 		playerController = this.GetComponent<PlayerController> ();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	public void Movement(float moveX, float moveY, bool jump, bool cancelJump, bool speedBoost){
 

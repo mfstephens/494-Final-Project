@@ -14,8 +14,8 @@ public class BallContainer : MonoBehaviour {
 	void Start () {
 		BallContainerSingleton = this;
 		ballContainer = new List<Ball>();
-		instantiateBallForPlayer (1);
-		instantiateBallForPlayer (2);
+		instantiateBallForPlayerAtPosition (1,new Vector3(2f,29f,5f));
+		instantiateBallForPlayerAtPosition (2,new Vector3(243f,31f,5f));
 	}
 	
 	// Update is called once per frame
@@ -23,13 +23,14 @@ public class BallContainer : MonoBehaviour {
 	
 	}
 
-	void instantiateBallForPlayer(int i){
+	//Instantiates a ball that corresponds to a player (their color) at a position
+	void instantiateBallForPlayerAtPosition(int i,Vector3 position){
 		if (i == 1) {
-			Ball newBall=Instantiate (player1Ball, new Vector3 (2f, 29f, 5f), Quaternion.identity) as Ball;
+			Ball newBall=Instantiate (player1Ball, position, Quaternion.identity) as Ball;
 			ballContainer.Add (newBall);
 		}
 		if (i == 2) {
-			Ball newBall=Instantiate (player2Ball, new Vector3(243f,31f,5f),Quaternion.identity) as Ball;
+			Ball newBall=Instantiate (player2Ball, position,Quaternion.identity) as Ball;
 			ballContainer.Add (newBall);
 		}
 	}

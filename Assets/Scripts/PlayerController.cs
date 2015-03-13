@@ -58,6 +58,11 @@ public class PlayerController : MonoBehaviour {
 					totalRotation = 0;
 				}
 			}
+			else{
+				transform.rotation = Quaternion.identity;
+				barrelRoll = false;
+				totalRotation = 0;
+			}
 		}
 
 		//Characters blinks when they were hit for stunnedDuration (can customize to stun, add more effects)
@@ -69,12 +74,13 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 
+		//Turn on or off the halo to indicate if ball can be picked up
 		if (CanBallBePickedUp () && !possession)
 			PickUpZone.SetActive (true);
 		else
 			PickUpZone.SetActive (false);
 
-
+		//Change Z Axis of ball when possessed to appear in front of you
 		if (possession)
 			possessedBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,-5f);
 
