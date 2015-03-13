@@ -8,8 +8,9 @@ public class PlayerController : MonoBehaviour {
 	public float stunnedDuration;
 	public float rotateSpeed;
 
+	private float totalRotation = 0;
 	private float timeHit;
-	private float rotateStart;
+
 	private bool jump = false;
 	private bool jumpCancel = false;
 	private bool possession = false;
@@ -45,11 +46,18 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		//Perform a 360 degree flip if player is not on ground
 		if (barrelRoll) {
-
-			if(!playerMovement.isPlayerOnGround())
-				transform.Rotate(Vector3.forward,360f);
-			//barrelRoll = false;
+			if(!playerMovement.isPlayerOnGround()){
+				float rotationAmount = rotateSpeed * Time.deltaTime;
+				transform.Rotate(new Vector3(0,0,rotationAmount));
+				totalRotation+=rotationAmount;
+				if(totalRotation>=360){
+					transform.rotation = Quaternion.identity;
+					barrelRoll = false;
+					totalRotation = 0;
+				}
+			}
 		}
 
 		//Characters blinks when they were hit for stunnedDuration (can customize to stun, add more effects)
@@ -168,7 +176,6 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void BarrelRoll(){
-		rotateStart = Time.time;
 		barrelRoll = true;
 	}
 
