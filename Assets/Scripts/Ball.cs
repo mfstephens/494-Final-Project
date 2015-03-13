@@ -16,6 +16,8 @@ public class Ball : MonoBehaviour {
 	private int playerColor;
 	private Players possessedBy;
 	private Players thrownBy;
+	private TrailRenderer ballTrail;
+
 	private float TimePossessed;
 	public Color startColor = Color.red;
 	public Color endColor = Color.white;
@@ -23,6 +25,8 @@ public class Ball : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		possessedBy = Players.None;
+		ballTrail = GetComponent<TrailRenderer> ();
+		ballTrail.enabled = false;
 	}
 	
 	// Update is called once per frame
@@ -50,6 +54,7 @@ public class Ball : MonoBehaviour {
 		else {
 			Debug.LogError ("Invalid Paramter Sent To ballPickedUpBy");
 		}
+		ballTrail.enabled = false;
 		TimePossessed = Time.time;
 	}
 
@@ -57,6 +62,7 @@ public class Ball : MonoBehaviour {
 	public void ballThrown(){
 		thrownBy = possessedBy;
 		possessedBy = Players.None;
+		ballTrail.enabled = true;
 	}
 
 	//Returns whether or not a ball was thrown by a player
