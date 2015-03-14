@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour {
 	private bool justHit = false;
 	private bool playerStunned = false;
 	private bool barrelRoll = false;
+	private bool justThrown = false;
 
 	private InputDevice playerControl;
 	private PlayerMove playerMovement;
@@ -41,7 +42,7 @@ public class PlayerController : MonoBehaviour {
 			playerControl = InputManager.Devices [1];
 			playerNumber = 2;
 		}
-		if (name == "player3") {
+		if (name == "Player3") {
 			playerControl = InputManager.Devices [2];
 			playerNumber = 3;
 		}
@@ -54,6 +55,11 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+
+		if (Vector3.Distance (possessedBall.transform.position, this.transform.position) > 15f) {
+			justThrown = false;
+		}
 
 		//Perform a 360 degree flip if player is not on ground
 		if (barrelRoll) {
@@ -84,14 +90,16 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		//Turn on or off the halo to indicate if ball can be picked up
-		if (CanBallBePickedUp () && !possession)
-			PickUpZone.SetActive (true);
-		else
-			PickUpZone.SetActive (false);
+//		if (CanBallBePickedUp () && !possession) {
+//			PickUpZone.SetActive (true);
+//			PickUpBall ();
+//		}
+//		else
+//			PickUpZone.SetActive (false);
 
 		//Change Z Axis of ball when possessed to appear in front of you
 		if (possession)
-			possessedBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,-5f);
+			possessedBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,5f);
 
 		if (playerControl.Action1.WasPressed)
 			jump = true;
@@ -100,10 +108,10 @@ public class PlayerController : MonoBehaviour {
 			jumpCancel = true;
 
 		else if (playerControl.Action3.WasPressed) {
-			if (!possession && CanBallBePickedUp()) {
-				PickUpBall ();
-			}
-			else if (possession) {
+//			if (!possession && CanBallBePickedUp()) {
+//				PickUpBall ();
+//			}
+			if (possession) {
 				ThrowBall ();
 			}
 		} 
@@ -154,11 +162,11 @@ public class PlayerController : MonoBehaviour {
 		CancelInvoke ();
 	}
 
-	bool CanBallBePickedUp(){
+	public bool CanBallBePickedUp(){
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 		float closestBallDistance = Vector3.Distance (this.transform.position, closestBall.transform.position);
 
-		if (closestBall != null && closestBallDistance < 15f && closestBall.playerColor == playerNumber) {
+		if (closestBall != null && closestBallDistance < 15f && closestBall.playerColor == playerNumber && !justThrown) {
 			print ("Player number: " + playerNumber);
 			print ("Player color: " + closestBall.playerColor);
 			return true;
@@ -166,28 +174,26 @@ public class PlayerController : MonoBehaviour {
 		return false;
 	}
 
-	void PickUpBall(){
+	public void PickUpBall(){
+		print ("attempting to pick up bal");
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
-		float closestBallDistance = Vector3.Distance (this.transform.position, closestBall.transform.position);
 
-		//If the ball (if any) is close, pick up
-		if (closestBall != null && closestBallDistance < 15f) {
-			closestBall.rigidbody.collider.isTrigger = true;
-			closestBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,-5f);
-			closestBall.ballPickedUpBy(gameObject.name);
-			possession = true;
-			possessedBall = closestBall;
-		}
+		closestBall.rigidbody.collider.isTrigger = true;
+		//closestBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,-5f);
+		closestBall.ballPickedUpBy(gameObject.name);
+		possession = true;
+		possessedBall = closestBall;
 	}
 
 	//Throw ball in direction of left stick
 	void ThrowBall(){
+
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
 
 		possession = false;
-
-		possessedBall.transform.position += new Vector3(horizontalMovement, verticalMovement, 10);
+		justThrown = true;
+		//possessedBall.transform.position += new Vector3(horizontalMovement, verticalMovement, 10);
 		
 		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * horizontalMovement, verticalMovement*throwSpeed);
 		possessedBall.rigidbody.collider.isTrigger = false;

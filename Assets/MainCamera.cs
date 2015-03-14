@@ -19,6 +19,13 @@ public class MainCamera : MonoBehaviour {
 	[SerializeField]
 	float zoomSpeed = 20f;
 
+	void Start() {
+		//players [3] = GameObject.Find ("Player1Ball(Clone)");
+		//players [4] = GameObject.Find ("Player2Ball(Clone)");
+		//players [5] = GameObject.Find ("Player3Ball(Clone)");
+
+	}
+
 	// Update is called once per frame
 	void LateUpdate () 
 	{

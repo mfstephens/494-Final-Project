@@ -21,10 +21,18 @@ public class PlayerMove : MonoBehaviour {
 		playerController = this.GetComponent<PlayerController> ();
 	}
 
+	void Update() {
+		if (playerController.CanBallBePickedUp()) {
+			print ("ADFSDFSDFSDFSDFSDF");
+			playerController.PickUpBall();
+		}
+	}
+
 	public void Movement(float moveX, float moveY, bool jump, bool cancelJump, bool speedBoost){
 		rigidbody.velocity = new Vector2 (moveX * speed, rigidbody.velocity.y);
 
 		if (jump) {
+			print (this.name + jump);
 			if (isOnGround)
 				rigidbody.velocity = new Vector2 (rigidbody.velocity.x, jumpSpeed);
 			else if (doubleJump) {
@@ -53,15 +61,20 @@ public class PlayerMove : MonoBehaviour {
 		if (collision.gameObject.CompareTag ("LeftWall"))
 			isOnLeftWall = true;
 
+
+
 		//If Hit by ball that is not in your possession
-		if (playerController.BallPossessed()!=null && playerController.BallPossessed() != collision.gameObject) {
+		if (playerController.BallPossessed()!= null && playerController.BallPossessed() != collision.gameObject) {
 			if(collision.gameObject.CompareTag("Ball")){
 				//If Ball was not thrown by you, get hit
+				print ("got here");
+
 				if(!collision.gameObject.GetComponent<Ball>().thrownByPlayer(name)){
 					print (collision.gameObject.rigidbody.velocity);
 //					BallContainer.BallContainerSingleton.destroyBall(playerController.BallPossessed());
 					playerController.HitByBall();
 				}
+
 			}
 
 		}
