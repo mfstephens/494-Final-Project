@@ -31,6 +31,7 @@ public class Ball : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
 		//Gradually change the balls color to trigger a bomb?
 		if (possessedBy != Players.None) {
 			float percentDone = (Time.time - TimePossessed) / BallHeldDuration;
@@ -67,6 +68,7 @@ public class Ball : MonoBehaviour {
 
 	//Returns whether or not a ball was thrown by a player
 	public bool thrownByPlayer(string name){
+
 		if (name == "Player1") {
 			if (thrownBy == Players.Player1)
 				return true;
