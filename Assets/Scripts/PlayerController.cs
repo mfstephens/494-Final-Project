@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
 
 	private float totalRotation = 0;
 	private float timeHit;
+	private int playerNumber;
 
 	private bool jump = false;
 	private bool jumpCancel = false;
@@ -32,10 +33,18 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 		playerControl = InputManager.ActiveDevice;
 		playerMovement = GetComponent<PlayerMove> ();
-		if (name == "Player1")
+		if (name == "Player1") {
 			playerControl = InputManager.Devices [0];
-		if (name == "Player2")
+			playerNumber = 1;
+		}
+		if (name == "Player2") {
 			playerControl = InputManager.Devices [1];
+			playerNumber = 2;
+		}
+		if (name == "player3") {
+			playerControl = InputManager.Devices [2];
+			playerNumber = 3;
+		}
 
 		playerColor = this.renderer.material.color;
 
@@ -91,10 +100,12 @@ public class PlayerController : MonoBehaviour {
 			jumpCancel = true;
 
 		else if (playerControl.Action3.WasPressed) {
-			if (!possession)
+			if (!possession && CanBallBePickedUp()) {
 				PickUpBall ();
-			else
+			}
+			else if (possession) {
 				ThrowBall ();
+			}
 		} 
 
 		else if (playerControl.RightTrigger.WasPressed)
@@ -147,11 +158,14 @@ public class PlayerController : MonoBehaviour {
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 		float closestBallDistance = Vector3.Distance (this.transform.position, closestBall.transform.position);
 
-		if (closestBall != null && closestBallDistance < 15f)
+		if (closestBall != null && closestBallDistance < 15f && closestBall.playerColor == playerNumber) {
+			print ("Player number: " + playerNumber);
+			print ("Player color: " + closestBall.playerColor);
 			return true;
+		}
 		return false;
 	}
-	
+
 	void PickUpBall(){
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 		float closestBallDistance = Vector3.Distance (this.transform.position, closestBall.transform.position);
@@ -192,8 +206,8 @@ public class PlayerController : MonoBehaviour {
 
 	//React to getting hit by a ball
 	public void HitByBall(){
-		possessedBall = null;
-		possession = false;
+//		possessedBall = null;
+//		possession = false;
 		justHit = true;
 		stunPlayer ();
 	}

@@ -54,7 +54,7 @@ public class PlayerMove : MonoBehaviour {
 				//If Ball was not thrown by you, get hit
 				if(!collision.gameObject.GetComponent<Ball>().thrownByPlayer(name)){
 					print (collision.gameObject.rigidbody.velocity);
-					BallContainer.BallContainerSingleton.destroyBall(playerController.BallPossessed());
+//					BallContainer.BallContainerSingleton.destroyBall(playerController.BallPossessed());
 					playerController.HitByBall();
 				}
 			}

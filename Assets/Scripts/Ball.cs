@@ -13,7 +13,7 @@ public class Ball : MonoBehaviour {
 
 	public float BallHeldDuration;
 
-	private int playerColor;
+	public int playerColor;
 	private Players possessedBy;
 	private Players thrownBy;
 	private TrailRenderer ballTrail;
