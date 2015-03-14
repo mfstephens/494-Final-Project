@@ -2,7 +2,9 @@ fileFormatVersion: 2
 guid: 4a82298c24fba45628b0c5360f6c8b6e
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - player1Ball: {fileID: 11437798, guid: d24850ca137ee4a9793d12d28b0fc811, type: 2}
+  - player2Ball: {fileID: 11480526, guid: 5dbc8923494af4a31bb57de64ba8b13a, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

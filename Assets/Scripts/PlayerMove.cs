@@ -7,10 +7,13 @@ public class PlayerMove : MonoBehaviour {
 	public float jumpSpeed;
 	public float jumpShortSpeed;
 	public float dropSpeed;
+	public float wallJump;
 
 	private bool barrelRoll = false;
 	private bool isOnGround = false;
 	private bool doubleJump = false;
+	private bool isOnLeftWall = false;
+	private bool isOnRightWall = false;
 	private PlayerController playerController;
 
 	// Use this for initialization
@@ -19,7 +22,6 @@ public class PlayerMove : MonoBehaviour {
 	}
 
 	public void Movement(float moveX, float moveY, bool jump, bool cancelJump, bool speedBoost){
-
 		rigidbody.velocity = new Vector2 (moveX * speed, rigidbody.velocity.y);
 
 		if (jump) {
@@ -48,6 +50,9 @@ public class PlayerMove : MonoBehaviour {
 			doubleJump = true;
 		}
 
+		if (collision.gameObject.CompareTag ("LeftWall"))
+			isOnLeftWall = true;
+
 		//If Hit by ball that is not in your possession
 		if (playerController.BallPossessed()!=null && playerController.BallPossessed() != collision.gameObject) {
 			if(collision.gameObject.CompareTag("Ball")){
@@ -65,5 +70,11 @@ public class PlayerMove : MonoBehaviour {
 	void OnCollisionExit(Collision collision){
 		if (collision.gameObject.CompareTag ("Ground"))
 			isOnGround = false;
+
+		if (collision.gameObject.CompareTag ("LeftWall"))
+			isOnLeftWall = false;
+
+		if (collision.gameObject.CompareTag ("RightWall"))
+			isOnRightWall = false;
 	}
 }
