@@ -23,8 +23,8 @@ public class PlayerController : MonoBehaviour {
 
 	private InputDevice playerControl;
 	private PlayerMove playerMovement;
+	private PlayerAim playerAim;
 	private Ball possessedBall;
-	private GameObject PickUpZone;
 
 	private Color playerColor;
 	public Color beginColor;
@@ -34,6 +34,8 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 		playerControl = InputManager.ActiveDevice;
 		playerMovement = GetComponent<PlayerMove> ();
+		playerAim = GameObject.Find ("Guide").GetComponent<PlayerAim> ();
+
 		if (name == "Player1") {
 			playerControl = InputManager.Devices [0];
 			playerNumber = 1;
@@ -49,8 +51,6 @@ public class PlayerController : MonoBehaviour {
 
 		playerColor = this.renderer.material.color;
 
-		PickUpZone = transform.Find ("PickUpBallZone").gameObject;
-		PickUpZone.SetActive (false);
 	}
 	
 	// Update is called once per frame
@@ -127,12 +127,18 @@ public class PlayerController : MonoBehaviour {
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
 
+
 		if (horizontalMovement > 0 && transform.localScale.x < 0)
 			Flip ();
 		if(horizontalMovement<0 && transform.localScale.x > 0)
 			Flip();
 
-		playerMovement.Movement (horizontalMovement, verticalMovement, jump, jumpCancel,speedBoost);
+		if (!playerControl.LeftTrigger.IsPressed) {
+			playerMovement.Movement (horizontalMovement, verticalMovement, jump, jumpCancel,speedBoost);
+		}
+
+		Vector3 shotDirection3D = new Vector3 ( playerControl.LeftStickX,  playerControl.LeftStickY, 1f);
+		playerAim.UpdateGuidePosition (shotDirection3D);
 
 		jump = false;
 		jumpCancel = false;
@@ -194,8 +200,11 @@ public class PlayerController : MonoBehaviour {
 		possession = false;
 		justThrown = true;
 		//possessedBall.transform.position += new Vector3(horizontalMovement, verticalMovement, 10);
+
+		Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
+		throwMovement.Normalize ();
 		
-		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * horizontalMovement, verticalMovement*throwSpeed);
+		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
 		possessedBall.rigidbody.collider.isTrigger = false;
 
 		possessedBall.ballThrown ();
