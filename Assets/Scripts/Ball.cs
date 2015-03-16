@@ -21,12 +21,21 @@ public class Ball : MonoBehaviour {
 	private float TimePossessed;
 	public Color startColor = Color.red;
 	public Color endColor = Color.white;
-
+	GameObject ball1, ball2, ball3, ball4, player1, player2, player3, player4, controlBallPowerUp;
 	// Use this for initialization
 	void Start () {
 		possessedBy = Players.None;
 		ballTrail = GetComponent<TrailRenderer> ();
 		ballTrail.enabled = false;
+		ball1 = GameObject.Find ("Player1Ball(Clone)");
+		ball2 = GameObject.Find ("Player2Ball(Clone)");
+		ball3 = GameObject.Find ("Player3Ball(Clone)");
+		ball4 = GameObject.Find ("Player4Ball(Clone)");
+		player1 = GameObject.Find ("Player1");
+		player2 = GameObject.Find ("Player2");
+		player3 = GameObject.Find ("Player3");
+		player4 = GameObject.Find ("Player4");
+		controlBallPowerUp = GameObject.Find ("ControlBallPowerUp");
 	}
 	
 	// Update is called once per frame
@@ -86,6 +95,30 @@ public class Ball : MonoBehaviour {
 				return true;
 		}
 		return false;	
+	}
+
+	// take away controlBall power up on a collision
+	void OnCollisionEnter(Collision other) {
+		if (gameObject == ball1 && player1.GetComponent<PlayerController> ().controlBall == true 
+		    && player1.GetComponent<PlayerController> ().throwing == true && other.gameObject != player1){
+			player1.GetComponent<PlayerController> ().controlBall = false; 
+			controlBallPowerUp.GetComponent<PowerUpControlBall> ().setNoControl ();
+		}
+		else if (gameObject == ball2 && player2.GetComponent<PlayerController> ().controlBall == true 
+		         && player2.GetComponent<PlayerController> ().throwing == true && other.gameObject != player2) {
+			player2.GetComponent<PlayerController> ().controlBall = false;
+			controlBallPowerUp.GetComponent<PowerUpControlBall> ().setNoControl ();
+		}
+		else if (gameObject == ball3 && player3.GetComponent<PlayerController> ().controlBall == true 
+		         && player3.GetComponent<PlayerController> ().throwing == true && other.gameObject != player3){
+			player3.GetComponent<PlayerController> ().controlBall = false;
+			controlBallPowerUp.GetComponent<PowerUpControlBall> ().setNoControl ();
+		}
+		else if (gameObject == ball4 && player4.GetComponent<PlayerController> ().controlBall == true 
+		         && player4.GetComponent<PlayerController> ().throwing == true && other.gameObject != player4) {
+			player4.GetComponent<PlayerController> ().controlBall = false;
+			controlBallPowerUp.GetComponent<PowerUpControlBall> ().setNoControl ();
+		}
 	}
 }
 

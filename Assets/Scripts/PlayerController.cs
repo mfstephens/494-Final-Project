@@ -12,6 +12,11 @@ public class PlayerController : MonoBehaviour {
 	private float timeHit;
 	private float initialFlickDownTime;
 	private int playerNumber;
+	
+	public bool controlBall = false;
+	public bool throwing = false;
+	public bool timeSlowPowerUp = false;
+	public float timeScale = 1f;
 
 	private bool jump = false;
 	private bool jumpCancel = false;
@@ -24,7 +29,7 @@ public class PlayerController : MonoBehaviour {
 	private bool lockPosition = false;
 	private bool dropThroughPlatform = false;
 
-	private InputDevice playerControl;
+	public InputDevice playerControl;
 	private PlayerMove playerMovement;
 
 	public Ball possessedBall = null;
@@ -121,6 +126,7 @@ public class PlayerController : MonoBehaviour {
 
 		else if (playerControl.Action3.WasPressed) {
 			if (possession)
+				throwing = true;
 				ThrowBall ();
 		} 
 		else if (playerControl.RightTrigger.WasPressed)
@@ -140,6 +146,11 @@ public class PlayerController : MonoBehaviour {
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
 
+		// has controlBall power up
+		if(controlBall && throwing){
+			possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * horizontalMovement/1.8f, verticalMovement*throwSpeed/1.8f);
+			return;
+		}
 
 		if (horizontalMovement > 0 && transform.localScale.x < 0)
 			Flip ();
@@ -192,6 +203,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void PickUpBall(){
+		if(controlBall && throwing) return false;
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 		closestBall.rigidbody.collider.isTrigger = true;
 		closestBall.ballPickedUpBy(gameObject.name);
@@ -211,9 +223,11 @@ public class PlayerController : MonoBehaviour {
 
 		Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
 		throwMovement.Normalize ();
-		
-		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
+
 		possessedBall.rigidbody.collider.isTrigger = false;
+		possessedBall.ballThrown ();
+		if (controlBall) return;
+		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
 
 		if ((unlimitedBallPowerUp.access.currentPlayer != null) && unlimitedBallPowerUp.access.currentPlayer.Equals (this.gameObject)) {
 			Invoke ("callMakeNewBall", 0.1f);
@@ -221,7 +235,7 @@ public class PlayerController : MonoBehaviour {
 			possessedBall.playerColor = -1;
 		}
 
-		possessedBall.ballThrown ();
+
 	}
 
 	void BarrelRoll(){
