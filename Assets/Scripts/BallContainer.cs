@@ -6,7 +6,7 @@ public class BallContainer : MonoBehaviour {
 
 	public static BallContainer BallContainerSingleton;
 
-	private List<Ball>ballContainer;
+	public List<Ball>ballContainer;
 	public Ball player1Ball;
 	public Ball player2Ball;
 	public Ball player3Ball;

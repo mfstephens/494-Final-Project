@@ -16,7 +16,7 @@ public class PlayerMove : MonoBehaviour {
 	private bool isOnRightWall = false;
 	private PlayerController playerController;
 
-	// Use this for initialization
+	// Use this for initializationx
 	void Start () {
 		playerController = this.GetComponent<PlayerController> ();
 	}

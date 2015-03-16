@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour {
 
 	private InputDevice playerControl;
 	private PlayerMove playerMovement;
-	private Ball possessedBall;
+	public Ball possessedBall = null;
 	private GameObject PickUpZone;
 
 	private Color playerColor;
@@ -56,8 +56,7 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
-		if (Vector3.Distance (possessedBall.transform.position, this.transform.position) > 15f) {
+		if (possessedBall != null && Vector3.Distance (possessedBall.transform.position, this.transform.position) > 15f) {
 			justThrown = false;
 		}
 
@@ -164,6 +163,7 @@ public class PlayerController : MonoBehaviour {
 
 	public bool CanBallBePickedUp(){
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
+
 		float closestBallDistance = Vector3.Distance (this.transform.position, closestBall.transform.position);
 
 		if (closestBall != null && closestBallDistance < 15f && closestBall.playerColor == playerNumber && !justThrown) {
@@ -177,9 +177,7 @@ public class PlayerController : MonoBehaviour {
 	public void PickUpBall(){
 		print ("attempting to pick up bal");
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
-
 		closestBall.rigidbody.collider.isTrigger = true;
-		//closestBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,-5f);
 		closestBall.ballPickedUpBy(gameObject.name);
 		possession = true;
 		possessedBall = closestBall;
@@ -197,6 +195,12 @@ public class PlayerController : MonoBehaviour {
 		
 		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * horizontalMovement, verticalMovement*throwSpeed);
 		possessedBall.rigidbody.collider.isTrigger = false;
+
+		if ((unlimitedBallPowerUp.access.currentPlayer != null) && unlimitedBallPowerUp.access.currentPlayer.Equals (this.gameObject)) {
+			Invoke ("callMakeNewBall", 0.1f);
+			possessedBall.gameObject.AddComponent<ballDestroy>();
+			possessedBall.playerColor = -1;
+		}
 
 		possessedBall.ballThrown ();
 	}
@@ -216,6 +220,10 @@ public class PlayerController : MonoBehaviour {
 //		possession = false;
 		justHit = true;
 		stunPlayer ();
+	}
+
+	void callMakeNewBall() {
+		unlimitedBallPowerUp.access.makeNewBall ();
 	}
 }
 
