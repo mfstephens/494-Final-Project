@@ -24,7 +24,13 @@ public class PlayerAim : MonoBehaviour {
 	public Collider hitObject { get { return _hitObject; } }
 
 	void Start () {
-		playerController = GameObject.Find ("Player1").GetComponent<PlayerController> ();
+		if (gameObject.name == "Guide1") {
+			playerController = GameObject.Find ("Player1").GetComponent<PlayerController> ();
+		} else if (gameObject.name == "Guide2") {
+			playerController = GameObject.Find ("Player2").GetComponent<PlayerController> ();
+		} else if (gameObject.name == "Guide3") {
+			playerController = GameObject.Find ("Player3").GetComponent<PlayerController> ();
+		}
 		sightLine = gameObject.GetComponent<LineRenderer> ();
 	}
 

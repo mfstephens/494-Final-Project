@@ -39,20 +39,24 @@ public class PlayerController : MonoBehaviour {
 		playerControl = InputManager.ActiveDevice;
 		playerMovement = GetComponent<PlayerMove> ();
 
-		playerAim = GameObject.Find ("Guide").GetComponent<PlayerAim> ();
 
 		if (name == "Player1") {
 			playerControl = InputManager.Devices [0];
+			playerAim = GameObject.Find ("Guide1").GetComponent<PlayerAim> ();
 			playerNumber = 1;
 		}
 		if (name == "Player2") {
 			playerControl = InputManager.Devices [1];
+			playerAim = GameObject.Find ("Guide2").GetComponent<PlayerAim> ();
 			playerNumber = 2;
 		}
 		if (name == "Player3") {
 			playerControl = InputManager.Devices [2];
+			playerAim = GameObject.Find ("Guide3").GetComponent<PlayerAim> ();
 			playerNumber = 3;
 		}
+
+
 
 		playerColor = this.renderer.material.color;
 
