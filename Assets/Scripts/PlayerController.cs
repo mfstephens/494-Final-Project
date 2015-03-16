@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using InControl;
 
@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour {
 
 	private float totalRotation = 0;
 	private float timeHit;
+	private float initialFlickDownTime;
 	private int playerNumber;
 
 	private bool jump = false;
@@ -20,6 +21,8 @@ public class PlayerController : MonoBehaviour {
 	private bool playerStunned = false;
 	private bool barrelRoll = false;
 	private bool justThrown = false;
+	private bool lockPosition = false;
+	private bool dropThroughPlatform = false;
 
 	private InputDevice playerControl;
 	private PlayerMove playerMovement;
@@ -34,6 +37,7 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 		playerControl = InputManager.ActiveDevice;
 		playerMovement = GetComponent<PlayerMove> ();
+
 		if (name == "Player1") {
 			playerControl = InputManager.Devices [0];
 			playerNumber = 1;
@@ -56,9 +60,14 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		float horizontalMovement = playerControl.LeftStickX;
+		float verticalMovement = playerControl.LeftStickY;
 
-		if (Vector3.Distance (possessedBall.transform.position, this.transform.position) > 15f) {
-			justThrown = false;
+		//Prevents player from sucking up ball that was just thrown
+		if (possessedBall != null) {
+			if (Vector3.Distance (possessedBall.transform.position, this.transform.position) > 15f) {
+				justThrown = false;
+			}
 		}
 
 		//Perform a 360 degree flip if player is not on ground
@@ -89,38 +98,38 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 
-		//Turn on or off the halo to indicate if ball can be picked up
-//		if (CanBallBePickedUp () && !possession) {
-//			PickUpZone.SetActive (true);
-//			PickUpBall ();
-//		}
-//		else
-//			PickUpZone.SetActive (false);
-
 		//Change Z Axis of ball when possessed to appear in front of you
 		if (possession)
 			possessedBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,5f);
 
+		//Check if player flicked down on joystick so they can drop through platform
+		if (playerMovement.isPlayerOnPlatform()) {
+			if (verticalMovement < 0 && horizontalMovement < .2 && horizontalMovement > -.2)
+				initialFlickDownTime = Time.time;
+			else if (verticalMovement == 0 && horizontalMovement == 0) {
+				if (Time.time - initialFlickDownTime <= .2) 
+					dropThroughPlatform = true;
+			}
+		}
+			
 		if (playerControl.Action1.WasPressed)
 			jump = true;
 
-		else if (playerControl.Action1.WasReleased)
-			jumpCancel = true;
-
 		else if (playerControl.Action3.WasPressed) {
-//			if (!possession && CanBallBePickedUp()) {
-//				PickUpBall ();
-//			}
-			if (possession) {
+			if (possession)
 				ThrowBall ();
-			}
 		} 
-
 		else if (playerControl.RightTrigger.WasPressed)
 			speedBoost = true;
-
 		else if (playerControl.Action4.WasPressed)
 			BarrelRoll ();
+		else if (playerControl.LeftTrigger.WasPressed)
+			lockPosition = true;
+
+		if (playerControl.Action1.WasReleased)
+			jumpCancel = true;
+		if (playerControl.LeftTrigger.WasReleased)
+			lockPosition = false;
 	}
 
 	void FixedUpdate(){
@@ -132,11 +141,12 @@ public class PlayerController : MonoBehaviour {
 		if(horizontalMovement<0 && transform.localScale.x > 0)
 			Flip();
 
-		playerMovement.Movement (horizontalMovement, verticalMovement, jump, jumpCancel,speedBoost);
+		playerMovement.Movement (horizontalMovement, verticalMovement, jump, jumpCancel,speedBoost,lockPosition,dropThroughPlatform);
 
 		jump = false;
 		jumpCancel = false;
 		speedBoost = false;
+		dropThroughPlatform = false;
 	}
 
 	void Flip(){
@@ -167,15 +177,12 @@ public class PlayerController : MonoBehaviour {
 		float closestBallDistance = Vector3.Distance (this.transform.position, closestBall.transform.position);
 
 		if (closestBall != null && closestBallDistance < 15f && closestBall.playerColor == playerNumber && !justThrown) {
-			print ("Player number: " + playerNumber);
-			print ("Player color: " + closestBall.playerColor);
 			return true;
 		}
 		return false;
 	}
 
 	public void PickUpBall(){
-		print ("attempting to pick up bal");
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 
 		closestBall.rigidbody.collider.isTrigger = true;
