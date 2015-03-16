@@ -22,7 +22,7 @@ public class PlayerMove : MonoBehaviour {
 	private bool dropThroughPlatform = false; 
 	private PlayerController playerController;
 
-	// Use this for initialization
+	// Use this for initializationx
 	void Start () {
 		playerController = this.GetComponent<PlayerController> ();
 	}
@@ -114,7 +114,6 @@ public class PlayerMove : MonoBehaviour {
 		if (playerController.BallPossessed()!= null && playerController.BallPossessed() != collision.gameObject) {
 			if(collision.gameObject.CompareTag("Ball")){
 				if(!collision.gameObject.GetComponent<Ball>().thrownByPlayer(name)){
-					print (collision.gameObject.rigidbody.velocity);
 //					BallContainer.BallContainerSingleton.destroyBall(playerController.BallPossessed());
 					playerController.HitByBall();
 				}

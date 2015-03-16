@@ -26,9 +26,10 @@ public class PlayerController : MonoBehaviour {
 
 	private InputDevice playerControl;
 	private PlayerMove playerMovement;
-	private Ball possessedBall;
-	private GameObject PickUpZone;
 
+	public Ball possessedBall = null;
+	private PlayerAim playerAim;
+	
 	private Color playerColor;
 	public Color beginColor;
 	public Color endColor;
@@ -37,6 +38,8 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 		playerControl = InputManager.ActiveDevice;
 		playerMovement = GetComponent<PlayerMove> ();
+
+		playerAim = GameObject.Find ("Guide").GetComponent<PlayerAim> ();
 
 		if (name == "Player1") {
 			playerControl = InputManager.Devices [0];
@@ -53,8 +56,6 @@ public class PlayerController : MonoBehaviour {
 
 		playerColor = this.renderer.material.color;
 
-		PickUpZone = transform.Find ("PickUpBallZone").gameObject;
-		PickUpZone.SetActive (false);
 	}
 	
 	// Update is called once per frame
@@ -68,6 +69,9 @@ public class PlayerController : MonoBehaviour {
 			if (Vector3.Distance (possessedBall.transform.position, this.transform.position) > 15f) {
 				justThrown = false;
 			}
+		}
+		if (possessedBall != null && Vector3.Distance (possessedBall.transform.position, this.transform.position) > 15f) {
+			justThrown = false;
 		}
 
 		//Perform a 360 degree flip if player is not on ground
@@ -136,12 +140,16 @@ public class PlayerController : MonoBehaviour {
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
 
+
 		if (horizontalMovement > 0 && transform.localScale.x < 0)
 			Flip ();
 		if(horizontalMovement<0 && transform.localScale.x > 0)
 			Flip();
 
 		playerMovement.Movement (horizontalMovement, verticalMovement, jump, jumpCancel,speedBoost,lockPosition,dropThroughPlatform);
+
+		Vector3 shotDirection3D = new Vector3 ( playerControl.LeftStickX,  playerControl.LeftStickY, 1f);
+		playerAim.UpdateGuidePosition (shotDirection3D);
 
 		jump = false;
 		jumpCancel = false;
@@ -174,6 +182,7 @@ public class PlayerController : MonoBehaviour {
 
 	public bool CanBallBePickedUp(){
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
+
 		float closestBallDistance = Vector3.Distance (this.transform.position, closestBall.transform.position);
 
 		if (closestBall != null && closestBallDistance < 15f && closestBall.playerColor == playerNumber && !justThrown) {
@@ -184,9 +193,7 @@ public class PlayerController : MonoBehaviour {
 
 	public void PickUpBall(){
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
-
 		closestBall.rigidbody.collider.isTrigger = true;
-		//closestBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,-5f);
 		closestBall.ballPickedUpBy(gameObject.name);
 		possession = true;
 		possessedBall = closestBall;
@@ -201,9 +208,18 @@ public class PlayerController : MonoBehaviour {
 		possession = false;
 		justThrown = true;
 		//possessedBall.transform.position += new Vector3(horizontalMovement, verticalMovement, 10);
+
+		Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
+		throwMovement.Normalize ();
 		
-		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * horizontalMovement, verticalMovement*throwSpeed);
+		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
 		possessedBall.rigidbody.collider.isTrigger = false;
+
+		if ((unlimitedBallPowerUp.access.currentPlayer != null) && unlimitedBallPowerUp.access.currentPlayer.Equals (this.gameObject)) {
+			Invoke ("callMakeNewBall", 0.1f);
+			possessedBall.gameObject.AddComponent<ballDestroy>();
+			possessedBall.playerColor = -1;
+		}
 
 		possessedBall.ballThrown ();
 	}
@@ -223,6 +239,10 @@ public class PlayerController : MonoBehaviour {
 //		possession = false;
 		justHit = true;
 		stunPlayer ();
+	}
+
+	void callMakeNewBall() {
+		unlimitedBallPowerUp.access.makeNewBall ();
 	}
 }
 
