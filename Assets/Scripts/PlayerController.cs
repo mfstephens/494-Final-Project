@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour {
 
 	private bool jump = false;
 	private bool jumpCancel = false;
-	private bool possession = false;
+	public bool possession = false;
 	private bool speedBoost = false;
 	private bool justHit = false;
 	private bool playerStunned = false;
@@ -125,9 +125,10 @@ public class PlayerController : MonoBehaviour {
 			jump = true;
 
 		else if (playerControl.Action3.WasPressed) {
-			if (possession)
+			if (possession) {
 				throwing = true;
 				ThrowBall ();
+			}
 		} 
 		else if (playerControl.RightTrigger.WasPressed)
 			speedBoost = true;
@@ -207,6 +208,7 @@ public class PlayerController : MonoBehaviour {
 
 	public void PickUpBall(){
 		if(controlBall && throwing) return;
+
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 		closestBall.rigidbody.collider.isTrigger = true;
 		closestBall.ballPickedUpBy(gameObject.name);
@@ -233,11 +235,16 @@ public class PlayerController : MonoBehaviour {
 		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
 
 		if ((unlimitedBallPowerUp.access.currentPlayer != null) && unlimitedBallPowerUp.access.currentPlayer.Equals (this.gameObject)) {
-			Invoke ("callMakeNewBall", 0.1f);
+			BallContainer.BallContainerSingleton.ballContainer.Remove(possessedBall);
 			possessedBall.gameObject.AddComponent<ballDestroy>();
-			possessedBall.playerColor = -1;
+			if (unlimitedBallPowerUp.access.numThrows == 0) {
+				BallContainer.BallContainerSingleton.ballContainer.Remove(possessedBall);
+			}
+			else {
+				unlimitedBallPowerUp.access.numThrows++;
+			}
+			Invoke ("callMakeNewBall", 0.1f);
 		}
-
 
 	}
 
@@ -261,5 +268,7 @@ public class PlayerController : MonoBehaviour {
 	void callMakeNewBall() {
 		unlimitedBallPowerUp.access.makeNewBall ();
 	}
+
+
 }
 

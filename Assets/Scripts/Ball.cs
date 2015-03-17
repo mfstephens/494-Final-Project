@@ -14,7 +14,7 @@ public class Ball : MonoBehaviour {
 	public float BallHeldDuration;
 
 	public int playerColor;
-	private Players possessedBy;
+	public Players possessedBy;
 	private Players thrownBy;
 	private TrailRenderer ballTrail;
 
@@ -42,13 +42,13 @@ public class Ball : MonoBehaviour {
 	void Update () {
 
 		//Gradually change the balls color to trigger a bomb?
-		if (possessedBy != Players.None) {
-			float percentDone = (Time.time - TimePossessed) / BallHeldDuration;
-			this.renderer.material.color = Color.Lerp (startColor, endColor, percentDone);
-		}
-		else {
+//		if (possessedBy != Players.None) {
+//			float percentDone = (Time.time - TimePossessed) / BallHeldDuration;
+//			this.renderer.material.color = Color.Lerp (startColor, endColor, percentDone);
+//		}
+//		else {
 			this.renderer.material.color = startColor;
-		}
+//		}
 	}
 
 	//Who is in control of the ball
@@ -99,6 +99,11 @@ public class Ball : MonoBehaviour {
 
 	// take away controlBall power up on a collision
 	void OnCollisionEnter(Collision other) {
+//		if (!other.gameObject.tag.Equals ("Platform") && !other.gameObject.tag.Equals ("Ground") && !other.gameObject.tag.Equals ("RightWall") && !other.gameObject.tag.Equals ("LeftWall") && (playerColor != -1)) {
+//			print ("should be returning!");
+//			findPlayerAndReturn(other);
+//		}
+
 		if (gameObject == ball1 && player1.GetComponent<PlayerController> ().controlBall == true 
 		    && player1.GetComponent<PlayerController> ().throwing == true && other.gameObject != player1){
 			player1.GetComponent<PlayerController> ().controlBall = false; 
@@ -118,6 +123,25 @@ public class Ball : MonoBehaviour {
 		         && player4.GetComponent<PlayerController> ().throwing == true && other.gameObject != player4) {
 			player4.GetComponent<PlayerController> ().controlBall = false;
 			controlBallPowerUp.GetComponent<PowerUpControlBall> ().setNoControl ();
+		}
+
+	}
+
+	public void findPlayerAndReturn() {
+		if (thrownBy == Players.Player1) {
+			this.gameObject.transform.position = player1.transform.position;
+		}
+		else if (thrownBy == Players.Player2) {
+			this.gameObject.transform.position = player2.transform.position;
+		}
+		else if (thrownBy == Players.Player3) {
+			this.gameObject.transform.position = player3.transform.position;
+		}
+		else if (thrownBy == Players.Player4) {
+			this.gameObject.transform.position = player4.transform.position;
+		}
+		else {
+			Debug.Log ("BALL NOT POSSESSED BY ANYONE");
 		}
 	}
 }
