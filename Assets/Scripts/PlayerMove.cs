@@ -20,11 +20,15 @@ public class PlayerMove : MonoBehaviour {
 	private bool isOnRightWall = false;
 	private bool isOnPlatform = false;
 	private bool dropThroughPlatform = false; 
+
 	private PlayerController playerController;
+	private PlayerHealth playerHealth;
+
 
 	// Use this for initializationx
 	void Start () {
 		playerController = this.GetComponent<PlayerController> ();
+		playerHealth = this.GetComponent<PlayerHealth> ();
 	}
 
 	void Update() {
@@ -62,8 +66,10 @@ public class PlayerMove : MonoBehaviour {
 				rigidbody.velocity = new Vector2 (rigidbody.velocity.x, jumpShortSpeed);
 		} 
 
+		//Player can use speed boost if they have enough energy
 		else if (speedBoost) {
-			StartCoroutine("SpeedBoost");
+			if(playerHealth.UseSpeedBoost())
+				StartCoroutine("SpeedBoost");
 		}
 
 
@@ -74,7 +80,8 @@ public class PlayerMove : MonoBehaviour {
 	{
 		float startSpeedBoost = Time.time;
 		while (Time.time < startSpeedBoost + speedBoostDuration) {
-			rigidbody.AddForce(transform.localScale.x*speedBoostForce,0,0);
+			//rigidbody.AddForce(transform.localScale.x*speedBoostForce,0,0);
+			rigidbody.velocity = new Vector2(transform.localScale.x * speedBoostForce,0);
 			yield return null;
 		}
 	}
@@ -148,6 +155,7 @@ public class PlayerMove : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other){
+
 		//Enable One Way Platform
 		if (other.gameObject.CompareTag ("Platform")) {
 			Collider parentCollider = other.gameObject.transform.parent.gameObject.collider;

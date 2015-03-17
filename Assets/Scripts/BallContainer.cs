@@ -19,11 +19,6 @@ public class BallContainer : MonoBehaviour {
 		instantiateBallForPlayerAtPosition (2,new Vector3(243f,31f,5f));
 		instantiateBallForPlayerAtPosition (3, new Vector3 (200f, 31f, 5f));
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 
 	//Instantiates a ball that corresponds to a player (their color) at a position
 	void instantiateBallForPlayerAtPosition(int i,Vector3 position){

@@ -12,6 +12,11 @@ public class PlayerController : MonoBehaviour {
 	private float timeHit;
 	private float initialFlickDownTime;
 	private int playerNumber;
+	
+	public bool controlBall = false;
+	public bool throwing = false;
+	public bool timeSlowPowerUp = false;
+	public float timeScale = 1f;
 
 	private bool jump = false;
 	private bool jumpCancel = false;
@@ -24,8 +29,9 @@ public class PlayerController : MonoBehaviour {
 	private bool lockPosition = false;
 	private bool dropThroughPlatform = false;
 
-	private InputDevice playerControl;
+	public InputDevice playerControl;
 	private PlayerMove playerMovement;
+	private PlayerHealth playerHealth;
 
 	public Ball possessedBall = null;
 	private PlayerAim playerAim;
@@ -38,7 +44,7 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 		playerControl = InputManager.ActiveDevice;
 		playerMovement = GetComponent<PlayerMove> ();
-
+		playerHealth = GetComponent<PlayerHealth> ();
 
 		if (name == "Player1") {
 			playerControl = InputManager.Devices [0];
@@ -55,8 +61,11 @@ public class PlayerController : MonoBehaviour {
 			playerAim = GameObject.Find ("Guide3").GetComponent<PlayerAim> ();
 			playerNumber = 3;
 		}
-
-
+		if (name == "Player4") {
+			playerControl = InputManager.Devices[3];
+			playerAim = GameObject.Find ("Guide4").GetComponent<PlayerAim>();
+			playerNumber = 4;
+		}
 
 		playerColor = this.renderer.material.color;
 
@@ -115,8 +124,9 @@ public class PlayerController : MonoBehaviour {
 			if (verticalMovement < 0 && horizontalMovement < .2 && horizontalMovement > -.2)
 				initialFlickDownTime = Time.time;
 			else if (verticalMovement == 0 && horizontalMovement == 0) {
-				if (Time.time - initialFlickDownTime <= .2) 
+				if (Time.time - initialFlickDownTime <= .2){ 
 					dropThroughPlatform = true;
+				}
 			}
 		}
 			
@@ -125,6 +135,7 @@ public class PlayerController : MonoBehaviour {
 
 		else if (playerControl.Action3.WasPressed) {
 			if (possession)
+				throwing = true;
 				ThrowBall ();
 		} 
 		else if (playerControl.RightTrigger.WasPressed)
@@ -144,6 +155,11 @@ public class PlayerController : MonoBehaviour {
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
 
+		// has controlBall power up
+		if(controlBall && throwing){
+			possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * horizontalMovement/1.8f, verticalMovement*throwSpeed/1.8f);
+			return;
+		}
 
 		if (horizontalMovement > 0 && transform.localScale.x < 0)
 			Flip ();
@@ -196,6 +212,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void PickUpBall(){
+		if(controlBall && throwing) return;
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 		closestBall.rigidbody.collider.isTrigger = true;
 		closestBall.ballPickedUpBy(gameObject.name);
@@ -215,17 +232,17 @@ public class PlayerController : MonoBehaviour {
 
 		Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
 		throwMovement.Normalize ();
-		
-		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
+
 		possessedBall.rigidbody.collider.isTrigger = false;
+		possessedBall.ballThrown ();
+		if (controlBall) return;
+		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
 
 		if ((unlimitedBallPowerUp.access.currentPlayer != null) && unlimitedBallPowerUp.access.currentPlayer.Equals (this.gameObject)) {
 			Invoke ("callMakeNewBall", 0.1f);
 			possessedBall.gameObject.AddComponent<ballDestroy>();
 			possessedBall.playerColor = -1;
 		}
-
-		possessedBall.ballThrown ();
 	}
 
 	void BarrelRoll(){
@@ -241,6 +258,7 @@ public class PlayerController : MonoBehaviour {
 	public void HitByBall(){
 //		possessedBall = null;
 //		possession = false;
+		playerHealth.HitByEnemyBall ();
 		justHit = true;
 		stunPlayer ();
 	}
