@@ -35,8 +35,13 @@ public class PlayerMove : MonoBehaviour {
 	public void Movement(float moveX, float moveY, bool jump, bool cancelJump, bool speedBoost,bool lockPosition,bool drop){
 
 		//Player must stand still while in lock position
-		if (lockPosition)
+		if (lockPosition) {
+			Vector3 temp = rigidbody.velocity;
+			temp.x = 0;
+			rigidbody.velocity = temp;
 			return;
+		}
+
 
 		//OnCollisionStay will read this and drop through the platform
 		dropThroughPlatform = drop;

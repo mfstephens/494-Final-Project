@@ -133,13 +133,19 @@ public class PlayerController : MonoBehaviour {
 			speedBoost = true;
 		else if (playerControl.Action4.WasPressed)
 			BarrelRoll ();
-		else if (playerControl.LeftTrigger.WasPressed)
+
+		if (playerControl.LeftTrigger.IsPressed) {
+			Vector3 shotDirection3D = new Vector3 ( playerControl.LeftStickX,  playerControl.LeftStickY, 1f);
+			playerAim.UpdateGuidePosition (shotDirection3D);
 			lockPosition = true;
+		}
 
 		if (playerControl.Action1.WasReleased)
 			jumpCancel = true;
-		if (playerControl.LeftTrigger.WasReleased)
+		if (playerControl.LeftTrigger.WasReleased) {
 			lockPosition = false;
+			playerAim.RemoveGuide();
+		}
 	}
 
 	void FixedUpdate(){
@@ -158,9 +164,6 @@ public class PlayerController : MonoBehaviour {
 			Flip();
 
 		playerMovement.Movement (horizontalMovement, verticalMovement, jump, jumpCancel,speedBoost,lockPosition,dropThroughPlatform);
-
-		Vector3 shotDirection3D = new Vector3 ( playerControl.LeftStickX,  playerControl.LeftStickY, 1f);
-		playerAim.UpdateGuidePosition (shotDirection3D);
 
 		jump = false;
 		jumpCancel = false;
@@ -203,7 +206,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void PickUpBall(){
-		if(controlBall && throwing) return false;
+		if(controlBall && throwing) return;
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 		closestBall.rigidbody.collider.isTrigger = true;
 		closestBall.ballPickedUpBy(gameObject.name);
