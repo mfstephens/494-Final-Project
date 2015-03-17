@@ -30,6 +30,8 @@ public class PlayerAim : MonoBehaviour {
 			playerController = GameObject.Find ("Player2").GetComponent<PlayerController> ();
 		} else if (gameObject.name == "Guide3") {
 			playerController = GameObject.Find ("Player3").GetComponent<PlayerController> ();
+		} else if (gameObject.name == "Guide4") {
+			playerController = GameObject.Find ("Player4").GetComponent<PlayerController> ();
 		}
 		sightLine = gameObject.GetComponent<LineRenderer> ();
 	}
@@ -40,15 +42,12 @@ public class PlayerAim : MonoBehaviour {
 		simulatePath (pos);
 	}
 
-	void FixedUpdate () {
-	
-	}
-
 	/// <summary>
 	/// Simulate the path of a launched ball.
 	/// Slight errors are inherent in the numerical method used.
 	/// </summary>
 	void simulatePath(Vector3 direction) {
+		sightLine.enabled = true;
 		Vector3[] segments = new Vector3[segmentCount];
 		
 		// The first line point is wherever the player's cannon, etc is
@@ -109,5 +108,9 @@ public class PlayerAim : MonoBehaviour {
 		for (int i = 0; i < segmentCount; i++) {
 			sightLine.SetPosition(i, segments[i]);
 		}
+	}
+
+	public void RemoveGuide () {
+		sightLine.enabled = false;
 	}
 }

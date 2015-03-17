@@ -11,6 +11,9 @@ public class PlayerMove : MonoBehaviour {
 	public float speedBoostForce;
 	public float speedBoostDuration;
 	public float forcePadForce;
+	public int playerColor;
+	public int hitSpeed;
+
 
 	private bool inForcePad = false;
 	private bool barrelRoll = false;
@@ -39,8 +42,13 @@ public class PlayerMove : MonoBehaviour {
 	public void Movement(float moveX, float moveY, bool jump, bool cancelJump, bool speedBoost,bool lockPosition,bool drop){
 
 		//Player must stand still while in lock position
-		if (lockPosition)
+		if (lockPosition) {
+			Vector3 temp = rigidbody.velocity;
+			temp.x = 0;
+			rigidbody.velocity = temp;
 			return;
+		}
+
 
 		//OnCollisionStay will read this and drop through the platform
 		dropThroughPlatform = drop;
@@ -69,7 +77,8 @@ public class PlayerMove : MonoBehaviour {
 		//Player can use speed boost if they have enough energy
 		else if (speedBoost) {
 			if(playerHealth.UseSpeedBoost())
-				StartCoroutine("SpeedBoost");
+				print ("Speed Boost");
+				//StartCoroutine("SpeedBoost");
 		}
 
 
@@ -117,15 +126,30 @@ public class PlayerMove : MonoBehaviour {
 			isOnRightWall = true;
 		}
 
-		//If Hit by ball that is not in your possession
-		if (playerController.BallPossessed()!= null && playerController.BallPossessed() != collision.gameObject) {
-			if(collision.gameObject.CompareTag("Ball")){
-				if(!collision.gameObject.GetComponent<Ball>().thrownByPlayer(name)){
-//					BallContainer.BallContainerSingleton.destroyBall(playerController.BallPossessed());
-					playerController.HitByBall();
+		if(collision.gameObject.CompareTag("Ball")){
+			// to handle the unlimited ball power up
+//			if ((collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (unlimitedBallPowerUp.access.currentPlayer != null) && (unlimitedBallPowerUp.access.currentPlayer = this.gameObject)) {
+//				return;
+//			}
+			print ("y vel" + Mathf.Abs(collision.rigidbody.velocity.y));
+			if((!playerController.isPlayerBlinking() &&  collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (collision.relativeVelocity.magnitude > hitSpeed)){
+				playerController.HitByBall();
+				//TODO:fix disssssss
+				if (collision.gameObject.GetComponent<Ball>().playerColor != -1)  {
+					collision.gameObject.GetComponent<Ball>().findPlayerAndReturn();
 				}
 			}
 		}
+
+//		//If Hit by ball that is not in your possession
+//		if (playerController.BallPossessed()!= null && playerController.BallPossessed() != collision.gameObject) {
+//			if(collision.gameObject.CompareTag("Ball")){
+//				if(!collision.gameObject.GetComponent<Ball>().thrownByPlayer(name)){
+////					BallContainer.BallContainerSingleton.destroyBall(playerController.BallPossessed());
+//					playerController.HitByBall();
+//				}
+//			}
+//		}
 	}
 
 	void OnCollisionStay (Collision collision){

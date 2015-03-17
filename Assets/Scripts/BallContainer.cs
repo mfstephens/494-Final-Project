@@ -10,6 +10,7 @@ public class BallContainer : MonoBehaviour {
 	public Ball player1Ball;
 	public Ball player2Ball;
 	public Ball player3Ball;
+	public Ball player4Ball;
 
 	// Use this for initialization
 	void Start () {
@@ -18,6 +19,7 @@ public class BallContainer : MonoBehaviour {
 		instantiateBallForPlayerAtPosition (1,new Vector3(2f,29f,5f));
 		instantiateBallForPlayerAtPosition (2,new Vector3(243f,31f,5f));
 		instantiateBallForPlayerAtPosition (3, new Vector3 (200f, 31f, 5f));
+		instantiateBallForPlayerAtPosition (4, new Vector3 (202f, 31f, 5f));
 	}
 
 	//Instantiates a ball that corresponds to a player (their color) at a position
@@ -35,6 +37,11 @@ public class BallContainer : MonoBehaviour {
 		if (i == 3) {
 			Ball newBall=Instantiate (player3Ball, position, Quaternion.identity) as Ball;
 			newBall.playerColor = 3;
+			ballContainer.Add (newBall);
+		}
+		if (i == 4) {
+			Ball newBall=Instantiate (player4Ball, position, Quaternion.identity) as Ball;
+			newBall.playerColor = 4;
 			ballContainer.Add (newBall);
 		}
 	}

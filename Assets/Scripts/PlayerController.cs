@@ -20,12 +20,12 @@ public class PlayerController : MonoBehaviour {
 
 	private bool jump = false;
 	private bool jumpCancel = false;
-	private bool possession = false;
+	public bool possession = false;
 	private bool speedBoost = false;
 	private bool justHit = false;
 	private bool playerStunned = false;
 	private bool barrelRoll = false;
-	private bool justThrown = false;
+	public bool justThrown = false;
 	private bool lockPosition = false;
 	private bool dropThroughPlatform = false;
 
@@ -134,21 +134,28 @@ public class PlayerController : MonoBehaviour {
 			jump = true;
 
 		else if (playerControl.Action3.WasPressed) {
-			if (possession)
+			if (possession) {
 				throwing = true;
 				ThrowBall ();
+			}
 		} 
 		else if (playerControl.RightTrigger.WasPressed)
 			speedBoost = true;
 		else if (playerControl.Action4.WasPressed)
 			BarrelRoll ();
-		else if (playerControl.LeftTrigger.WasPressed)
+
+		if (playerControl.LeftTrigger.IsPressed && possession) {
+			Vector3 shotDirection3D = new Vector3 ( playerControl.LeftStickX,  playerControl.LeftStickY, 1f);
+			playerAim.UpdateGuidePosition (shotDirection3D);
 			lockPosition = true;
+		}
 
 		if (playerControl.Action1.WasReleased)
 			jumpCancel = true;
-		if (playerControl.LeftTrigger.WasReleased)
+		if (playerControl.LeftTrigger.WasReleased) {
 			lockPosition = false;
+			playerAim.RemoveGuide();
+		}
 	}
 
 	void FixedUpdate(){
@@ -167,9 +174,6 @@ public class PlayerController : MonoBehaviour {
 			Flip();
 
 		playerMovement.Movement (horizontalMovement, verticalMovement, jump, jumpCancel,speedBoost,lockPosition,dropThroughPlatform);
-
-		Vector3 shotDirection3D = new Vector3 ( playerControl.LeftStickX,  playerControl.LeftStickY, 1f);
-		playerAim.UpdateGuidePosition (shotDirection3D);
 
 		jump = false;
 		jumpCancel = false;
@@ -201,9 +205,13 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public bool CanBallBePickedUp(){
+
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 
 		float closestBallDistance = Vector3.Distance (this.transform.position, closestBall.transform.position);
+
+		print (closestBall.playerColor);
+		print (justThrown);
 
 		if (closestBall != null && closestBallDistance < 15f && closestBall.playerColor == playerNumber && !justThrown) {
 			return true;
@@ -212,12 +220,14 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void PickUpBall(){
-		if(controlBall && throwing) return;
+		print ("INSIDE PICK UP BALL");
+		//if(controlBall && throwing) return;
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 		closestBall.rigidbody.collider.isTrigger = true;
 		closestBall.ballPickedUpBy(gameObject.name);
 		possession = true;
 		possessedBall = closestBall;
+		print ("exited pick up ball");
 	}
 
 	//Throw ball in direction of left stick
@@ -239,9 +249,15 @@ public class PlayerController : MonoBehaviour {
 		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
 
 		if ((unlimitedBallPowerUp.access.currentPlayer != null) && unlimitedBallPowerUp.access.currentPlayer.Equals (this.gameObject)) {
-			Invoke ("callMakeNewBall", 0.1f);
+			//BallContainer.BallContainerSingleton.ballContainer.Remove(possessedBall);
 			possessedBall.gameObject.AddComponent<ballDestroy>();
-			possessedBall.playerColor = -1;
+			if (unlimitedBallPowerUp.access.numThrows == 0) {
+				BallContainer.BallContainerSingleton.ballContainer.Remove(possessedBall);
+			}
+			else {
+				unlimitedBallPowerUp.access.numThrows++;
+			}
+			Invoke ("callMakeNewBall", 0.1f);
 		}
 	}
 
@@ -260,11 +276,20 @@ public class PlayerController : MonoBehaviour {
 //		possession = false;
 		playerHealth.HitByEnemyBall ();
 		justHit = true;
+		if (playerHealth.getCurrentLife() == 0)
+			Destroy (this.gameObject);
 		stunPlayer ();
 	}
 
 	void callMakeNewBall() {
 		unlimitedBallPowerUp.access.makeNewBall ();
 	}
+
+	//Returns whether the player is blinking meaning they were just hit and invulnerable
+	public bool isPlayerBlinking(){
+		return justHit;
+	}
+
+
 }
 
