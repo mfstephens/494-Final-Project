@@ -76,9 +76,9 @@ public class PlayerMove : MonoBehaviour {
 
 		//Player can use speed boost if they have enough energy
 		else if (speedBoost) {
+			print("Speed Boost");
 			if(playerHealth.UseSpeedBoost())
-				print ("Speed Boost");
-				//StartCoroutine("SpeedBoost");
+				StartCoroutine("SpeedBoost");
 		}
 
 
@@ -88,6 +88,7 @@ public class PlayerMove : MonoBehaviour {
 	IEnumerator SpeedBoost()
 	{
 		float startSpeedBoost = Time.time;
+		print ("Speed Boost");
 		while (Time.time < startSpeedBoost + speedBoostDuration) {
 			//rigidbody.AddForce(transform.localScale.x*speedBoostForce,0,0);
 			rigidbody.velocity = new Vector2(transform.localScale.x * speedBoostForce,0);

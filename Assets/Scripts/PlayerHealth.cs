@@ -11,7 +11,6 @@ public class PlayerHealth : MonoBehaviour {
 	public float refillSpeed;
 
 	private int startingEnergy = 100;
-	private bool isDead = false;
 	private int currentLife;
 	private Color startColor;
 
@@ -48,6 +47,7 @@ public class PlayerHealth : MonoBehaviour {
 			energySlider.value-=25;
 			return true;
 		}
+		print ("Return false from speed boost");
 		return false;
 	}
 

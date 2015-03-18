@@ -51,16 +51,19 @@ public class PlayerController : MonoBehaviour {
 			playerAim = GameObject.Find ("Guide1").GetComponent<PlayerAim> ();
 			playerNumber = 1;
 		}
+
 		if (name == "Player2") {
 			playerControl = InputManager.Devices [1];
 			playerAim = GameObject.Find ("Guide2").GetComponent<PlayerAim> ();
 			playerNumber = 2;
 		}
+
 		if (name == "Player3") {
 			playerControl = InputManager.Devices [2];
 			playerAim = GameObject.Find ("Guide3").GetComponent<PlayerAim> ();
 			playerNumber = 3;
 		}
+
 		if (name == "Player4") {
 			playerControl = InputManager.Devices[3];
 			playerAim = GameObject.Find ("Guide4").GetComponent<PlayerAim>();
@@ -132,15 +135,16 @@ public class PlayerController : MonoBehaviour {
 			
 		if (playerControl.Action1.WasPressed)
 			jump = true;
-
 		else if (playerControl.Action3.WasPressed) {
 			if (possession) {
 				throwing = true;
 				ThrowBall ();
 			}
 		} 
-		else if (playerControl.RightTrigger.WasPressed)
+		else if (playerControl.RightTrigger.WasPressed) {
+			print ("Right Trigger Pressed");
 			speedBoost = true;
+		}
 		else if (playerControl.Action4.WasPressed)
 			BarrelRoll ();
 
@@ -207,11 +211,7 @@ public class PlayerController : MonoBehaviour {
 	public bool CanBallBePickedUp(){
 
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
-
 		float closestBallDistance = Vector3.Distance (this.transform.position, closestBall.transform.position);
-
-		print (closestBall.playerColor);
-		print (justThrown);
 
 		if (closestBall != null && closestBallDistance < 15f && closestBall.playerColor == playerNumber && !justThrown) {
 			return true;
@@ -220,14 +220,12 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void PickUpBall(){
-		print ("INSIDE PICK UP BALL");
 		//if(controlBall && throwing) return;
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 		closestBall.rigidbody.collider.isTrigger = true;
 		closestBall.ballPickedUpBy(gameObject.name);
 		possession = true;
 		possessedBall = closestBall;
-		print ("exited pick up ball");
 	}
 
 	//Throw ball in direction of left stick
