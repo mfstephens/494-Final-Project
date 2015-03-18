@@ -173,7 +173,7 @@ public class PlayerController : MonoBehaviour {
 		float verticalMovement = playerControl.LeftStickY;
 
 		// has controlBall power up
-		if(controlBall && throwing){
+		if(controlBall){
 			possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * horizontalMovement/1.8f, verticalMovement*throwSpeed/1.8f);
 			return;
 		}
@@ -226,7 +226,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void PickUpBall(){
-		if(controlBall && throwing) return;
+		if(controlBall) return;
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 		closestBall.rigidbody.collider.isTrigger = true;
 		closestBall.ballPickedUpBy(gameObject.name);

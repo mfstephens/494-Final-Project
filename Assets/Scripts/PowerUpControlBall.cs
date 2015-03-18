@@ -28,15 +28,8 @@ public class PowerUpControlBall : MonoBehaviour {
 			if(currentController.playerControl.Action2.WasPressed){
 				currentController.controlBall = true;
 			}
-			if(currentController.controlBall && currentController.throwing 
-			   && (currentController.playerControl.Action1.WasPressed ||
-			   currentController.playerControl.Action2.WasPressed ||
-			   currentController.playerControl.Action3.WasPressed ||
-			   currentController.playerControl.Action4.WasPressed)){
-				setNoControl();
-				return;
-			}
-			if(!started && currentController.throwing && currentController.controlBall){
+
+			if(!started && currentController.controlBall){
 				startTime = Time.time;
 				started = true;
 			}
