@@ -14,7 +14,9 @@ public class PlayerController : MonoBehaviour {
 	private int playerNumber;
 	
 	public bool controlBall = false;
-	public bool throwing = false;
+	public bool throwing = false; 	//used and set by ball and powerupcontrolball. throwing is
+									// true when the player is activley using the powerup. 
+									// throwing has no relevance to actual throwing
 	public bool timeSlowPowerUp = false;
 	public float timeScale = 1f;
 
@@ -45,26 +47,30 @@ public class PlayerController : MonoBehaviour {
 		playerControl = InputManager.ActiveDevice;
 		playerMovement = GetComponent<PlayerMove> ();
 		playerHealth = GetComponent<PlayerHealth> ();
-
+		int temp = InputManager.Devices.Count;
 		if (name == "Player1") {
+			if(temp < 1) return;
 			playerControl = InputManager.Devices [0];
 			playerAim = GameObject.Find ("Guide1").GetComponent<PlayerAim> ();
 			playerNumber = 1;
 		}
 
 		if (name == "Player2") {
+			if(temp < 2) return;
 			playerControl = InputManager.Devices [1];
 			playerAim = GameObject.Find ("Guide2").GetComponent<PlayerAim> ();
 			playerNumber = 2;
 		}
 
 		if (name == "Player3") {
+			if(temp < 3) return;
 			playerControl = InputManager.Devices [2];
 			playerAim = GameObject.Find ("Guide3").GetComponent<PlayerAim> ();
 			playerNumber = 3;
 		}
 
 		if (name == "Player4") {
+			if(temp < 4) return;
 			playerControl = InputManager.Devices[3];
 			playerAim = GameObject.Find ("Guide4").GetComponent<PlayerAim>();
 			playerNumber = 4;
@@ -220,7 +226,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void PickUpBall(){
-		//if(controlBall && throwing) return;
+		if(controlBall && throwing) return;
 		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
 		closestBall.rigidbody.collider.isTrigger = true;
 		closestBall.ballPickedUpBy(gameObject.name);

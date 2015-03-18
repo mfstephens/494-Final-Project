@@ -1,10 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+
 public class PowerUpControlBall : MonoBehaviour {
 	Color originalColor;
-	public GameObject currentPlayer, player1Ball, player2Ball, player3Ball, player4Ball;
+	public GameObject currentPlayer;
+	PlayerController currentController;
+	bool started = false;
+	float startTime, duration;
 	GameObject player1, player2, player3, player4;
+
 
 	// Use this for initialization
 	void Start () {
@@ -13,47 +18,67 @@ public class PowerUpControlBall : MonoBehaviour {
 		player2 = GameObject.Find ("Player2");
 		player3 = GameObject.Find ("Player3");
 		player4 = GameObject.Find ("Player4");
-		player1Ball = GameObject.Find ("Player1Ball(Clone)");
-		player2Ball = GameObject.Find ("Player2Ball(Clone)");
-		player3Ball = GameObject.Find ("Player3Ball(Clone)");
-		player4Ball = GameObject.Find ("Player4Ball(Clone)");
+		duration = 3f;
 		originalColor = renderer.material.color;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(currentPlayer != null){
-			if(currentPlayer.GetComponent<PlayerController>().playerControl.Action2.WasPressed){
-				currentPlayer.GetComponent<PlayerController>().controlBall = true;
+			if(currentController.playerControl.Action2.WasPressed){
+				currentController.controlBall = true;
 			}
+			if(currentController.controlBall && currentController.throwing 
+			   && (currentController.playerControl.Action1.WasPressed ||
+			   currentController.playerControl.Action2.WasPressed ||
+			   currentController.playerControl.Action3.WasPressed ||
+			   currentController.playerControl.Action4.WasPressed)){
+				setNoControl();
+				return;
+			}
+			if(!started && currentController.throwing && currentController.controlBall){
+				startTime = Time.time;
+				started = true;
+			}
+			if(started && ((startTime + duration) < Time.time)) setNoControl();
 		}
 	}
+
+	//Player controller calls this after time runs out on powerup. 
 	public void setNoControl(){
+		currentController.throwing = false;
+		currentController.controlBall = false;
+		started = false;
 		currentPlayer = null;
 		renderer.material.color = originalColor;
-
 	}
-	void OnCollisionEnter(Collision other){
-		if (other.gameObject == player1Ball) {
-			if(currentPlayer != null && currentPlayer != player1) currentPlayer.GetComponent<PlayerController>().controlBall = false;
-			currentPlayer = player1;
-			renderer.material.color = player1Ball.renderer.material.color;
+
+	void OnTriggerEnter(Collider other){
+		if(other.tag != "Ball") return;
+		if (gameObject.renderer.material.color == other.gameObject.renderer.material.color) return;
+		if(currentPlayer!= null) currentPlayer.GetComponent<PlayerController>().controlBall = false;
+		renderer.material.color = other.gameObject.renderer.material.color;
+		if("Player1Ball(Clone)" == other.name) {
+			currentPlayer = player1; 
+			currentController = currentPlayer.GetComponent<PlayerController>();
+			currentController.controlBall = false;
+			currentController.throwing = false;
 		}
-		else if(other.gameObject == player2Ball){
-			if(currentPlayer != null && currentPlayer != player2) currentPlayer.GetComponent<PlayerController>().controlBall = false;
+		else if("Player2Ball(Clone)" == other.name) {
 			currentPlayer = player2;
-			renderer.material.color = player2Ball.renderer.material.color;
+			currentController = currentPlayer.GetComponent<PlayerController>();
+			currentController.controlBall = false;
+			currentController.throwing = false;
 		}
-		else if(other.gameObject == player3Ball){
-			if(currentPlayer != null && currentPlayer != player3) currentPlayer.GetComponent<PlayerController>().controlBall = false;
-			currentPlayer = player3;
-			renderer.material.color = player3Ball.renderer.material.color;
+		else if("Player3Ball(Clone)" == other.name) {currentPlayer = player3; 
+			currentController = currentPlayer.GetComponent<PlayerController>();
+			currentController.controlBall = false;
+			currentController.throwing = false;
 		}
-		else if(other.gameObject == player4Ball){
-			if(currentPlayer != null && currentPlayer != player4) currentPlayer.GetComponent<PlayerController>().controlBall = false;
-			currentPlayer = player4;
-			renderer.material.color = player4Ball.renderer.material.color;
+		else if("Player4Ball(Clone)" == other.name) {currentPlayer = player4; 
+			currentController = currentPlayer.GetComponent<PlayerController>();
+			currentController.controlBall = false;
+			currentController.throwing = false;
 		}
 	}
-
 }
