@@ -86,8 +86,7 @@ public class unlimitedBallPowerUp : MonoBehaviour {
 		}
 
 		Ball newBall = Instantiate (currentPre, currentPlayer.transform.position, Quaternion.identity) as Ball;
-		BallContainer.BallContainerSingleton.ballContainer.Add(newBall);
-		print ("got past here");
+		newBall.setBallType (BallType.InfinitePowerup);
 	}
 
 	GameObject matchBallToPlayerAndPrefab(string ballName) {

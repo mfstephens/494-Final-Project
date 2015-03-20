@@ -16,10 +16,6 @@ public class BallContainer : MonoBehaviour {
 	void Start () {
 		BallContainerSingleton = this;
 		ballContainer = new List<Ball>();
-		instantiateBallForPlayerAtPosition (1,new Vector3(2f,29f,5f));
-		instantiateBallForPlayerAtPosition (2,new Vector3(243f,31f,5f));
-		instantiateBallForPlayerAtPosition (3, new Vector3 (200f, 31f, 5f));
-		instantiateBallForPlayerAtPosition (4, new Vector3 (202f, 31f, 5f));
 	}
 
 	//Instantiates a ball that corresponds to a player (their color) at a position

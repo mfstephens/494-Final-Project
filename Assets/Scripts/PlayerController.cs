@@ -22,7 +22,6 @@ public class PlayerController : MonoBehaviour {
 
 	private bool jump = false;
 	private bool jumpCancel = false;
-	public bool possession = false;
 	private bool speedBoost = false;
 	private bool justHit = false;
 	private bool playerStunned = false;
@@ -35,7 +34,8 @@ public class PlayerController : MonoBehaviour {
 	private PlayerMove playerMovement;
 	private PlayerHealth playerHealth;
 
-	public Ball possessedBall = null;
+	public Ball possessedBall;
+	public bool isBallPossessed = false;
 	private PlayerAim playerAim;
 	
 	private Color playerColor;
@@ -76,6 +76,10 @@ public class PlayerController : MonoBehaviour {
 			playerNumber = 4;
 		}
 
+
+		possessedBall.transform.position = this.transform.position;
+		this.rigidbody.velocity = Vector3.zero;
+		isBallPossessed = true;
 		playerColor = this.renderer.material.color;
 
 	}
@@ -87,7 +91,7 @@ public class PlayerController : MonoBehaviour {
 		float verticalMovement = playerControl.LeftStickY;
 
 		//Prevents player from sucking up ball that was just thrown
-		if (possessedBall != null) {
+		if (isBallPossessed) {
 			if (Vector3.Distance (possessedBall.transform.position, this.transform.position) > 15f) {
 				justThrown = false;
 			}
@@ -125,8 +129,9 @@ public class PlayerController : MonoBehaviour {
 		}
 
 		//Change Z Axis of ball when possessed to appear in front of you
-		if (possession)
+		if (isBallPossessed) {
 			possessedBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,5f);
+		}
 
 		//Check if player flicked down on joystick so they can drop through platform
 		if (playerMovement.isPlayerOnPlatform()) {
@@ -142,7 +147,7 @@ public class PlayerController : MonoBehaviour {
 		if (playerControl.Action1.WasPressed)
 			jump = true;
 		else if (playerControl.Action3.WasPressed) {
-			if (possession) {
+			if (isBallPossessed) {
 				throwing = true;
 				ThrowBall ();
 			}
@@ -154,7 +159,7 @@ public class PlayerController : MonoBehaviour {
 		else if (playerControl.Action4.WasPressed)
 			BarrelRoll ();
 
-		if (playerControl.LeftTrigger.IsPressed && possession) {
+		if (playerControl.LeftTrigger.IsPressed && isBallPossessed) {
 			Vector3 shotDirection3D = new Vector3 ( playerControl.LeftStickX,  playerControl.LeftStickY, 1f);
 			playerAim.UpdateGuidePosition (shotDirection3D);
 			lockPosition = true;
@@ -225,13 +230,16 @@ public class PlayerController : MonoBehaviour {
 		return false;
 	}
 
+	void OnTriggerEnter () {
+
+	}
+
 	public void PickUpBall(){
 		if(controlBall) return;
-		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
-		closestBall.rigidbody.collider.isTrigger = true;
-		closestBall.ballPickedUpBy(gameObject.name);
-		possession = true;
-		possessedBall = closestBall;
+//		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
+//		closestBall.rigidbody.collider.isTrigger = true;
+//		closestBall.ballPickedUpBy(gameObject.name);
+//		isBallPossessed = true;
 	}
 
 	//Throw ball in direction of left stick
@@ -240,7 +248,7 @@ public class PlayerController : MonoBehaviour {
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
 
-		possession = false;
+		isBallPossessed = false;
 		justThrown = true;
 		//possessedBall.transform.position += new Vector3(horizontalMovement, verticalMovement, 10);
 
@@ -253,8 +261,6 @@ public class PlayerController : MonoBehaviour {
 		possessedBall.rigidbody.velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
 
 		if ((unlimitedBallPowerUp.access.currentPlayer != null) && unlimitedBallPowerUp.access.currentPlayer.Equals (this.gameObject)) {
-			//BallContainer.BallContainerSingleton.ballContainer.Remove(possessedBall);
-			possessedBall.gameObject.AddComponent<ballDestroy>();
 			if (unlimitedBallPowerUp.access.numThrows == 0) {
 				BallContainer.BallContainerSingleton.ballContainer.Remove(possessedBall);
 			}
@@ -267,11 +273,6 @@ public class PlayerController : MonoBehaviour {
 
 	void BarrelRoll(){
 		barrelRoll = true;
-	}
-
-	//returns the ball in possession of (could be null)
-	public Ball BallPossessed(){
-		return possessedBall;
 	}
 
 	//React to getting hit by a ball

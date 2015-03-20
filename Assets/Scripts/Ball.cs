@@ -9,6 +9,11 @@ public enum Players{
 	None
 }
 
+public enum BallType {
+	Standard,
+	InfinitePowerup
+}
+
 public class Ball : MonoBehaviour {
 
 	public float BallHeldDuration;
@@ -17,6 +22,9 @@ public class Ball : MonoBehaviour {
 	public Players possessedBy;
 	private Players thrownBy;
 	private TrailRenderer ballTrail;
+	private BallType ballType = BallType.Standard;
+	public float startTime;
+	public float infiniteBallDuration;
 
 	private float TimePossessed;
 	public Color startColor = Color.red;
@@ -35,6 +43,18 @@ public class Ball : MonoBehaviour {
 		controlBallPowerUp = GameObject.Find ("Power Up 1");
 
 		this.renderer.material.color = startColor;
+	}
+
+	void Update () {
+		switch (ballType) {
+		case BallType.InfinitePowerup:
+			if ((startTime + infiniteBallDuration) > Time.time) {
+				Destroy(this.gameObject);
+			}
+			break;
+		case BallType.Standard:
+			break;
+		}
 	}
 
 	//Who is in control of the ball
@@ -58,7 +78,7 @@ public class Ball : MonoBehaviour {
 	public void ballThrown(){
 		thrownBy = possessedBy;
 		possessedBy = Players.None;
-		ballTrail.enabled = true;
+//		ballTrail.enabled = true;
 	}
 
 	//Returns whether or not a ball was thrown by a player
@@ -138,6 +158,18 @@ public class Ball : MonoBehaviour {
 
 	public bool isBallOnGround(){
 		return isOnGround;
+	}
+
+	public void setBallType (BallType bt) {
+		switch (bt) {
+		case BallType.InfinitePowerup:
+			ballType = bt;
+			startTime = Time.time;
+			break;
+		case BallType.Standard:
+			ballType = BallType.Standard;
+			break;
+		}
 	}
 }
 
