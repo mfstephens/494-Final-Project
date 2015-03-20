@@ -218,30 +218,7 @@ public class PlayerController : MonoBehaviour {
 	void CancelBlink(){
 		CancelInvoke ();
 	}
-
-	public bool CanBallBePickedUp(){
-
-		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
-		float closestBallDistance = Vector3.Distance (this.transform.position, closestBall.transform.position);
-
-		if (closestBall != null && closestBallDistance < 15f && closestBall.playerColor == playerNumber && !justThrown) {
-			return true;
-		}
-		return false;
-	}
-
-	void OnTriggerEnter () {
-
-	}
-
-	public void PickUpBall(){
-		if(controlBall) return;
-//		Ball closestBall = BallContainer.BallContainerSingleton.closestBallToPosition (this.transform.position);
-//		closestBall.rigidbody.collider.isTrigger = true;
-//		closestBall.ballPickedUpBy(gameObject.name);
-//		isBallPossessed = true;
-	}
-
+	
 	//Throw ball in direction of left stick
 	void ThrowBall(){
 
@@ -269,6 +246,13 @@ public class PlayerController : MonoBehaviour {
 			}
 			Invoke ("callMakeNewBall", 0.1f);
 		}
+	}
+
+	public void PickUpBall(GameObject ball){
+		ball.transform.position = this.transform.position;
+		this.rigidbody.velocity = Vector3.zero;
+		isBallPossessed = true;
+		ball.rigidbody.collider.isTrigger = true;
 	}
 
 	void BarrelRoll(){

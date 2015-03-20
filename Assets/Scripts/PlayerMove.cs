@@ -34,11 +34,6 @@ public class PlayerMove : MonoBehaviour {
 		playerHealth = this.GetComponent<PlayerHealth> ();
 	}
 
-	void Update() {
-		if (playerController.CanBallBePickedUp())
-			playerController.PickUpBall();
-	}
-
 	public void Movement(float moveX, float moveY, bool jump, bool cancelJump, bool speedBoost,bool lockPosition,bool drop){
 
 		//Player must stand still while in lock position
@@ -132,7 +127,7 @@ public class PlayerMove : MonoBehaviour {
 //			if ((collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (unlimitedBallPowerUp.access.currentPlayer != null) && (unlimitedBallPowerUp.access.currentPlayer = this.gameObject)) {
 //				return;
 //			}
-			print ("y vel" + Mathf.Abs(collision.rigidbody.velocity.y));
+
 			if((!playerController.isPlayerBlinking() &&  collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (collision.relativeVelocity.magnitude > hitSpeed)){
 				playerController.HitByBall();
 				//TODO:fix disssssss
@@ -180,28 +175,17 @@ public class PlayerMove : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other){
-
-		//Enable One Way Platform
-		if (other.gameObject.CompareTag ("Platform")) {
-			Collider parentCollider = other.gameObject.transform.parent.gameObject.collider;
-			Physics.IgnoreCollision(parentCollider,this.gameObject.collider,true);
-
-		}
-
 		if (other.gameObject.CompareTag ("ForcePad")) {
 			this.rigidbody.velocity = forcePadForce * other.gameObject.transform.up;
 			inForcePad = true;
+		}
+		if (other.gameObject.CompareTag ("Ball")) {
+			playerController.PickUpBall(other.gameObject);
 		}
 		
 	}
 
 	void OnTriggerExit(Collider other){
-		//Disable One Way Platform
-		if (other.gameObject.CompareTag ("Platform")) {
-			Collider parentCollider = other.gameObject.transform.parent.gameObject.collider;
-			Physics.IgnoreCollision(parentCollider,this.gameObject.collider,false);
-		}
-
 		if (other.gameObject.CompareTag ("ForcePad")) {
 
 		}
