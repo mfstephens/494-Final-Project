@@ -16,7 +16,7 @@ public class PlayerTestThrow : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		vel = rigidbody.velocity;
+		vel = GetComponent<Rigidbody>().velocity;
 		if (Input.GetAxis ("Fire1") != 0f && possession){
 			ball.GetComponent<BallController> ().throwBall = true;
 			possession = false;

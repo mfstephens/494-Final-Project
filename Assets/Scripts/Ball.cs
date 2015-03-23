@@ -1,91 +1,79 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum Players{
-	Player1,
-	Player2,
-	Player3,
-	Player4,
-	None
+public enum BallType {
+	Standard,
+	InfinitePowerup
 }
 
 public class Ball : MonoBehaviour {
-
+	
 	public float BallHeldDuration;
-
+	
 	public int playerColor;
-	private Players possessedBy;
-	private Players thrownBy;
 	private TrailRenderer ballTrail;
-
+	private BallType ballType = BallType.Standard;
+	public float startTime;
+	public float infiniteBallDuration;
+	
 	private float TimePossessed;
 	public Color startColor = Color.red;
 	public Color endColor = Color.white;
-
+	public bool isOnGround = false;
+	GameObject ball1, ball2, ball3, ball4, player1, player2, player3, player4, controlBallPowerUp;
+	
 	// Use this for initialization
 	void Start () {
-		possessedBy = Players.None;
 		ballTrail = GetComponent<TrailRenderer> ();
 		ballTrail.enabled = false;
+		player1 = GameObject.Find ("Player1");
+		player2 = GameObject.Find ("Player2");
+		player3 = GameObject.Find ("Player3");
+		player4 = GameObject.Find ("Player4");
+		controlBallPowerUp = GameObject.Find ("Power Up 1");
+		
+		this.GetComponent<Renderer>().material.color = startColor;
 	}
 	
-	// Update is called once per frame
 	void Update () {
-
-		//Gradually change the balls color to trigger a bomb?
-		if (possessedBy != Players.None) {
-			float percentDone = (Time.time - TimePossessed) / BallHeldDuration;
-			this.renderer.material.color = Color.Lerp (startColor, endColor, percentDone);
+		switch (ballType) {
+		case BallType.InfinitePowerup:
+			if ((startTime + infiniteBallDuration) > Time.time) {
+				Destroy(this.gameObject);
+			}
+			break;
+		case BallType.Standard:
+			break;
+		}
+	}
+	public void findPlayerAndReturn() {
+		if (playerColor == 1) {
+			this.gameObject.transform.position = player1.transform.position;
+		}
+		else if (playerColor == 2) {
+			this.gameObject.transform.position = player2.transform.position;
+		}
+		else if (playerColor == 3) {
+			this.gameObject.transform.position = player3.transform.position;
+		}
+		else if (playerColor == 4) {
+			this.gameObject.transform.position = player4.transform.position;
 		}
 		else {
-			this.renderer.material.color = startColor;
+			Debug.Log ("BALL NOT POSSESSED BY ANYONE");
 		}
 	}
 
-	//Who is in control of the ball
-	public void ballPickedUpBy(string player){
-		if (player == "Player1")
-			possessedBy = Players.Player1;
-		else if (player == "Player2")
-			possessedBy = Players.Player2;
-		else if (player == "Player3")
-			possessedBy = Players.Player3;
-		else if (player == "Player4")
-			possessedBy = Players.Player4;
-		else {
-			Debug.LogError ("Invalid Paramter Sent To ballPickedUpBy");
+	public void setBallType (BallType bt) {
+		switch (bt) {
+		case BallType.InfinitePowerup:
+			ballType = bt;
+			startTime = Time.time;
+			break;
+		case BallType.Standard:
+			ballType = BallType.Standard;
+			break;
 		}
-		ballTrail.enabled = false;
-		TimePossessed = Time.time;
-	}
-
-	//Records who threw the ball and sets the balls possession to none
-	public void ballThrown(){
-		thrownBy = possessedBy;
-		possessedBy = Players.None;
-		ballTrail.enabled = true;
-	}
-
-	//Returns whether or not a ball was thrown by a player
-	public bool thrownByPlayer(string name){
-
-		if (name == "Player1") {
-			if (thrownBy == Players.Player1)
-				return true;
-		}
-		if (name == "Player2") {
-			if (thrownBy == Players.Player2)
-				return true;
-		}
-		if (name == "Player3"){
-			if (thrownBy ==Players.Player3)
-				return true;
-		}
-		if (name == "Player4") {
-			if (thrownBy == Players.Player4)
-				return true;
-		}
-		return false;	
 	}
 }
 
