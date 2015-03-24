@@ -48,7 +48,7 @@ using InControl;
 
 			// player carrying ball
 			if (possesion) {
-				if (ball.rigidbody.velocity == Vector3.zero) {
+				if (ball.GetComponent<Rigidbody>().velocity == Vector3.zero) {
 					ball.transform.position = this.transform.position;
 				}
 				else {
@@ -58,12 +58,12 @@ using InControl;
 		}
 
 		void controlBall() {
-			ball.rigidbody.velocity = Vector3.zero;
+			ball.GetComponent<Rigidbody>().velocity = Vector3.zero;
 			possesion = true;
 			ballScript.possessed = true;
 			ballScript.owner = this.gameObject;
-			ball.collider.isTrigger = true;
-			ball.rigidbody.useGravity = false;
+			ball.GetComponent<Collider>().isTrigger = true;
+			ball.GetComponent<Rigidbody>().useGravity = false;
 		}
 
 
@@ -81,12 +81,12 @@ using InControl;
 				ball.transform.position = this.transform.position;
 				ball.transform.position += new Vector3(ballX, ballY, this.transform.position.z);
 
-				ball.rigidbody.useGravity = true;
+				ball.GetComponent<Rigidbody>().useGravity = true;
 				ballScript.owner = null;
 				ballScript.possessed = false;
 
 				// give the ball some velocity
-				ball.rigidbody.AddForce (ballX * throwSpeed, ballY * throwSpeed, 0);
+				ball.GetComponent<Rigidbody>().AddForce (ballX * throwSpeed, ballY * throwSpeed, 0);
 			}
 		}
 
@@ -113,12 +113,12 @@ using InControl;
 			ball.transform.position = this.transform.position;
 			ball.transform.position += new Vector3(ballX, ballY, this.transform.position.z);
 			
-			ball.rigidbody.useGravity = true;
+			ball.GetComponent<Rigidbody>().useGravity = true;
 			ballScript.owner = null;
 			ballScript.possessed = false;
 			
 			// give the ball some velocity
-			ball.rigidbody.AddForce (ballX * throwSpeed, ballY * throwSpeed, 0);
+			ball.GetComponent<Rigidbody>().AddForce (ballX * throwSpeed, ballY * throwSpeed, 0);
 		}
 
 		public void randomBallVelocity(){
@@ -132,11 +132,11 @@ using InControl;
 			ball.transform.position = this.transform.position;
 			ball.transform.position += new Vector3(ballX, ballY, this.transform.position.z);
 			
-			ball.rigidbody.useGravity = true;
+			ball.GetComponent<Rigidbody>().useGravity = true;
 			ballScript.owner = null;
 			ballScript.possessed = false;
 			
-			ball.rigidbody.AddForce (throwSpeed * ballX, throwSpeed * ballY,0);
+			ball.GetComponent<Rigidbody>().AddForce (throwSpeed * ballX, throwSpeed * ballY,0);
 		}
 
 		void OnCollisionEnter(Collision other) {

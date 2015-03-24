@@ -28,10 +28,10 @@ public class ballBehavior : MonoBehaviour {
 	void Update () {
 
 		if (!colliding && !possessed) {
-			collider.isTrigger = false;
+			GetComponent<Collider>().isTrigger = false;
 		}
 
-		oldColor = this.gameObject.renderer.material.color;
+		oldColor = this.gameObject.GetComponent<Renderer>().material.color;
 
 		if (!possessed)
 			newColor = freeColor;
@@ -43,7 +43,7 @@ public class ballBehavior : MonoBehaviour {
 				newColor = teamA;
 		}
 
-		this.gameObject.renderer.material.color = newColor;
+		this.gameObject.GetComponent<Renderer>().material.color = newColor;
 		this.gameObject.GetComponent<TrailRenderer> ().material.color = newColor;
 	}
 

@@ -69,7 +69,7 @@ using System;
 			//Check if player is hitting ceiling
 			isHeadHittingCeiling = Physics.CheckSphere (ceilingCheck.position, ceilingRadius, whatIsCeiling);
 			if (isHeadHittingCeiling) {
-				this.collider.isTrigger = true;
+				this.GetComponent<Collider>().isTrigger = true;
 			}
 
 			if (playerControl.Action3.WasPressed)
@@ -102,8 +102,8 @@ using System;
 
 			if (groundPound) {
 				inGroundPound = true;
-				rigidbody.velocity=new Vector2(0,0);
-				rigidbody.useGravity=false;
+				GetComponent<Rigidbody>().velocity=new Vector2(0,0);
+				GetComponent<Rigidbody>().useGravity=false;
 				Invoke ("GroundPound",.3f);
 				return;
 			}
@@ -121,14 +121,14 @@ using System;
 
 			//Apply horizontal velocity
 			if (move != 0) {
-				rigidbody.velocity = new Vector2 (move * speed, rigidbody.velocity.y);
+				GetComponent<Rigidbody>().velocity = new Vector2 (move * speed, GetComponent<Rigidbody>().velocity.y);
 			}
 			else {
-				rigidbody.velocity = new Vector2 (0, rigidbody.velocity.y);
+				GetComponent<Rigidbody>().velocity = new Vector2 (0, GetComponent<Rigidbody>().velocity.y);
 			}
 
 			if (fallDown) {
-				rigidbody.AddForce(new Vector3(0,dropSpeed,0));
+				GetComponent<Rigidbody>().AddForce(new Vector3(0,dropSpeed,0));
 				fallDown = false;
 			}
 
@@ -136,28 +136,28 @@ using System;
 			if (jump) {
 
 				if(isOnGround){
-					rigidbody.velocity = new Vector2(rigidbody.velocity.x,jumpSpeed);
+					GetComponent<Rigidbody>().velocity = new Vector2(GetComponent<Rigidbody>().velocity.x,jumpSpeed);
 					doubleJump = true;
 				}
 				else if (doubleJump){
 					doubleJump=false;
-					rigidbody.velocity=new Vector2(rigidbody.velocity.x,0);
-					rigidbody.velocity = new Vector2(rigidbody.velocity.x,jumpSpeed);
+					GetComponent<Rigidbody>().velocity=new Vector2(GetComponent<Rigidbody>().velocity.x,0);
+					GetComponent<Rigidbody>().velocity = new Vector2(GetComponent<Rigidbody>().velocity.x,jumpSpeed);
 				}
 				jump = false;
 			}
 
 			if (jumpCancel) {
-				if(rigidbody.velocity.y > jumpShortSpeed)
-					rigidbody.velocity = new Vector2(rigidbody.velocity.x,jumpShortSpeed);
+				if(GetComponent<Rigidbody>().velocity.y > jumpShortSpeed)
+					GetComponent<Rigidbody>().velocity = new Vector2(GetComponent<Rigidbody>().velocity.x,jumpShortSpeed);
 				jumpCancel = false;
 			}
 
 		}
 
 		void GroundPound(){
-			rigidbody.useGravity = true;
-			rigidbody.velocity = new Vector2 (0, -200f);
+			GetComponent<Rigidbody>().useGravity = true;
+			GetComponent<Rigidbody>().velocity = new Vector2 (0, -200f);
 			groundPound = false;
 		}
 
@@ -244,13 +244,13 @@ using System;
 		void OnCollisionStay(Collision collision){
 
 			if (collision.gameObject.CompareTag ("LeftWall") || collision.gameObject.CompareTag("RightWall")) {
-				rigidbody.velocity=new Vector2(0,rigidbody.velocity.y);
+				GetComponent<Rigidbody>().velocity=new Vector2(0,GetComponent<Rigidbody>().velocity.y);
 			}
 
 			if (collision.gameObject.CompareTag ("Platform")) {
 				if(flickDown){
-					this.collider.isTrigger = true;
-					rigidbody.velocity=new Vector2(rigidbody.velocity.x,-100f);
+					this.GetComponent<Collider>().isTrigger = true;
+					GetComponent<Rigidbody>().velocity=new Vector2(GetComponent<Rigidbody>().velocity.x,-100f);
 				}
 			}
 
@@ -280,13 +280,13 @@ using System;
 
 		void OnTriggerEnter(Collider collider){
 		if (collider.gameObject.CompareTag ("Base"))
-			this.rigidbody.collider.isTrigger = false;
+			this.GetComponent<Rigidbody>().GetComponent<Collider>().isTrigger = false;
 
 		}
 
 		void OnTriggerExit(Collider colliderObject){
 			if (colliderObject.gameObject.CompareTag ("Platform")) {
-				this.collider.isTrigger = false;
+				this.GetComponent<Collider>().isTrigger = false;
 				flickDown = false;
 			}
 		}

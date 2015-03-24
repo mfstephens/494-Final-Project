@@ -31,7 +31,7 @@ public class MainCamera : MonoBehaviour {
 	{
 		Rect boundingBox = CalculateTargetsBoundingBox();
 		transform.position = CalculateCameraPosition(boundingBox);
-		camera.orthographicSize = CalculateOrthographicSize(boundingBox);
+		GetComponent<Camera>().orthographicSize = CalculateOrthographicSize(boundingBox);
 	}
 
 	// MARK: Camera view
@@ -56,21 +56,21 @@ public class MainCamera : MonoBehaviour {
 	Vector3 CalculateCameraPosition(Rect boundingBox) {
 		Vector2 boundingBoxCenter = boundingBox.center;
 		
-		return new Vector3(boundingBoxCenter.x, boundingBoxCenter.y, camera.transform.position.z);
+		return new Vector3(boundingBoxCenter.x, boundingBoxCenter.y, GetComponent<Camera>().transform.position.z);
 	}
 
 	float CalculateOrthographicSize(Rect boundingBox)
 	{
-		float orthographicSize = camera.orthographicSize;
+		float orthographicSize = GetComponent<Camera>().orthographicSize;
 		Vector3 topRight = new Vector3(boundingBox.x + boundingBox.width, boundingBox.y, 0f);
-		Vector3 topRightAsViewport = camera.WorldToViewportPoint(topRight);
+		Vector3 topRightAsViewport = GetComponent<Camera>().WorldToViewportPoint(topRight);
 		
 		if (topRightAsViewport.x >= topRightAsViewport.y)
-			orthographicSize = Mathf.Abs(boundingBox.width) / camera.aspect / 2f;
+			orthographicSize = Mathf.Abs(boundingBox.width) / GetComponent<Camera>().aspect / 2f;
 		else
 			orthographicSize = Mathf.Abs(boundingBox.height) / 2f;
 
 		
-		return Mathf.Clamp(Mathf.Lerp(camera.orthographicSize, orthographicSize, Time.deltaTime * zoomSpeed), minimumOrthographicSize, Mathf.Infinity);
+		return Mathf.Clamp(Mathf.Lerp(GetComponent<Camera>().orthographicSize, orthographicSize, Time.deltaTime * zoomSpeed), minimumOrthographicSize, Mathf.Infinity);
 	}
 }
