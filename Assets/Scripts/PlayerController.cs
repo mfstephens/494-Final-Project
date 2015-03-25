@@ -126,15 +126,15 @@ public class PlayerController : MonoBehaviour {
 		}
 		
 		//Check if player flicked down on joystick so they can drop through platform
-		if (playerMovement.isPlayerOnPlatform()) {
-			if (verticalMovement < -.5 && horizontalMovement < .2 && horizontalMovement > -.2)
-				initialFlickDownTime = Time.time;
-			else if (verticalMovement == 0 && horizontalMovement == 0) {
-				if (Time.time - initialFlickDownTime <= .2){ 
-					dropThroughPlatform = true;
-				}
-			}
-		}
+//		if (playerMovement.isPlayerOnPlatform()) {
+//			if (verticalMovement < -.5 && horizontalMovement < .2 && horizontalMovement > -.2)
+//				initialFlickDownTime = Time.time;
+//			else if (verticalMovement == 0 && horizontalMovement == 0) {
+//				if (Time.time - initialFlickDownTime <= .2){ 
+//					dropThroughPlatform = true;
+//				}
+//			}
+//		}
 		
 		if (playerControl.Action1.WasPressed)
 			jump = true;
@@ -223,8 +223,6 @@ public class PlayerController : MonoBehaviour {
 		possessedBall.gameObject.GetComponent<TrailRenderer> ().enabled = true;
 		possessedBall.GetComponent<Rigidbody>().velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
 		possessedBall.GetComponent<Ball> ().possesed = false;
-
-		
 	}
 	
 	public void PickUpBall(GameObject ball){
@@ -234,7 +232,6 @@ public class PlayerController : MonoBehaviour {
 		this.GetComponent<Rigidbody>().velocity = Vector3.zero;
 		isBallPossessed = true;
 		possessedBall.gameObject.GetComponent<TrailRenderer> ().enabled = false;
-
 	}
 	
 	void BarrelRoll(){
