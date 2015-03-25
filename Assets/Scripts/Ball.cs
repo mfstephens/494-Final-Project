@@ -9,13 +9,14 @@ public enum BallType {
 public class Ball : MonoBehaviour {
 	
 	public float BallHeldDuration;
-	
+
+
 	public int playerColor;
 	private TrailRenderer ballTrail;
 	private BallType ballType = BallType.Standard;
 	public float startTime;
 	public float infiniteBallDuration;
-	
+	public bool possesed;
 	private float TimePossessed;
 	public Color startColor = Color.red;
 	public Color endColor = Color.white;

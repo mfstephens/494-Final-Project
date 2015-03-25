@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour {
 	public float throwSpeed;
 	public float stunnedDuration;
 	public float rotateSpeed;
+	public Vector3 startPos;
 	
 	private float totalRotation = 0;
 	private float timeHit;
@@ -79,9 +80,8 @@ public class PlayerController : MonoBehaviour {
 //		possessedBall.transform.position = this.transform.position;
 //		this.GetComponent<Rigidbody>().velocity = Vector3.zero;
 //		isBallPossessed = true;
-
-		PickUpBall (possessedBall.gameObject);
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
+		PickUpBall (possessedBall.gameObject);
 		playerColor = this.GetComponent<Renderer>().material.color;
 		
 	}
@@ -208,18 +208,29 @@ public class PlayerController : MonoBehaviour {
 		
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
-		
+
+		if (horizontalMovement == 0 && verticalMovement == 0) 
+			return;
+
 		isBallPossessed = false;
 
 		Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
 		throwMovement.Normalize ();
 	
+		//possessedBall.gameObject.GetComponent<Collider> ().enabled = true;
+		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
+
 		possessedBall.gameObject.GetComponent<TrailRenderer> ().enabled = true;
 		possessedBall.GetComponent<Rigidbody>().velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
+		possessedBall.GetComponent<Ball> ().possesed = false;
+
+		
 	}
 	
 	public void PickUpBall(GameObject ball){
+		ball.GetComponent<Ball> ().possesed = true;
 		ball.transform.position = this.transform.position;
+		//ball.gameObject.GetComponent<Collider> ().enabled = false;
 		this.GetComponent<Rigidbody>().velocity = Vector3.zero;
 		isBallPossessed = true;
 		possessedBall.gameObject.GetComponent<TrailRenderer> ().enabled = false;
@@ -234,9 +245,13 @@ public class PlayerController : MonoBehaviour {
 	public void HitByBall() {
 		justHit = true;
 
+		print ("hit by ball");
+
 		// for when you are playing capture the flag
-		if(Application.loadedLevelName.Equals("CaptureTheFlag")) {
-			CaptureTheFlagMode.access.returnPlayer(this.gameObject);
+		if(Application.loadedLevelName.Equals("_CaptureTheFlag")) {
+			this.gameObject.SetActive(false);
+			possessedBall.gameObject.SetActive(false);
+			Invoke("returnToStart",2f);
 		}
 	}
 	
@@ -244,6 +259,14 @@ public class PlayerController : MonoBehaviour {
 	//Returns whether the player is blinking meaning they were just hit and invulnerable
 	public bool isPlayerBlinking(){
 		return justHit;
+	}
+
+	public void returnToStart() {
+		this.transform.position = startPos;
+		this.gameObject.SetActive(true);
+		possessedBall.gameObject.SetActive(true);
+		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
+
 	}
 	
 	

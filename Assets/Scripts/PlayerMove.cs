@@ -119,7 +119,10 @@ public class PlayerMove : MonoBehaviour {
 		}
 		
 		if(collision.gameObject.CompareTag("Ball")){
-			playerController.HitByBall();
+			if ((collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (collision.gameObject.GetComponent<Ball>().possesed == false)) {
+				playerController.HitByBall();
+			}
+
 			if (collision.gameObject.GetComponent<Ball>().playerColor != -1)  {
 				collision.gameObject.GetComponent<Ball>().findPlayerAndReturn();
 			}

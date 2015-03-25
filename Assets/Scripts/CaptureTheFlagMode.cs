@@ -21,11 +21,11 @@ public class CaptureTheFlagMode : MonoBehaviour {
 	public void teamScored (GameObject scoringPlayer, GameObject flag) {
 		if (flag.name.Equals ("yellowFlag")) {
 			if (scoringPlayer.Equals(team1Player1)) {
-				scoringPlayer.transform.position = t1p1PosReturn;
+				//scoringPlayer.transform.position = t1p1PosReturn;
 				flag.GetComponent<FlagBehavior>().colorFlagOpp();
 			}
 			else if (scoringPlayer.Equals(team1Player2)) {
-				scoringPlayer.transform.position = t1p2PosReturn;
+				//scoringPlayer.transform.position = t1p2PosReturn;
 				flag.GetComponent<FlagBehavior>().colorFlagOpp();
 			}
 			else if (scoringPlayer.Equals(team2Player1)) {
@@ -37,11 +37,11 @@ public class CaptureTheFlagMode : MonoBehaviour {
 		}
 		else if (flag.name.Equals("redFlag")) {
 			if (scoringPlayer.Equals(team2Player1)) {
-				scoringPlayer.transform.position = t2p1PosReturn;
+				//scoringPlayer.transform.position = t2p1PosReturn;
 				flag.GetComponent<FlagBehavior>().colorFlagOpp();
 			}
 			else if (scoringPlayer.Equals(team2Player2)) {
-				scoringPlayer.transform.position = t2p2PosReturn;
+				//scoringPlayer.transform.position = t2p2PosReturn;
 				flag.GetComponent<FlagBehavior>().colorFlagOpp();
 			}
 			if (scoringPlayer.Equals(team1Player1)) {
@@ -53,8 +53,10 @@ public class CaptureTheFlagMode : MonoBehaviour {
 		}
 	}
 
+	//outdated
 	public void returnPlayer(GameObject player) {
 		if (player.Equals(team1Player1)) {
+
 			player.transform.position = t1p1PosReturn;
 		}
 		else if (player.Equals(team1Player2)) {
@@ -67,4 +69,5 @@ public class CaptureTheFlagMode : MonoBehaviour {
 			player.transform.position = t2p2PosReturn;
 		}
 	}
+	
 }
