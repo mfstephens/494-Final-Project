@@ -38,35 +38,47 @@ public class PlayerController : MonoBehaviour {
 		int temp = InputManager.Devices.Count;
 		print (temp);
 
-		if (name == "Player1") {
+		print (InputManager.Devices [0].Name);
+		//playerControl = InputManager.Devices [1];
+
+		//playerControl = InputManager.ActiveDevice;
+
+
+		if (gameObject.name == "Player1") {
 			if(temp < 1) return;
 			playerControl = InputManager.Devices [0];
 			playerNumber = 1;
+			print ("1 player!!!");
 		}
 		
 		if (name == "Player2") {
 			if(temp < 2) return;
 			playerControl = InputManager.Devices [1];
 			playerNumber = 2;
+			print ("2 player!!!");
+
 		}
 		
 		if (name == "Player3") {
 			if(temp < 3) return;
 			playerControl = InputManager.Devices [2];
 			playerNumber = 3;
+			print ("3 player!!!");
+
 		}
 		
 		if (name == "Player4") {
 			if(temp < 4) return;
 			playerControl = InputManager.Devices[3];
 			playerNumber = 4;
+			print ("4 player!!!");
+
 		}
 
 		/* Moves ball to player, sets balls velocity to 0, tells the player he has a ball and their player color*/
 //		possessedBall.transform.position = this.transform.position;
 //		this.GetComponent<Rigidbody>().velocity = Vector3.zero;
 //		isBallPossessed = true;
-
 
 		PickUpBall (possessedBall.gameObject);
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
@@ -221,7 +233,11 @@ public class PlayerController : MonoBehaviour {
 	//React to getting hit by a ball
 	public void HitByBall() {
 		justHit = true;
-		//TODO: return the ball to the player -- straight back??
+
+		// for when you are playing capture the flag
+		if(Application.loadedLevelName.Equals("CaptureTheFlag")) {
+			CaptureTheFlagMode.access.returnPlayer(this.gameObject);
+		}
 	}
 	
 		
