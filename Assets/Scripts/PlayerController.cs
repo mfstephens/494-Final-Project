@@ -32,19 +32,19 @@ public class PlayerController : MonoBehaviour {
 	private Color playerColor;
 	public Color beginColor;
 	public Color endColor;
+
+	// player aim stuff
+	public Transform[] targets;
+	private LineRenderer sightLine;
+	public PlayerAim playerAim;
 	
 	// Use this for initialization
 	void Start () {
 		playerMovement = GetComponent<PlayerMove> ();
+		playerAim = GetComponent<PlayerAim> ();
+		sightLine = gameObject.GetComponent<LineRenderer> ();
 		int temp = InputManager.Devices.Count;
-		print (temp);
-
-		print (InputManager.Devices [0].Name);
-		//playerControl = InputManager.Devices [1];
-
-		//playerControl = InputManager.ActiveDevice;
-
-
+	
 		if (gameObject.name == "Player1") {
 			if(temp < 1) return;
 			playerControl = InputManager.Devices [0];
@@ -88,7 +88,8 @@ public class PlayerController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
+		playerAim.RemoveGuide ();
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
 		
@@ -142,19 +143,39 @@ public class PlayerController : MonoBehaviour {
 			if (isBallPossessed) {
 				ThrowBall ();
 			}
-			else {
+		} 
+		else if (playerControl.Action3.IsPressed) {
+			if (!isBallPossessed) {
 				possessedBall.findPlayerAndReturn();
 			}
-		} 
+		}
 		else if (playerControl.RightTrigger.WasPressed) {
 			speedBoost = true;
 		}
 		else if (playerControl.Action4.WasPressed)
 			BarrelRoll ();
 		
-		if (playerControl.LeftTrigger.IsPressed && isBallPossessed) {
-			Vector3 shotDirection3D = new Vector3 ( playerControl.LeftStickX,  playerControl.LeftStickY, 1f);
-			lockPosition = true;
+		if (playerControl.LeftTrigger.IsPressed) {
+			
+//			float maxDistance = 10000;
+//			Transform myTarget = targets[0];
+//			foreach (Transform target in targets) {
+//				float distance = Vector3.Distance(target.position, transform.position);
+//				if (distance < maxDistance) {
+//					myTarget = target;
+//				}
+//			}
+//			
+//			sightLine.enabled = true;
+//			sightLine.SetPosition(0, transform.position);
+//			sightLine.SetPosition(1, myTarget.position);
+
+			Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
+			throwMovement.Normalize ();
+			
+			Vector3 shotDirection3D = new Vector3 (throwMovement.x, throwMovement.y, 1);
+			playerAim.UpdateGuidePosition (shotDirection3D);
+	          lockPosition = true;
 		}
 		
 		if (playerControl.Action1.WasReleased)
@@ -216,7 +237,22 @@ public class PlayerController : MonoBehaviour {
 
 		Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
 		throwMovement.Normalize ();
-	
+
+//		if (playerControl.LeftTrigger.IsPressed) {
+//			float maxDistance = 10000;
+//			Transform myTarget = targets[0];
+//			foreach (Transform target in targets) {
+//				float distance = Vector3.Distance(target.position, transform.position);
+//				if (distance < maxDistance) {
+//					myTarget = target;
+//				}
+//			}
+//			Vector3 distance3D = myTarget.position - transform.position;
+//			throwMovement = new Vector2 (distance3D.x, distance3D.y);
+//			throwMovement.Normalize();
+//		}
+
+
 		//possessedBall.gameObject.GetComponent<Collider> ().enabled = true;
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
 
@@ -246,6 +282,9 @@ public class PlayerController : MonoBehaviour {
 
 		// for when you are playing capture the flag
 		if(Application.loadedLevelName.Equals("_CaptureTheFlag")) {
+			if (!isBallPossessed) {
+				PickUpBall(possessedBall.gameObject);
+			}
 			this.gameObject.SetActive(false);
 			possessedBall.gameObject.SetActive(false);
 			Invoke("returnToStart",2f);
@@ -262,6 +301,8 @@ public class PlayerController : MonoBehaviour {
 		this.transform.position = startPos;
 		this.gameObject.SetActive(true);
 		possessedBall.gameObject.SetActive(true);
+		this.gameObject.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+		possessedBall.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
 
 	}

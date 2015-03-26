@@ -22,6 +22,7 @@ public class Ball : MonoBehaviour {
 	public Color endColor = Color.white;
 	public bool isOnGround = false;
 	GameObject ball1, ball2, ball3, ball4, player1, player2, player3, player4, controlBallPowerUp;
+	public float returnSpeed;
 	
 	// Use this for initialization
 	void Start () {
@@ -48,17 +49,18 @@ public class Ball : MonoBehaviour {
 		}
 	}
 	public void findPlayerAndReturn() {
+		float step = returnSpeed * Time.deltaTime;
 		if (playerColor == 1) {
-			this.gameObject.transform.position = player1.transform.position;
+			transform.position = Vector3.MoveTowards(transform.position, player1.transform.position, step);
 		}
 		else if (playerColor == 2) {
-			this.gameObject.transform.position = player2.transform.position;
+			transform.position = Vector3.MoveTowards(transform.position, player2.transform.position, step);
 		}
 		else if (playerColor == 3) {
-			this.gameObject.transform.position = player3.transform.position;
+			transform.position = Vector3.MoveTowards(transform.position, player3.transform.position, step);
 		}
 		else if (playerColor == 4) {
-			this.gameObject.transform.position = player4.transform.position;
+			transform.position = Vector3.MoveTowards(transform.position, player4.transform.position, step);
 		}
 		else {
 			Debug.Log ("BALL NOT POSSESSED BY ANYONE");
