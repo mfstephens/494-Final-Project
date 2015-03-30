@@ -37,14 +37,14 @@ public class PlayerController : MonoBehaviour {
 	public Transform[] targets;
 	private LineRenderer sightLine;
 	public PlayerAim playerAim;
-	
+
 	// Use this for initialization
 	void Start () {
 		playerMovement = GetComponent<PlayerMove> ();
 		playerAim = GetComponent<PlayerAim> ();
 		sightLine = gameObject.GetComponent<LineRenderer> ();
 		int temp = InputManager.Devices.Count;
-	
+
 		if (gameObject.name == "Player1") {
 			if(temp < 1) return;
 			playerControl = InputManager.Devices [0];
@@ -137,19 +137,21 @@ public class PlayerController : MonoBehaviour {
 //			}
 //		}
 		
-		if (playerControl.Action1.WasPressed)
+		if (playerControl.Action1.WasPressed) {
 			jump = true;
-		else if (playerControl.Action3.WasPressed) {
-			if (isBallPossessed) {
-				ThrowBall ();
-			}
-		} 
-		else if (playerControl.Action3.IsPressed) {
-			if (!isBallPossessed) {
-				possessedBall.findPlayerAndReturn();
-			}
 		}
 		else if (playerControl.RightTrigger.WasPressed) {
+			if (isBallPossessed) {
+				ThrowBall ();
+			} else {
+				possessedBall.returnBall(); 
+			}
+		} 
+		else if (!isBallPossessed) {
+			Vector3 forceVector = new Vector3(horizontalMovement * throwSpeed, verticalMovement * throwSpeed, 1);
+			possessedBall.applyExtraControl(forceVector); 
+		}
+		else if (playerControl.Action3.WasPressed) {
 			speedBoost = true;
 		}
 		else if (playerControl.Action4.WasPressed)
