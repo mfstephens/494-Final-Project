@@ -140,15 +140,23 @@ public class PlayerController : MonoBehaviour {
 		if (playerControl.Action1.WasPressed) {
 			jump = true;
 		}
-		else if (playerControl.RightTrigger.WasPressed) {
+		else if (playerControl.RightTrigger.IsPressed) {
 			if (isBallPossessed) {
-				ThrowBall ();
-			} else {
-				possessedBall.returnBall(); 
+				Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
+				throwMovement.Normalize ();
+				Vector3 shotDirection3D = new Vector3 (throwMovement.x, throwMovement.y, 1);
+//				playerAim.UpdateGuidePosition (shotDirection3D);
 			}
-		} 
-		else if (!isBallPossessed) {
-			Vector3 forceVector = new Vector3(horizontalMovement * throwSpeed, verticalMovement * throwSpeed, 1);
+		} else if (playerControl.RightTrigger.WasReleased) {
+			if (isBallPossessed) {
+				ThrowBall();
+			} else {
+				possessedBall.returnBall();
+			}
+		} else if (!isBallPossessed) {
+			float hm = playerControl.LeftStickX;
+			float vm = playerControl.LeftStickY;
+			Vector3 forceVector = new Vector3(hm * throwSpeed, vm * throwSpeed, 1);
 			possessedBall.applyExtraControl(forceVector); 
 		}
 		else if (playerControl.Action3.WasPressed) {
@@ -158,26 +166,7 @@ public class PlayerController : MonoBehaviour {
 			BarrelRoll ();
 		
 		if (playerControl.LeftTrigger.IsPressed) {
-			
-//			float maxDistance = 10000;
-//			Transform myTarget = targets[0];
-//			foreach (Transform target in targets) {
-//				float distance = Vector3.Distance(target.position, transform.position);
-//				if (distance < maxDistance) {
-//					myTarget = target;
-//				}
-//			}
-//			
-//			sightLine.enabled = true;
-//			sightLine.SetPosition(0, transform.position);
-//			sightLine.SetPosition(1, myTarget.position);
-
-			Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
-			throwMovement.Normalize ();
-			
-			Vector3 shotDirection3D = new Vector3 (throwMovement.x, throwMovement.y, 1);
-			playerAim.UpdateGuidePosition (shotDirection3D);
-	          lockPosition = true;
+			lockPosition = true;
 		}
 		
 		if (playerControl.Action1.WasReleased)
@@ -257,6 +246,7 @@ public class PlayerController : MonoBehaviour {
 
 		//possessedBall.gameObject.GetComponent<Collider> ().enabled = true;
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
+		possessedBall.ballCanBeControlled = true;
 
 		possessedBall.gameObject.GetComponent<TrailRenderer> ().enabled = true;
 		possessedBall.GetComponent<Rigidbody>().velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);

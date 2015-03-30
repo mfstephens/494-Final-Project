@@ -138,7 +138,7 @@ public class PlayerMove : MonoBehaviour {
 			}
 
 			if (collision.gameObject.GetComponent<Ball>().playerColor != -1)  {
-				collision.gameObject.GetComponent<Ball>().findPlayerAndReturn();
+//				collision.gameObject.GetComponent<Ball>().findPlayerAndReturn();
 			}
 		}
 	}

@@ -48,7 +48,9 @@ public class MainCamera : MonoBehaviour {
 			adjustX = 472f - mainCamera.orthographicSize * mainCamera.aspect;
 		}
 
-		transform.position = new Vector3 (adjustX, adjustY, temp.z);
+		Vector3 destination = new Vector3 (adjustX, adjustY, temp.z);
+
+		transform.position = Vector3.Lerp (transform.position, destination, 0.05f);
 
 		mainCamera.orthographicSize = CalculateOrthographicSize(boundingBox);
 
