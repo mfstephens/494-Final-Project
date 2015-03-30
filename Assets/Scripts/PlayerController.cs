@@ -287,7 +287,9 @@ public class PlayerController : MonoBehaviour {
 			}
 			this.gameObject.SetActive(false);
 			possessedBall.gameObject.SetActive(false);
-			Invoke("returnToStart",2f);
+			MainCamera.access.players.Remove (this.gameObject);
+			//MainCamera.access.players.Remove (possessedBall.gameObject);
+			Invoke("returnToStart",4f);
 		}
 	}
 	
@@ -298,13 +300,15 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void returnToStart() {
-		this.transform.position = startPos;
+		this.transform.position = RespawnPosition.access.generateRespawnPoint ();
+		possessedBall.gameObject.transform.position = this.transform.position;
 		this.gameObject.SetActive(true);
 		possessedBall.gameObject.SetActive(true);
 		this.gameObject.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 		possessedBall.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
-
+		MainCamera.access.players.Add (this.gameObject);
+		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
 	
 	

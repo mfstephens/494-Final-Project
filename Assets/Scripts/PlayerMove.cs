@@ -13,7 +13,8 @@ public class PlayerMove : MonoBehaviour {
 	public float forcePadForce;
 	public int playerColor;
 	public int hitSpeed;
-	
+	public float reducedAirFactor;
+
 	private bool inForcePad = false;
 	private bool barrelRoll = false;
 	private bool isOnGround = false;
@@ -22,6 +23,8 @@ public class PlayerMove : MonoBehaviour {
 	private bool isOnRightWall = false;
 	private bool isOnPlatform = false;
 	private bool dropThroughPlatform = false; 
+	private bool isOnMovingPlatform = false;
+	private GameObject movingPlatform = null;
 	
 	private PlayerController playerController;
 
@@ -38,6 +41,10 @@ public class PlayerMove : MonoBehaviour {
 			Vector3 temp = GetComponent<Rigidbody>().velocity;
 			temp.x = 0;
 			GetComponent<Rigidbody>().velocity = temp;
+			// if you're locked on a moving platform
+			if (isOnMovingPlatform) {
+				GetComponent<Rigidbody>().velocity += movingPlatform.GetComponent<Rigidbody>().velocity;
+			}
 			return;
 		}
 
@@ -47,6 +54,9 @@ public class PlayerMove : MonoBehaviour {
 		//After player hits a force pad, they are subject to force pads velocity until they hit something
 		if (!inForcePad) {
 			GetComponent<Rigidbody>().velocity = new Vector2 (moveX * speed, GetComponent<Rigidbody>().velocity.y);
+			if (!isOnGround && !isOnPlatform) {
+				GetComponent<Rigidbody>().velocity = new Vector2 (GetComponent<Rigidbody>().velocity.x * reducedAirFactor, GetComponent<Rigidbody>().velocity.y);
+			}
 			if(moveY < 0)
 				GetComponent<Rigidbody>().AddForce(new Vector3 (0, dropSpeed,0));
 		}
@@ -71,7 +81,11 @@ public class PlayerMove : MonoBehaviour {
 //			if(playerHealth.UseSpeedBoost())
 //				StartCoroutine("SpeedBoost");
 //		}
-		
+
+		// if you're on a moving platform
+		if (isOnMovingPlatform) {
+			GetComponent<Rigidbody>().velocity += movingPlatform.GetComponent<Rigidbody>().velocity;
+		}
 		
 	}
 	
@@ -139,6 +153,11 @@ public class PlayerMove : MonoBehaviour {
 			}
 		}
 		
+		if (collision.gameObject.name == "Moving Platform") {
+			isOnMovingPlatform = true;
+			movingPlatform = collision.gameObject;
+		}
+		
 	}
 	
 	void OnCollisionExit(Collision collision){
@@ -153,6 +172,8 @@ public class PlayerMove : MonoBehaviour {
 		
 		if (collision.gameObject.CompareTag ("RightWall"))
 			isOnRightWall = false;
+		if (collision.gameObject.name == "Moving Platform") 
+			isOnMovingPlatform = false;
 	}
 	
 	void OnTriggerEnter(Collider other){

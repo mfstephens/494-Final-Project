@@ -1,0 +1,51 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class RespawnPosition : MonoBehaviour {
+
+	public static RespawnPosition access;
+
+	public GameObject flag;
+	private Vector3[,] respawnPoints;
+	private Vector3 lastRespawnPoint = Vector3.zero;
+
+	// Use this for initialization
+	void Start () {
+		respawnPoints = new Vector3[3, 5] { { new Vector3(-675.6f, -116.4f, 5f), new Vector3(-675.6f, -13.6f, 5f), new Vector3(-675.6f, 88.7f, 5f), new Vector3(-632.5f, 37.9f, 5f), new Vector3(-632.5f, -60.6f, 5f) }, 
+			{ new Vector3(-155.4f, -116.4f, 5f), new Vector3(-155.4f, -13.6f, 5f), new Vector3(-155.4f, 88.7f, 5f), new Vector3(-110.3f, 37.9f, 5f), new Vector3(-110.3f, -60.6f, 5f) },
+			{ new Vector3(418.7f, -116.4f, 5f), new Vector3(418.7f, -13.6f, 5f), new Vector3(418.7f, 88.7f, 5f), new Vector3(375.3f, 37.9f, 5f), new Vector3(375.3f, -60.6f, 5f) } };
+			
+		access = this;
+	}
+	
+	// Update is called once per frame
+	void Update () {
+	
+	}
+
+	public Vector3 generateRespawnPoint() {
+		Vector3 nextRespawnPoint = lastRespawnPoint;
+
+		while (nextRespawnPoint == lastRespawnPoint) {
+			// if the flag is in the middle
+			if (flag.transform.position == new Vector3(-130.7f, 162.9f, 5f)) {
+				int tower = Random.Range(0,2);
+				int platform = Random.Range(0,5);
+				if (tower == 0) {
+					nextRespawnPoint = respawnPoints[0, platform];
+				}
+				else if (tower == 1) {
+					nextRespawnPoint = respawnPoints[2, platform];
+				}
+			}
+			// if the flag is on one of the sides
+			else { 
+				int platform = Random.Range(0,5);
+				nextRespawnPoint = respawnPoints[1,platform];
+			}
+		}
+
+		lastRespawnPoint = nextRespawnPoint;
+		return nextRespawnPoint;
+	}
+}
