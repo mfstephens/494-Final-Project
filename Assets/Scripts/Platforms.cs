@@ -7,7 +7,7 @@ public class Platforms : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		parentCollider = this.gameObject.transform.parent.GetComponent<Collider>();
+		//parentCollider = this.gameObject.transform.parent.GetComponent<Collider>();
 	}
 	
 	// Update is called once per frame
@@ -16,12 +16,16 @@ public class Platforms : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider other){
-		print ("enter" + other.gameObject.tag);
-	
-		if(other.gameObject.CompareTag("Player")){
-			print ("on trigger enter");
-			Physics.IgnoreCollision(parentCollider,other.gameObject.GetComponent<Collider>(),true);
-		}
+//		print ("enter" + other.gameObject.tag);
+//	
+//		if(other.gameObject.CompareTag("Player")){
+//			print ("on trigger enter");
+//			Physics.IgnoreCollision(parentCollider,other.gameObject.GetComponent<Collider>(),true);
+//		}
+	}
+
+	void OnTriggerStay(Collider other) {
+		other.gameObject.GetComponent<PlayerMove> ().doubleJump = false;
 	}
 
 	void OnTriggerExit(Collider other){

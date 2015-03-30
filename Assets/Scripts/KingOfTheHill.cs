@@ -4,12 +4,19 @@ using UnityEngine.UI;
 
 public class KingOfTheHill : MonoBehaviour {
 
+	public static KingOfTheHill access;
+
 	public Text[] playerScoreTexts;
 	public int[] playerScores;
-	private int currentPlayer = -1;
+	public int currentPlayer = -1;
 	private Color origColor;
 
+	void Awake() {
+		access = this;
+	}
+
 	void Start() {
+
 		origColor = this.gameObject.GetComponent<Renderer> ().material.color;
 	}
 
@@ -32,5 +39,6 @@ public class KingOfTheHill : MonoBehaviour {
 
 	public void updateCurrentPlayer(int player) {
 		currentPlayer = player;
+
 	}
 }

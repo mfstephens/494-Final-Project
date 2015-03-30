@@ -50,19 +50,10 @@ public class MainCamera : MonoBehaviour {
 			adjustX = 480f - mainCamera.orthographicSize * mainCamera.aspect;
 		}
 
-//		if (adjustX != temp.x && adjustY != temp.y) {
-//			minimumOrthographicSize = 260f;
-//		}
-//		else {
-//			minimumOrthographicSize = 150f;
-//		}
-
-		//destination = Vector3.Lerp(transform.position, destination, easing);
-
-		//transform.position = new Vector3 (adjustX, adjustY, temp.z);
 
 		Vector3 destination = new Vector3 (adjustX, adjustY, temp.z);
-		transform.position = Vector3.Lerp(transform.position, destination, 0.05f);
+
+		transform.position = Vector3.Lerp (transform.position, destination, 0.05f);
 
 		//boundingBox = CalculateTargetsBoundingBox();
 

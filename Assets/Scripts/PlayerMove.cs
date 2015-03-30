@@ -18,7 +18,7 @@ public class PlayerMove : MonoBehaviour {
 	private bool inForcePad = false;
 	private bool barrelRoll = false;
 	private bool isOnGround = false;
-	private bool doubleJump = false;
+	public bool doubleJump = false;
 	private bool isOnLeftWall = false;
 	private bool isOnRightWall = false;
 	private bool isOnPlatform = false;
@@ -138,7 +138,7 @@ public class PlayerMove : MonoBehaviour {
 			}
 
 			if (collision.gameObject.GetComponent<Ball>().playerColor != -1)  {
-				collision.gameObject.GetComponent<Ball>().findPlayerAndReturn();
+//				collision.gameObject.GetComponent<Ball>().findPlayerAndReturn();
 			}
 		}
 	}
