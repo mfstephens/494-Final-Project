@@ -29,7 +29,7 @@ public class MainCamera : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () 
+	void FixedUpdate () 
 	{
 		Rect boundingBox = CalculateTargetsBoundingBox();
 		Vector3 temp = CalculateCameraPosition(boundingBox);
@@ -48,8 +48,14 @@ public class MainCamera : MonoBehaviour {
 			adjustX = 472f - mainCamera.orthographicSize * mainCamera.aspect;
 		}
 
-		transform.position = new Vector3 (adjustX, adjustY, temp.z);
+		//destination = Vector3.Lerp(transform.position, destination, easing);
 
+		//transform.position = new Vector3 (adjustX, adjustY, temp.z);
+
+		Vector3 destination = new Vector3 (adjustX, adjustY, temp.z);
+		transform.position = Vector3.Lerp(transform.position, destination, 0.05f);
+
+		boundingBox = CalculateTargetsBoundingBox();
 		mainCamera.orthographicSize = CalculateOrthographicSize(boundingBox);
 
 		//transform.position = temp;
