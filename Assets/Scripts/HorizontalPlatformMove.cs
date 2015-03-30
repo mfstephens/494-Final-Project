@@ -21,22 +21,22 @@ public class HorizontalPlatformMove : MonoBehaviour {
 
 		rigid.MovePosition (newPos);
 
-		foreach (Transform child in gameObject.transform) {
-			if (child.CompareTag("Player")) {
-				Vector3 newPlayerPos = child.transform.position + new Vector3 (moveSpeed * 0.94f, 0, 0);
-				child.GetComponent<Rigidbody>().MovePosition(newPlayerPos);
-			}
-		}
+//		foreach (Transform child in gameObject.transform) {
+//			if (child.CompareTag("Player")) {
+//				Vector3 newPlayerPos = child.transform.position + new Vector3 (moveSpeed, 0, 0);
+//				child.GetComponent<Rigidbody>().MovePosition(newPlayerPos);
+//			}
+//		}
 	}
 
-	void OnCollisionStay(Collision other) {
-		if (other.gameObject.CompareTag ("Player")) {
-			other.transform.parent = this.transform;
-		}
+	void OnCollisionEnter(Collision other) {
+//		if (other.gameObject.CompareTag ("Player")) {
+//			other.transform.parent = this.transform;
+//		}
 	}
 
 	void OnCollisionExit(Collision other) {
-		other.transform.parent = null;
+//		other.transform.parent = null;
 	}
 
 

@@ -10,7 +10,6 @@ public class Ball : MonoBehaviour {
 	
 	public float BallHeldDuration;
 
-
 	public int playerColor;
 	private TrailRenderer ballTrail;
 	private BallType ballType = BallType.Standard;
@@ -18,8 +17,7 @@ public class Ball : MonoBehaviour {
 	public float infiniteBallDuration;
 	public bool possesed;
 	private float TimePossessed;
-	public Color startColor = Color.red;
-	public Color endColor = Color.white;
+	public Color trailColor;
 	public bool isOnGround = false;
 	GameObject ball1, ball2, ball3, ball4, player1, player2, player3, player4, controlBallPowerUp;
 	public float returnSpeed;
@@ -36,8 +34,9 @@ public class Ball : MonoBehaviour {
 		player4 = GameObject.Find ("Player4");
 		controlBallPowerUp = GameObject.Find ("Power Up 1");
 		ballShouldReturn = false;
-		
-		this.GetComponent<Renderer>().material.color = startColor;
+
+		ballTrail.material = this.gameObject.GetComponent<Renderer>().material;
+		//this.GetComponent<Renderer>().material.color = startColor;
 	}
 	
 	void Update () {
