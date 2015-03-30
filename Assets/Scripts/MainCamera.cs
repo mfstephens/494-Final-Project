@@ -36,17 +36,26 @@ public class MainCamera : MonoBehaviour {
 		float adjustX = temp.x;
 		float adjustY = temp.y;
 
-		if (temp.y - mainCamera.orthographicSize < -190f) {
+		mainCamera.orthographicSize = CalculateOrthographicSize (boundingBox);
+		
+		if (temp.y - mainCamera.orthographicSize <= -190f) {
 			adjustY = -190f + mainCamera.orthographicSize;
 		}
 
-		if (temp.x - mainCamera.orthographicSize * mainCamera.aspect  < -740f) {
+		if (temp.x - mainCamera.orthographicSize * mainCamera.aspect <= -740f) {
 			adjustX = -740f + mainCamera.orthographicSize * mainCamera.aspect;
 		}
 
-		if (temp.x + mainCamera.orthographicSize * mainCamera.aspect  > 472f) {
-			adjustX = 472f - mainCamera.orthographicSize * mainCamera.aspect;
+		if (temp.x + mainCamera.orthographicSize * mainCamera.aspect >= 480f) {
+			adjustX = 480f - mainCamera.orthographicSize * mainCamera.aspect;
 		}
+
+//		if (adjustX != temp.x && adjustY != temp.y) {
+//			minimumOrthographicSize = 260f;
+//		}
+//		else {
+//			minimumOrthographicSize = 150f;
+//		}
 
 		//destination = Vector3.Lerp(transform.position, destination, easing);
 
@@ -55,8 +64,7 @@ public class MainCamera : MonoBehaviour {
 		Vector3 destination = new Vector3 (adjustX, adjustY, temp.z);
 		transform.position = Vector3.Lerp(transform.position, destination, 0.05f);
 
-		boundingBox = CalculateTargetsBoundingBox();
-		mainCamera.orthographicSize = CalculateOrthographicSize(boundingBox);
+		//boundingBox = CalculateTargetsBoundingBox();
 
 		//transform.position = temp;
 	}
