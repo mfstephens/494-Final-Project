@@ -80,21 +80,22 @@ public class Ball : MonoBehaviour {
 //		}
 
 		float player1BallDistance = Vector3.Distance(transform.position, player1.transform.position);
-		float player2BallDistance = Vector3.Distance(transform.position, player2.transform.position);
-		float player3BallDistance = Vector3.Distance(transform.position, player3.transform.position);
-		float player4BallDistance = Vector3.Distance(transform.position, player4.transform.position);
+//		float player2BallDistance = Vector3.Distance(transform.position, player2.transform.position);
+//		float player3BallDistance = Vector3.Distance(transform.position, player3.transform.position);
+//		float player4BallDistance = Vector3.Distance(transform.position, player4.transform.position);
 
 		if (player1BallDistance  <= recallDistanceThreshold) {
 			ballShouldReturn = false;
-		} else if (player2BallDistance <= recallDistanceThreshold) {
-			ballShouldReturn = false;
-		}
-		else if (player3BallDistance <= recallDistanceThreshold) {
-			ballShouldReturn = false;
-		}
-		else if (player4BallDistance <= recallDistanceThreshold) {
-			ballShouldReturn = false;
-		}
+		} 
+//		else if (player2BallDistance <= recallDistanceThreshold) {
+//			ballShouldReturn = false;
+//		}
+//		else if (player3BallDistance <= recallDistanceThreshold) {
+//			ballShouldReturn = false;
+//		}
+//		else if (player4BallDistance <= recallDistanceThreshold) {
+//			ballShouldReturn = false;
+//		}
 		
 		if (ballShouldReturn) {
 			float step = returnSpeed * Time.deltaTime;

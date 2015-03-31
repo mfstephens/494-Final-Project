@@ -38,16 +38,16 @@ public class MainCamera : MonoBehaviour {
 
 		mainCamera.orthographicSize = CalculateOrthographicSize (boundingBox);
 		
-		if (temp.y - mainCamera.orthographicSize <= -190f) {
-			adjustY = -190f + mainCamera.orthographicSize;
+		if (temp.y - mainCamera.orthographicSize <= -200f) {
+			adjustY = -200f + mainCamera.orthographicSize;
 		}
 
-		if (temp.x - mainCamera.orthographicSize * mainCamera.aspect <= -740f) {
-			adjustX = -740f + mainCamera.orthographicSize * mainCamera.aspect;
+		if (temp.x - mainCamera.orthographicSize * mainCamera.aspect <= -735f) {
+			adjustX = -735f + mainCamera.orthographicSize * mainCamera.aspect;
 		}
 
-		if (temp.x + mainCamera.orthographicSize * mainCamera.aspect >= 480f) {
-			adjustX = 480f - mainCamera.orthographicSize * mainCamera.aspect;
+		if (temp.x + mainCamera.orthographicSize * mainCamera.aspect >= 470f) {
+			adjustX = 470f - mainCamera.orthographicSize * mainCamera.aspect;
 		}
 
 

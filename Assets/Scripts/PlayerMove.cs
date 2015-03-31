@@ -23,19 +23,27 @@ public class PlayerMove : MonoBehaviour {
 	private bool isOnRightWall = false;
 	private bool isOnPlatform = false;
 	private bool dropThroughPlatform = false; 
-	private bool isOnMovingPlatform = false;
+	public bool isOnMovingPlatform = false;
 	private GameObject movingPlatform = null;
+	private PlayerFallOff playerFall;
+	public bool isPlayerFalling = false;
+
 	
 	private PlayerController playerController;
 
 	
 	// Use this for initializationx
 	void Start () {
+		playerFall = GetComponent<PlayerFallOff> ();
 		playerController = this.GetComponent<PlayerController> ();
 	}
 	
 	public void Movement(float moveX, float moveY, bool jump, bool cancelJump, bool speedBoost,bool lockPosition,bool drop){
-		
+
+		if (isPlayerFalling) {
+			return;
+		}
+
 		//Player must stand still while in lock position
 		if (lockPosition && (isOnGround || isOnPlatform)) {
 			Vector3 temp = GetComponent<Rigidbody>().velocity;
@@ -135,6 +143,9 @@ public class PlayerMove : MonoBehaviour {
 		if(collision.gameObject.CompareTag("Ball")){
 			if ((collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (collision.gameObject.GetComponent<Ball>().possesed == false)) {
 				playerController.HitByBall();
+				isPlayerFalling = true;
+				playerFall.fallOff(collision.gameObject);
+				
 			}
 
 			if (collision.gameObject.GetComponent<Ball>().playerColor != -1)  {
@@ -156,6 +167,18 @@ public class PlayerMove : MonoBehaviour {
 		if (collision.gameObject.name == "Moving Platform") {
 			isOnMovingPlatform = true;
 			movingPlatform = collision.gameObject;
+		}
+
+		if (collision.gameObject.CompareTag("Ground")) {
+			isOnGround = true;
+			doubleJump = true;
+			inForcePad = false;
+		}
+		
+		if (collision.gameObject.CompareTag ("Platform")) {
+			isOnPlatform = true;
+			doubleJump = true;
+			inForcePad = false;
 		}
 		
 	}
