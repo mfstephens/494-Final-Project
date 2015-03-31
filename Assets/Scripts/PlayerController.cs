@@ -30,8 +30,6 @@ public class PlayerController : MonoBehaviour {
 	public bool isBallPossessed = false;
 
 	private Color playerColor;
-	public Color beginColor;
-	public Color endColor;
 
 	// player aim stuff
 	public PlayerAim playerAim;
@@ -114,7 +112,6 @@ public class PlayerController : MonoBehaviour {
 		//Characters blinks when they were hit for stunnedDuration (can customize to stun, add more effects)
 		if (justHit) {
 			if(timeHit + stunnedDuration <= Time.time){
-				CancelBlink();
 				this.GetComponent<Renderer>().material.color = playerColor;
 				justHit = false;
 			}
@@ -174,11 +171,6 @@ public class PlayerController : MonoBehaviour {
 		if (playerControl.LeftTrigger.WasReleased) {
 			lockPosition = false;
 		}
-	}
-	
-	void FixedUpdate(){
-		float horizontalMovement = playerControl.LeftStickX;
-		float verticalMovement = playerControl.LeftStickY;
 
 		//TODO: person in charge of animations 
 		if (horizontalMovement > 0 && transform.eulerAngles.y == 180)
@@ -193,31 +185,18 @@ public class PlayerController : MonoBehaviour {
 		speedBoost = false;
 		dropThroughPlatform = false;
 	}
-	
+
 	void Flip(){
 		transform.eulerAngles += new Vector3 (0, 180f, 0);
 	}
-	
-	void stunPlayer(){
-		timeHit = Time.time;
-		this.GetComponent<Renderer>().material.color = beginColor;
-		InvokeRepeating ("Blink",.1f, .25f);
-	}
-	
-	void Blink(){
-		if(this.GetComponent<Renderer>().material.color == beginColor)
-			this.GetComponent<Renderer>().material.color = endColor;
-		else
-			this.GetComponent<Renderer>().material.color = beginColor;
-	}
-	
-	void CancelBlink(){
-		CancelInvoke ();
-	}
-	
+				
 	//Throw ball in direction of left stick
 	void ThrowBall(){
-		
+
+		if (playerMovement.isPlayerFalling) {
+			return;
+		}
+
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
 
@@ -262,23 +241,38 @@ public class PlayerController : MonoBehaviour {
 	
 	//React to getting hit by a ball
 	public void HitByBall() {
-		justHit = true;
-
-		print ("hit by ball");
 
 		Time.timeScale = 1.0f;
 
-		// for when you are playing capture the flag
-		if(Application.loadedLevelName.Equals("_CaptureTheFlag")) {
+		if (Application.loadedLevelName.Equals ("_OneToTwo")) {
+			CaptureTheFlagMode.access.playerScore(this.gameObject);
+			justHit = true;
 			if (!isBallPossessed) {
 				PickUpBall(possessedBall.gameObject);
 			}
-			this.gameObject.SetActive(false);
 			possessedBall.gameObject.SetActive(false);
+			playerMovement.isOnMovingPlatform = false;
 			MainCamera.access.players.Remove (this.gameObject);
-			//MainCamera.access.players.Remove (possessedBall.gameObject);
+			MainCamera.access.players.Remove (possessedBall.gameObject);
 			Invoke("returnToStart",4f);
 		}
+		else if (Application.loadedLevelName.Equals("_ThreeToFour")) {
+//			if (KingOfTheHill.access != null && KingOfTheHill.access.isKing(playerMovement.playerColor)) {
+//				this.transform.localScale -= new Vector3(1f, 3f, 0.625f);
+//				possessedBall.transform.localScale -= new Vector3(1.125f, 1.125f, 1.125f);
+//			}
+//			else {
+				justHit = true;
+				if (!isBallPossessed) {
+					PickUpBall(possessedBall.gameObject);
+				}
+				possessedBall.gameObject.SetActive(false);
+				playerMovement.isOnMovingPlatform = false;
+				MainCamera.access.players.Remove (this.gameObject);
+				MainCamera.access.players.Remove (possessedBall.gameObject);
+				Invoke("returnToStart",4f);
+			}
+//		}
 	}
 	
 		
@@ -288,14 +282,24 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void returnToStart() {
-		this.transform.position = RespawnPosition.access.generateRespawnPoint ();
-		possessedBall.gameObject.transform.position = this.transform.position;
-		this.gameObject.SetActive(true);
+		Rigidbody rigid = this.gameObject.GetComponent<Rigidbody> ();
+		if (Application.loadedLevelName.Equals("_OneToTwo")) {
+			print ("onetwo");
+			this.transform.position = RespawnPositionTwo.access.generateRespawnPoint ();
+		}
+		else {
+			this.transform.position = RespawnPosition.access.generateRespawnPoint ();
+		}
 		possessedBall.gameObject.SetActive(true);
-		this.gameObject.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+		possessedBall.transform.position = this.transform.position;
+		rigid.constraints = RigidbodyConstraints.FreezeRotation ^ RigidbodyConstraints.FreezePositionZ;
+		rigid.rotation = Quaternion.identity;
+		rigid.velocity = Vector3.zero;
 		possessedBall.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
 		MainCamera.access.players.Add (this.gameObject);
+		MainCamera.access.players.Add (possessedBall.gameObject);
+		playerMovement.isPlayerFalling = false;
 		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
 	
