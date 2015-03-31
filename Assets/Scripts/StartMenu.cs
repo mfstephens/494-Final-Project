@@ -84,10 +84,10 @@ public class StartMenu : MonoBehaviour {
 			if(player1.Action1.WasPressed){
 				//1-2 Players Required
 				if(currentChooseGameSelection == 0){
-					Application.LoadLevel("_CaptureTheFlag");
+					Application.LoadLevel("_OneToTwo");
 				}
 				else{
-
+					Application.LoadLevel("_ThreeToFour");
 				}
 			}
 		}

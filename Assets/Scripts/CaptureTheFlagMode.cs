@@ -10,8 +10,9 @@ public class CaptureTheFlagMode : MonoBehaviour {
 
 	public Text countdownText;
 	public Text roundClock;
-	public GameObject team1Player1, team1Player2, team2Player1, team2Player2;
-	public Vector3 t1p1PosReturn, t1p2PosReturn, t2p1PosReturn, t2p2PosReturn;
+	public GameObject playerOne, playerTwo;
+	private int playerOneScore = 0, playerTwoScore = 0;
+	public Text playerOneScoreText, playerTwoScoreText;
 	public float RoundLength = 3.0f;
 
 	private bool startGame = false;
@@ -57,55 +58,14 @@ public class CaptureTheFlagMode : MonoBehaviour {
 		countdownText.enabled = false;
 	}
 
-	public void teamScored (GameObject scoringPlayer, GameObject flag) {
-		if (flag.name.Equals ("yellowFlag")) {
-			if (scoringPlayer.Equals(team1Player1)) {
-				//scoringPlayer.transform.position = t1p1PosReturn;
-				flag.GetComponent<FlagBehavior>().colorFlagOpp();
-			}
-			else if (scoringPlayer.Equals(team1Player2)) {
-				//scoringPlayer.transform.position = t1p2PosReturn;
-				flag.GetComponent<FlagBehavior>().colorFlagOpp();
-			}
-			else if (scoringPlayer.Equals(team2Player1)) {
-				flag.GetComponent<FlagBehavior>().colorFlagOrig();
-			}
-			else if (scoringPlayer.Equals(team2Player2)) {
-				flag.GetComponent<FlagBehavior>().colorFlagOrig();
-			}
+	public void playerScore(GameObject playerHit) {
+		if (playerHit.name.Equals("Player1")) {
+			playerTwoScore += 10;
+			playerTwoScoreText.text = playerTwoScore.ToString();
 		}
-		else if (flag.name.Equals("redFlag")) {
-			if (scoringPlayer.Equals(team2Player1)) {
-				//scoringPlayer.transform.position = t2p1PosReturn;
-				flag.GetComponent<FlagBehavior>().colorFlagOpp();
-			}
-			else if (scoringPlayer.Equals(team2Player2)) {
-				//scoringPlayer.transform.position = t2p2PosReturn;
-				flag.GetComponent<FlagBehavior>().colorFlagOpp();
-			}
-			if (scoringPlayer.Equals(team1Player1)) {
-				flag.GetComponent<FlagBehavior>().colorFlagOrig();
-			}
-			else if (scoringPlayer.Equals(team1Player2)) {
-				flag.GetComponent<FlagBehavior>().colorFlagOrig();
-			}
-		}
-	}
-
-	//outdated
-	public void returnPlayer(GameObject player) {
-		if (player.Equals(team1Player1)) {
-
-			player.transform.position = t1p1PosReturn;
-		}
-		else if (player.Equals(team1Player2)) {
-			player.transform.position = t1p2PosReturn;
-		}
-		else if (player.Equals(team2Player1)) {
-			player.transform.position = t2p1PosReturn;
-		}
-		else if (player.Equals(team2Player2)) {
-			player.transform.position = t2p2PosReturn;
+		else if (playerHit.name.Equals("Player2")) {
+			playerOneScore += 10;
+			playerOneScoreText.text = playerOneScore.ToString();
 		}
 	}
 	

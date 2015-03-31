@@ -6,6 +6,8 @@ public class MainCamera : MonoBehaviour {
 
 	public static MainCamera access;
 
+	public float minCamX, minCamY, maxCamX;
+
 	private Vector3 velocity = Vector3.zero;
 	//public GameObject[] players;
 	public List<GameObject> players;
@@ -38,16 +40,16 @@ public class MainCamera : MonoBehaviour {
 
 		mainCamera.orthographicSize = CalculateOrthographicSize (boundingBox);
 		
-		if (temp.y - mainCamera.orthographicSize <= -200f) {
-			adjustY = -200f + mainCamera.orthographicSize;
+		if (temp.y - mainCamera.orthographicSize <= minCamY) {
+			adjustY = minCamY + mainCamera.orthographicSize;
 		}
 
-		if (temp.x - mainCamera.orthographicSize * mainCamera.aspect <= -735f) {
-			adjustX = -735f + mainCamera.orthographicSize * mainCamera.aspect;
+		if (temp.x - mainCamera.orthographicSize * mainCamera.aspect <= minCamX) {
+			adjustX = minCamX + mainCamera.orthographicSize * mainCamera.aspect;
 		}
 
-		if (temp.x + mainCamera.orthographicSize * mainCamera.aspect >= 470f) {
-			adjustX = 470f - mainCamera.orthographicSize * mainCamera.aspect;
+		if (temp.x + mainCamera.orthographicSize * mainCamera.aspect >= maxCamX) {
+			adjustX = maxCamX - mainCamera.orthographicSize * mainCamera.aspect;
 		}
 
 

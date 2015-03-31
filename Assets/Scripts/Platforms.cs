@@ -29,9 +29,9 @@ public class Platforms : MonoBehaviour {
 	}
 
 	void OnTriggerExit(Collider other){
-		if(other.gameObject.CompareTag("Player")){
-			Physics.IgnoreCollision(parentCollider,other.gameObject.GetComponent<Collider>(),false);
-		}
+//		if(other.gameObject.CompareTag("Player")){
+//			Physics.IgnoreCollision(parentCollider,other.gameObject.GetComponent<Collider>(),false);
+//		}
 	}
 
 

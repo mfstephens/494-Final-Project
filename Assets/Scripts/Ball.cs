@@ -80,22 +80,25 @@ public class Ball : MonoBehaviour {
 //		}
 
 		float player1BallDistance = Vector3.Distance(transform.position, player1.transform.position);
-//		float player2BallDistance = Vector3.Distance(transform.position, player2.transform.position);
-//		float player3BallDistance = Vector3.Distance(transform.position, player3.transform.position);
-//		float player4BallDistance = Vector3.Distance(transform.position, player4.transform.position);
+		float player2BallDistance = Vector3.Distance(transform.position, player2.transform.position);
+		float player3BallDistance = Mathf.Infinity, player4BallDistance = Mathf.Infinity;
+		if (Application.loadedLevelName.Equals("_ThreeToFour")) {
+			player3BallDistance = Vector3.Distance(transform.position, player3.transform.position);
+			player4BallDistance = Vector3.Distance(transform.position, player4.transform.position);
+		}
 
 		if (player1BallDistance  <= recallDistanceThreshold) {
 			ballShouldReturn = false;
 		} 
-//		else if (player2BallDistance <= recallDistanceThreshold) {
-//			ballShouldReturn = false;
-//		}
-//		else if (player3BallDistance <= recallDistanceThreshold) {
-//			ballShouldReturn = false;
-//		}
-//		else if (player4BallDistance <= recallDistanceThreshold) {
-//			ballShouldReturn = false;
-//		}
+		else if (player2BallDistance <= recallDistanceThreshold) {
+			ballShouldReturn = false;
+		}
+		else if (player3BallDistance <= recallDistanceThreshold && Application.loadedLevelName.Equals("_ThreeToFour")) {
+			ballShouldReturn = false;
+		}
+		else if (player4BallDistance <= recallDistanceThreshold && Application.loadedLevelName.Equals("_ThreeToFour")) {
+			ballShouldReturn = false;
+		}
 		
 		if (ballShouldReturn) {
 			float step = returnSpeed * Time.deltaTime;

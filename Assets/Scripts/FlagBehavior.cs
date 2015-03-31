@@ -24,7 +24,7 @@ public class FlagBehavior : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		CaptureTheFlagMode.access.teamScored (other.gameObject, this.gameObject);
+		//CaptureTheFlagMode.access.teamScored (other.gameObject, this.gameObject);
 	}
 
 	void OnTriggerExit(Collider other) {
