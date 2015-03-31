@@ -12,31 +12,46 @@ public class PlayerMove : MonoBehaviour {
 	public float forcePadForce;
 	public int playerColor;
 	public int hitSpeed;
-	
+	public float reducedAirFactor;
+
 	private bool inForcePad = false;
 	private bool barrelRoll = false;
 	private bool isOnGround = false;
-	private bool doubleJump = false;
+	public bool doubleJump = false;
 	private bool isOnLeftWall = false;
 	private bool isOnRightWall = false;
 	private bool isOnPlatform = false;
 	private bool dropThroughPlatform = false; 
+	public bool isOnMovingPlatform = false;
+	private GameObject movingPlatform = null;
+	private PlayerFallOff playerFall;
+	public bool isPlayerFalling = false;
+
 	
 	private PlayerController playerController;
 
 	
 	// Use this for initializationx
 	void Start () {
+		playerFall = GetComponent<PlayerFallOff> ();
 		playerController = this.GetComponent<PlayerController> ();
 	}
 
 	public void Movement(float moveX, float moveY, bool jump, bool cancelJump, bool speedBoost,bool lockPosition,bool drop){
-		
+
+		if (isPlayerFalling) {
+			return;
+		}
+
 		//Player must stand still while in lock position
 		if (lockPosition && (isOnGround || isOnPlatform)) {
 			Vector3 temp = GetComponent<Rigidbody>().velocity;
 			temp.x = 0;
 			GetComponent<Rigidbody>().velocity = temp;
+			// if you're locked on a moving platform
+			if (isOnMovingPlatform) {
+				GetComponent<Rigidbody>().velocity += movingPlatform.GetComponent<Rigidbody>().velocity;
+			}
 			return;
 		}
 
@@ -46,6 +61,9 @@ public class PlayerMove : MonoBehaviour {
 		//After player hits a force pad, they are subject to force pads velocity until they hit something
 		if (!inForcePad) {
 			GetComponent<Rigidbody>().velocity = new Vector2 (moveX * speed, GetComponent<Rigidbody>().velocity.y);
+			if (!isOnGround && !isOnPlatform) {
+				GetComponent<Rigidbody>().velocity = new Vector2 (GetComponent<Rigidbody>().velocity.x * reducedAirFactor, GetComponent<Rigidbody>().velocity.y);
+			}
 		}
 		
 		if (jump) {
@@ -68,7 +86,11 @@ public class PlayerMove : MonoBehaviour {
 //			if(playerHealth.UseSpeedBoost())
 //				StartCoroutine("SpeedBoost");
 //		}
-		
+
+		// if you're on a moving platform
+		if (isOnMovingPlatform) {
+			GetComponent<Rigidbody>().velocity += movingPlatform.GetComponent<Rigidbody>().velocity;
+		}
 		
 	}
 	
@@ -118,10 +140,13 @@ public class PlayerMove : MonoBehaviour {
 		if(collision.gameObject.CompareTag("Ball")){
 			if ((collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (collision.gameObject.GetComponent<Ball>().possesed == false)) {
 				playerController.HitByBall();
+				isPlayerFalling = true;
+				playerFall.fallOff(collision.gameObject);
+				
 			}
 
 			if (collision.gameObject.GetComponent<Ball>().playerColor != -1)  {
-				collision.gameObject.GetComponent<Ball>().findPlayerAndReturn();
+//				collision.gameObject.GetComponent<Ball>().findPlayerAndReturn();
 			}
 		}
 	}
@@ -134,6 +159,23 @@ public class PlayerMove : MonoBehaviour {
 				Physics.IgnoreCollision(collision.collider,this.gameObject.GetComponent<Collider>(),true);
 				dropThroughPlatform = false;
 			}
+		}
+		
+		if (collision.gameObject.name == "Moving Platform") {
+			isOnMovingPlatform = true;
+			movingPlatform = collision.gameObject;
+		}
+
+		if (collision.gameObject.CompareTag("Ground")) {
+			isOnGround = true;
+			doubleJump = true;
+			inForcePad = false;
+		}
+		
+		if (collision.gameObject.CompareTag ("Platform")) {
+			isOnPlatform = true;
+			doubleJump = true;
+			inForcePad = false;
 		}
 		
 	}
@@ -150,6 +192,8 @@ public class PlayerMove : MonoBehaviour {
 		
 		if (collision.gameObject.CompareTag ("RightWall"))
 			isOnRightWall = false;
+		if (collision.gameObject.name == "Moving Platform") 
+			isOnMovingPlatform = false;
 	}
 	
 	void OnTriggerEnter(Collider other){

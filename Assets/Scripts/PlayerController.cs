@@ -37,14 +37,14 @@ public class PlayerController : MonoBehaviour {
 	public Transform[] targets;
 	private LineRenderer sightLine;
 	public PlayerAim playerAim;
-	
+
 	// Use this for initialization
 	void Start () {
 		playerMovement = GetComponent<PlayerMove> ();
 		playerAim = GetComponent<PlayerAim> ();
 		sightLine = gameObject.GetComponent<LineRenderer> ();
 		int temp = InputManager.Devices.Count;
-	
+
 		if (gameObject.name == "Player1") {
 			if(temp < 1) return;
 			playerControl = InputManager.Devices [0];
@@ -137,45 +137,36 @@ public class PlayerController : MonoBehaviour {
 //			}
 //		}
 		
-		if (playerControl.Action1.WasPressed)
+		if (playerControl.Action1.WasPressed) {
 			jump = true;
-		else if (playerControl.Action3.WasPressed) {
-			if (isBallPossessed) {
-				ThrowBall ();
-			}
-		} 
-		else if (playerControl.Action3.IsPressed) {
-			if (!isBallPossessed) {
-				possessedBall.findPlayerAndReturn();
-			}
 		}
-		else if (playerControl.RightTrigger.WasPressed) {
+		else if (playerControl.RightTrigger.IsPressed) {
+			if (isBallPossessed) {
+				Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
+				throwMovement.Normalize ();
+				Vector3 shotDirection3D = new Vector3 (throwMovement.x, throwMovement.y, 1);
+//				playerAim.UpdateGuidePosition (shotDirection3D);
+			}
+		} else if (playerControl.RightTrigger.WasReleased) {
+			if (isBallPossessed) {
+				ThrowBall();
+			} else {
+				possessedBall.returnBall();
+			}
+		} else if (!isBallPossessed) {
+			float hm = playerControl.LeftStickX;
+			float vm = playerControl.LeftStickY;
+			Vector3 forceVector = new Vector3(hm * throwSpeed, vm * throwSpeed, 1);
+			possessedBall.applyExtraControl(forceVector); 
+		}
+		else if (playerControl.Action3.WasPressed) {
 			speedBoost = true;
 		}
 		else if (playerControl.Action4.WasPressed)
 			BarrelRoll ();
 		
 		if (playerControl.LeftTrigger.IsPressed) {
-			
-//			float maxDistance = 10000;
-//			Transform myTarget = targets[0];
-//			foreach (Transform target in targets) {
-//				float distance = Vector3.Distance(target.position, transform.position);
-//				if (distance < maxDistance) {
-//					myTarget = target;
-//				}
-//			}
-//			
-//			sightLine.enabled = true;
-//			sightLine.SetPosition(0, transform.position);
-//			sightLine.SetPosition(1, myTarget.position);
-
-			Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
-			throwMovement.Normalize ();
-			
-			Vector3 shotDirection3D = new Vector3 (throwMovement.x, throwMovement.y, 1);
-			playerAim.UpdateGuidePosition (shotDirection3D);
-	          lockPosition = true;
+			lockPosition = true;
 		}
 		
 		if (playerControl.Action1.WasReleased)
@@ -250,6 +241,7 @@ public class PlayerController : MonoBehaviour {
 
 		//possessedBall.gameObject.GetComponent<Collider> ().enabled = true;
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
+		possessedBall.ballCanBeControlled = true;
 
 		possessedBall.gameObject.GetComponent<TrailRenderer> ().enabled = true;
 		possessedBall.GetComponent<Rigidbody>().velocity = new Vector2 (throwSpeed * throwMovement.x, throwMovement.y*throwSpeed);
@@ -271,18 +263,19 @@ public class PlayerController : MonoBehaviour {
 	
 	//React to getting hit by a ball
 	public void HitByBall() {
-		justHit = true;
-
-		print ("hit by ball");
-
-		// for when you are playing capture the flag
-		if(Application.loadedLevelName.Equals("_CaptureTheFlag")) {
+		if (KingOfTheHill.access.isKing(playerMovement.playerColor)) {
+			this.transform.localScale -= new Vector3(1f, 3f, 0.625f);
+			possessedBall.transform.localScale -= new Vector3(1.125f, 1.125f, 1.125f);
+		}
+		else {
+			justHit = true;
 			if (!isBallPossessed) {
 				PickUpBall(possessedBall.gameObject);
 			}
-			this.gameObject.SetActive(false);
 			possessedBall.gameObject.SetActive(false);
-			Invoke("returnToStart",2f);
+			playerMovement.isOnMovingPlatform = false;
+			MainCamera.access.players.Remove (this.gameObject);
+			Invoke("returnToStart",4f);
 		}
 	}
 	
@@ -293,13 +286,18 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	public void returnToStart() {
-		this.transform.position = startPos;
-		this.gameObject.SetActive(true);
+		Rigidbody rigid = this.gameObject.GetComponent<Rigidbody> ();
+		this.transform.position = RespawnPosition.access.generateRespawnPoint ();
 		possessedBall.gameObject.SetActive(true);
-		this.gameObject.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+		possessedBall.transform.position = this.transform.position;
+		rigid.constraints = RigidbodyConstraints.FreezeRotation ^ RigidbodyConstraints.FreezePositionZ;
+		rigid.rotation = Quaternion.identity;
+		rigid.velocity = Vector3.zero;
 		possessedBall.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
-
+		MainCamera.access.players.Add (this.gameObject);
+		playerMovement.isPlayerFalling = false;
+		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
 	
 	
