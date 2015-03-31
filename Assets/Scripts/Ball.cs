@@ -20,7 +20,7 @@ public class Ball : MonoBehaviour {
 	private float TimePossessed;
 	public Color trailColor;
 	public bool isOnGround = false;
-	GameObject ball1, ball2, ball3, ball4, player1, player2, player3, player4, controlBallPowerUp;
+	public GameObject ballOwner, controlBallPowerUp;
 	public List<GameObject> players;
 	public float returnSpeed;
 	public bool ballShouldReturn;
@@ -36,16 +36,11 @@ public class Ball : MonoBehaviour {
 	void Start () {
 		ballTrail = GetComponent<TrailRenderer> ();
 		ballTrail.enabled = false;
-		player1 = GameObject.Find ("Player1");
-		player2 = GameObject.Find ("Player2");
-		player3 = GameObject.Find ("Player3");
-		player4 = GameObject.Find ("Player4");
 		controlBallPowerUp = GameObject.Find ("Power Up 1");
 		ballShouldReturn = false;
 		ballCanBeControlled = false;
 
 		ballTrail.material = this.gameObject.GetComponent<Renderer>().material;
-		//this.GetComponent<Renderer>().material.color = startColor;
 	}
 	
 	void Update () {
@@ -59,68 +54,17 @@ public class Ball : MonoBehaviour {
 			break;
 		}
 
-		
 
-
-//		GameObject closestPlayer = players[0];
-//		float minDist = Mathf.Infinity;
-//
-//		foreach (GameObject cur in players) {
-//			float curDist = Vector3.Distance(cur.transform.position, this.transform.position);
-//			if (curDist < minDist) {
-//				minDist = curDist;
-//				closestPlayer = cur;
-//			}
-//		}
-//
-//		if (minDist < 50f) {
-//			float step = 10 * Time.deltaTime;
-//			transform.position = Vector3.MoveTowards(transform.position, closestPlayer.transform.position, step);
-//			return;
-//		}
-
-		float player1BallDistance = Vector3.Distance(transform.position, player1.transform.position);
-		float player2BallDistance = Vector3.Distance(transform.position, player2.transform.position);
-		float player3BallDistance = Vector3.Distance(transform.position, player3.transform.position);
-		float player4BallDistance = Vector3.Distance(transform.position, player4.transform.position);
-
-		if (player1BallDistance  <= recallDistanceThreshold) {
-			ballShouldReturn = false;
-		} else if (player2BallDistance <= recallDistanceThreshold) {
-			ballShouldReturn = false;
-		}
-		else if (player3BallDistance <= recallDistanceThreshold) {
-			ballShouldReturn = false;
-		}
-		else if (player4BallDistance <= recallDistanceThreshold) {
+		float playerBallDistance = Vector3.Distance(transform.position, ballOwner.transform.position);
+		if (playerBallDistance  <= recallDistanceThreshold) {
 			ballShouldReturn = false;
 		}
 		
 		if (ballShouldReturn) {
 			float step = returnSpeed * Time.deltaTime;
-			if (playerColor == 1) {
-				gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-				gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-				transform.position = Vector3.MoveTowards(transform.position, player1.transform.position, step);
-			}
-			else if (playerColor == 2) {
-				gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-				gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-				transform.position = Vector3.MoveTowards(transform.position, player2.transform.position, step);
-			}
-			else if (playerColor == 3) {
-				gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-				gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-				transform.position = Vector3.MoveTowards(transform.position, player3.transform.position, step);
-			}
-			else if (playerColor == 4) {
-				gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-				gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-				transform.position = Vector3.MoveTowards(transform.position, player4.transform.position, step);
-			}
-			else {
-				Debug.Log ("BALL NOT POSSESSED BY ANYONE");
-			}
+			gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+			gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
+			transform.position = Vector3.MoveTowards(transform.position, ballOwner.transform.position, step);
 		}
 
 	}

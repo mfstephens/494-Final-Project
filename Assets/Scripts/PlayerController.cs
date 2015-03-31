@@ -34,15 +34,13 @@ public class PlayerController : MonoBehaviour {
 	public Color endColor;
 
 	// player aim stuff
-	public Transform[] targets;
-	private LineRenderer sightLine;
 	public PlayerAim playerAim;
+	Vector3 lastAimPosition;
+
 
 	// Use this for initialization
 	void Start () {
 		playerMovement = GetComponent<PlayerMove> ();
-		playerAim = GetComponent<PlayerAim> ();
-		sightLine = gameObject.GetComponent<LineRenderer> ();
 		int temp = InputManager.Devices.Count;
 
 		if (gameObject.name == "Player1") {
@@ -89,7 +87,6 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		playerAim.RemoveGuide ();
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
 		
@@ -136,18 +133,20 @@ public class PlayerController : MonoBehaviour {
 //				}
 //			}
 //		}
+
+		Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
+		Vector3 shotDirection3D = new Vector3 (throwMovement.x, throwMovement.y, 1);
+		if (shotDirection3D.x == 0 && shotDirection3D.y == 0) {
+			playerAim.UpdateGuidePosition (lastAimPosition);
+		} else {
+			playerAim.UpdateGuidePosition (shotDirection3D);
+			lastAimPosition = shotDirection3D;
+		}
 		
 		if (playerControl.Action1.WasPressed) {
 			jump = true;
 		}
-		else if (playerControl.RightTrigger.IsPressed) {
-			if (isBallPossessed) {
-				Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
-				throwMovement.Normalize ();
-				Vector3 shotDirection3D = new Vector3 (throwMovement.x, throwMovement.y, 1);
-//				playerAim.UpdateGuidePosition (shotDirection3D);
-			}
-		} else if (playerControl.RightTrigger.WasReleased) {
+		else if (playerControl.RightTrigger.WasReleased) {
 			if (isBallPossessed) {
 				ThrowBall();
 			} else {
