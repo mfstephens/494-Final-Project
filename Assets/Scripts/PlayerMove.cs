@@ -184,6 +184,16 @@ public class PlayerMove : MonoBehaviour {
 		if (playerController.possessedBall.Equals(other.gameObject.GetComponent<Ball>())) {
 			playerController.PickUpBall(other.gameObject);
 		}
-		
+		if (other.gameObject.GetComponent<Ball>() != null) {
+			if (!playerController.possessedBall.Equals(other.gameObject.GetComponent<Ball>())) {
+				Time.timeScale = 0.25f;
+				playerController.ballTarget = other.gameObject.GetComponent<Ball>();
+			}
+		}
+	}
+
+	void OnTriggerExit(Collider other){
+		Time.timeScale = 1.0f;
+		playerController.ballTarget = null;
 	}
 }

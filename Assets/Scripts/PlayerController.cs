@@ -36,13 +36,15 @@ public class PlayerController : MonoBehaviour {
 	// player aim stuff
 	public PlayerAim playerAim;
 	Vector3 lastAimPosition;
+	Vector3 lastShotDirection;
+	public Ball ballTarget;
 
 
 	// Use this for initialization
 	void Start () {
 		playerMovement = GetComponent<PlayerMove> ();
 		int temp = InputManager.Devices.Count;
-
+		ballTarget = null;
 		if (gameObject.name == "Player1") {
 			if(temp < 1) return;
 			playerControl = InputManager.Devices [0];
@@ -136,6 +138,7 @@ public class PlayerController : MonoBehaviour {
 
 		Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
 		Vector3 shotDirection3D = new Vector3 (throwMovement.x, throwMovement.y, 1);
+		lastShotDirection = shotDirection3D;
 		if (shotDirection3D.x == 0 && shotDirection3D.y == 0) {
 			playerAim.UpdateGuidePosition (lastAimPosition);
 		} else {
@@ -152,10 +155,8 @@ public class PlayerController : MonoBehaviour {
 			} else {
 				possessedBall.returnBall();
 			}
-		} else if (!isBallPossessed) {
-			float hm = playerControl.LeftStickX;
-			float vm = playerControl.LeftStickY;
-			Vector3 forceVector = new Vector3(hm * throwSpeed, vm * throwSpeed, 1);
+		} else if (!isBallPossessed && ballTarget == null) {
+			Vector3 forceVector = new Vector3(horizontalMovement * throwSpeed, verticalMovement * throwSpeed, 1);
 			possessedBall.applyExtraControl(forceVector); 
 		}
 		else if (playerControl.Action3.WasPressed) {
@@ -220,27 +221,21 @@ public class PlayerController : MonoBehaviour {
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
 
-		if (horizontalMovement == 0 && verticalMovement == 0) 
-			return;
 
 		isBallPossessed = false;
 
 		Vector2 throwMovement = new Vector2 (horizontalMovement, verticalMovement);
-		throwMovement.Normalize ();
+		if (ballTarget != null) {
+			Vector3 distance3D = ballTarget.transform.position - transform.position;
+			throwMovement = new Vector2 (distance3D.x, distance3D.y);
+		}
 
-//		if (playerControl.LeftTrigger.IsPressed) {
-//			float maxDistance = 10000;
-//			Transform myTarget = targets[0];
-//			foreach (Transform target in targets) {
-//				float distance = Vector3.Distance(target.position, transform.position);
-//				if (distance < maxDistance) {
-//					myTarget = target;
-//				}
-//			}
-//			Vector3 distance3D = myTarget.position - transform.position;
-//			throwMovement = new Vector2 (distance3D.x, distance3D.y);
-//			throwMovement.Normalize();
-//		}
+		if (horizontalMovement == 0 && verticalMovement == 0) {
+			throwMovement = lastAimPosition;
+		}
+
+
+		throwMovement.Normalize ();
 
 
 		//possessedBall.gameObject.GetComponent<Collider> ().enabled = true;
@@ -270,6 +265,8 @@ public class PlayerController : MonoBehaviour {
 		justHit = true;
 
 		print ("hit by ball");
+
+		Time.timeScale = 1.0f;
 
 		// for when you are playing capture the flag
 		if(Application.loadedLevelName.Equals("_CaptureTheFlag")) {
