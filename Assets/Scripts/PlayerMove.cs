@@ -6,7 +6,6 @@ public class PlayerMove : MonoBehaviour {
 	public float speed;
 	public float jumpSpeed;
 	public float jumpShortSpeed;
-	public float dropSpeed;
 	public float wallJump;
 	public float speedBoostForce;
 	public float speedBoostDuration;
@@ -30,7 +29,7 @@ public class PlayerMove : MonoBehaviour {
 	void Start () {
 		playerController = this.GetComponent<PlayerController> ();
 	}
-	
+
 	public void Movement(float moveX, float moveY, bool jump, bool cancelJump, bool speedBoost,bool lockPosition,bool drop){
 		
 		//Player must stand still while in lock position
@@ -47,8 +46,6 @@ public class PlayerMove : MonoBehaviour {
 		//After player hits a force pad, they are subject to force pads velocity until they hit something
 		if (!inForcePad) {
 			GetComponent<Rigidbody>().velocity = new Vector2 (moveX * speed, GetComponent<Rigidbody>().velocity.y);
-			if(moveY < 0)
-				GetComponent<Rigidbody>().AddForce(new Vector3 (0, dropSpeed,0));
 		}
 		
 		if (jump) {

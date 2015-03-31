@@ -183,11 +183,6 @@ public class PlayerController : MonoBehaviour {
 		if (playerControl.LeftTrigger.WasReleased) {
 			lockPosition = false;
 		}
-	}
-	
-	void FixedUpdate(){
-		float horizontalMovement = playerControl.LeftStickX;
-		float verticalMovement = playerControl.LeftStickY;
 
 		//TODO: person in charge of animations 
 		if (horizontalMovement > 0 && transform.eulerAngles.y == 180)
@@ -202,7 +197,7 @@ public class PlayerController : MonoBehaviour {
 		speedBoost = false;
 		dropThroughPlatform = false;
 	}
-	
+
 	void Flip(){
 		transform.eulerAngles += new Vector3 (0, 180f, 0);
 	}
