@@ -242,7 +242,6 @@ public class PlayerController : MonoBehaviour {
 	//React to getting hit by a ball
 	public void HitByBall() {
 
-		Time.timeScale = 1.0f;
 
 		if (Application.loadedLevelName.Equals ("_OneToTwo")) {
 			CaptureTheFlagMode.access.playerScore(this.gameObject);
@@ -262,6 +261,12 @@ public class PlayerController : MonoBehaviour {
 //				possessedBall.transform.localScale -= new Vector3(1.125f, 1.125f, 1.125f);
 //			}
 //			else {
+
+			if ((FlagRotate.access.possessingPlayer != null) && FlagRotate.access.possessingPlayer.name.Equals(this.gameObject.name)) {
+				FlagRotate.access.dropFlag();
+				FlagRotate.access.currentPlayer = -1;
+			}
+	
 				justHit = true;
 				if (!isBallPossessed) {
 					PickUpBall(possessedBall.gameObject);
@@ -300,9 +305,10 @@ public class PlayerController : MonoBehaviour {
 		MainCamera.access.players.Add (this.gameObject);
 		MainCamera.access.players.Add (possessedBall.gameObject);
 		playerMovement.isPlayerFalling = false;
+		Physics.IgnoreCollision(this.gameObject.GetComponent<Collider>(), FlagRotate.access.gameObject.GetComponent<Collider>(), false);
 		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
-	
+
 	
 }
 

@@ -139,6 +139,7 @@ public class PlayerMove : MonoBehaviour {
 		
 		if(collision.gameObject.CompareTag("Ball")){
 			if ((collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (collision.gameObject.GetComponent<Ball>().possesed == false)) {
+				print ("in if");
 				playerController.HitByBall();
 				isPlayerFalling = true;
 				playerFall.fallOff(collision.gameObject);
@@ -204,16 +205,7 @@ public class PlayerMove : MonoBehaviour {
 		if (playerController.possessedBall.Equals(other.gameObject.GetComponent<Ball>())) {
 			playerController.PickUpBall(other.gameObject);
 		}
-		if (other.gameObject.GetComponent<Ball>() != null) {
-			if (!playerController.possessedBall.Equals(other.gameObject.GetComponent<Ball>())) {
-				Time.timeScale = 0.25f;
-				playerController.ballTarget = other.gameObject.GetComponent<Ball>();
-			}
-		}
 	}
 
-	void OnTriggerExit(Collider other){
-		Time.timeScale = 1.0f;
-		playerController.ballTarget = null;
-	}
+
 }

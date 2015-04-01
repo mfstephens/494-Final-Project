@@ -33,6 +33,10 @@ public class CaptureTheFlagMode : MonoBehaviour {
 				roundClock.text = (currentTime/60).ToString()+":00";
 			else
 				roundClock.text = (currentTime/60).ToString()+":"+(currentTime%60).ToString();
+			if (currentTime == 0) {
+				startGame = false;
+				Time.timeScale = 0;
+			}
 		}
 	}
 

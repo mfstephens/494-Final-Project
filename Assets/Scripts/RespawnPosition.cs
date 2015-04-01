@@ -28,21 +28,10 @@ public class RespawnPosition : MonoBehaviour {
 
 		while (nextRespawnPoint == lastRespawnPoint) {
 			// if the flag is in the middle
-			if (flag.transform.position == new Vector3(-130.7f, 162.9f, 5f)) {
-				int tower = Random.Range(0,2);
-				int platform = Random.Range(0,5);
-				if (tower == 0) {
-					nextRespawnPoint = respawnPoints[0, platform];
-				}
-				else if (tower == 1) {
-					nextRespawnPoint = respawnPoints[2, platform];
-				}
-			}
+			int tower = Random.Range(0,3);
+			int platform = Random.Range(0,5);
 			// if the flag is on one of the sides
-			else { 
-				int platform = Random.Range(0,5);
-				nextRespawnPoint = respawnPoints[1,platform];
-			}
+			nextRespawnPoint = respawnPoints[tower,platform];
 		}
 
 		lastRespawnPoint = nextRespawnPoint;
