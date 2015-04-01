@@ -29,10 +29,12 @@ public class CaptureTheFlagMode : MonoBehaviour {
 	void Update () {
 		if (startGame) {
 			int currentTime = Mathf.CeilToInt(roundLength-(Time.time - startGameTime));
-			if(currentTime%60 == 0)
-				roundClock.text = (currentTime/60).ToString()+":00";
-			else
-				roundClock.text = (currentTime/60).ToString()+":"+(currentTime%60).ToString();
+			if(currentTime%60 < 10){
+				roundClock.text = (currentTime/60).ToString() + ":0"+(currentTime%60).ToString();
+			}
+			else{
+				roundClock.text = (currentTime/60).ToString() + ":"+(currentTime%60).ToString();
+			}
 			if (currentTime == 0) {
 				startGame = false;
 				Time.timeScale = 0;
