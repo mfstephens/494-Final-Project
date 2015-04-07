@@ -21,6 +21,7 @@ public class StartMenu : MonoBehaviour {
 	//Means we are currently on the main menu screen
 	private float currentScreen = -1f;
 
+
 	// Use this for initialization
 	void Start () {
 		player1 = InputManager.Devices[0];
@@ -84,11 +85,12 @@ public class StartMenu : MonoBehaviour {
 			if(player1.Action1.WasPressed){
 				//1-2 Players Required
 				if(currentChooseGameSelection == 0){
-					Application.LoadLevel("_OneToTwo");
+					PassInfoOnLoad.gameNameToLoad = "_ThreeToFour_scott";
 				}
 				else{
-					Application.LoadLevel("_ThreeToFour");
+					PassInfoOnLoad.gameNameToLoad = "_ThreeToFour";
 				}
+				Application.LoadLevel("_CharSelect");
 			}
 		}
 

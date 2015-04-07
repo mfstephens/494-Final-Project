@@ -57,7 +57,7 @@ public class FlagRotate : MonoBehaviour {
 		if (other.gameObject.CompareTag ("Player")) {
 
 
-			if (this.gameObject.GetComponentInChildren<Renderer> ().material.color == other.gameObject.GetComponent<Renderer> ().material.color) {
+			if (this.gameObject.GetComponentInChildren<Renderer> ().material.color == other.gameObject.GetComponent<PlayerController>().playerColor) {
 				return;
 			}
 

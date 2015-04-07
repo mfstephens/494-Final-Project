@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour {
 	public Ball possessedBall;
 	public bool isBallPossessed = false;
 
-	private Color playerColor;
+	public Color playerColor;
 
 	// player aim stuff
 	public PlayerAim playerAim;
@@ -79,9 +79,7 @@ public class PlayerController : MonoBehaviour {
 //		this.GetComponent<Rigidbody>().velocity = Vector3.zero;
 //		isBallPossessed = true;
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
-		PickUpBall (possessedBall.gameObject);
-		playerColor = this.GetComponent<Renderer>().material.color;
-		
+		PickUpBall (possessedBall.gameObject);		
 	}
 	
 	// Update is called once per frame
@@ -112,7 +110,6 @@ public class PlayerController : MonoBehaviour {
 		//Characters blinks when they were hit for stunnedDuration (can customize to stun, add more effects)
 		if (justHit) {
 			if(timeHit + stunnedDuration <= Time.time){
-				this.GetComponent<Renderer>().material.color = playerColor;
 				justHit = false;
 			}
 		}
