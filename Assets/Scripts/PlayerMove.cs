@@ -139,7 +139,6 @@ public class PlayerMove : MonoBehaviour {
 		
 		if(collision.gameObject.CompareTag("Ball")){
 			if ((collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (collision.gameObject.GetComponent<Ball>().possesed == false)) {
-				print ("in if");
 				playerController.HitByBall();
 				isPlayerFalling = true;
 				playerFall.fallOff(collision.gameObject);
@@ -205,6 +204,14 @@ public class PlayerMove : MonoBehaviour {
 		if (playerController.possessedBall.Equals(other.gameObject.GetComponent<Ball>())) {
 			playerController.PickUpBall(other.gameObject);
 		}
+	}
+
+	public bool canShield() {
+		print ("calling canshield");
+		if (isOnPlatform || isOnGround) 
+			return true;
+
+		return false;
 	}
 
 

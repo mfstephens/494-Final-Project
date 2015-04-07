@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
 	public float stunnedDuration;
 	public float rotateSpeed;
 	public Vector3 startPos;
+	public GameObject bubbleShield;
 	
 	private float totalRotation = 0;
 	private float timeHit;
@@ -20,8 +21,10 @@ public class PlayerController : MonoBehaviour {
 	private bool justHit = false;
 	private bool playerStunned = false;
 	private bool barrelRoll = false;
-	private bool lockPosition = false;
+	public bool lockPosition = false;
 	private bool dropThroughPlatform = false;
+	public bool isStunned = false;
+	public bool shieldOn = false;
 	
 	public InputDevice playerControl;
 	private PlayerMove playerMovement;
@@ -146,10 +149,10 @@ public class PlayerController : MonoBehaviour {
 		if (playerControl.Action1.WasPressed) {
 			jump = true;
 		}
-		else if (playerControl.RightTrigger.WasReleased) {
-			if (isBallPossessed) {
+		else if (playerControl.RightTrigger.WasPressed) {
+			if (isBallPossessed && !shieldOn && !isStunned) {
 				ThrowBall();
-			} else {
+			} else if (!shieldOn && !isStunned) {
 				possessedBall.returnBall();
 			}
 		} else if (!isBallPossessed && ballTarget == null) {
@@ -162,14 +165,16 @@ public class PlayerController : MonoBehaviour {
 		else if (playerControl.Action4.WasPressed)
 			BarrelRoll ();
 		
-		if (playerControl.LeftTrigger.IsPressed) {
+		if (playerControl.LeftTrigger.IsPressed && !isStunned) {
 			lockPosition = true;
+			bubbleShield.GetComponent<BubbleShield>().startShield();
 		}
 		
 		if (playerControl.Action1.WasReleased)
 			jumpCancel = true;
-		if (playerControl.LeftTrigger.WasReleased) {
+		if (playerControl.LeftTrigger.WasReleased && !isStunned) {
 			lockPosition = false;
+			bubbleShield.GetComponent<BubbleShield>().endShield();
 		}
 
 		//TODO: person in charge of animations 
@@ -241,7 +246,7 @@ public class PlayerController : MonoBehaviour {
 	
 	//React to getting hit by a ball
 	public void HitByBall() {
-
+		print ("hit by ball");
 
 		if (Application.loadedLevelName.Equals ("_OneToTwo")) {
 			CaptureTheFlagMode.access.playerScore(this.gameObject);
@@ -293,6 +298,7 @@ public class PlayerController : MonoBehaviour {
 			this.transform.position = RespawnPositionTwo.access.generateRespawnPoint ();
 		}
 		else {
+			print("threefour");
 			this.transform.position = RespawnPosition.access.generateRespawnPoint ();
 		}
 		possessedBall.gameObject.SetActive(true);
@@ -309,6 +315,5 @@ public class PlayerController : MonoBehaviour {
 		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
 
-	
 }
 
