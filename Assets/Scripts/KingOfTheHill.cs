@@ -76,7 +76,7 @@ public class KingOfTheHill : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
-		this.gameObject.GetComponent<Renderer> ().material.color = other.gameObject.GetComponent<Renderer> ().material.color;
+		this.gameObject.GetComponent<Renderer> ().material.color = other.gameObject.GetComponent<PlayerController>().playerColor;
 	}
 
 

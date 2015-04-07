@@ -60,7 +60,7 @@ public class Ball : MonoBehaviour {
 			ballShouldReturn = false;
 		}
 		
-		if (ballShouldReturn) {
+		if (ballShouldReturn && !ballOwner.GetComponent<PlayerMove>().isPlayerFalling) {
 			float step = returnSpeed * Time.deltaTime;
 			gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
 			gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;

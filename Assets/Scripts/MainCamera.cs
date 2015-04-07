@@ -28,6 +28,10 @@ public class MainCamera : MonoBehaviour {
 	void Start() {
 		mainCamera = GetComponent<Camera> ();
 		access = this;
+
+		//ignore all collisions except with ball
+		Physics.IgnoreLayerCollision (11, 10);
+		Physics.IgnoreLayerCollision (11, 0);
 	}
 	
 	// Update is called once per frame

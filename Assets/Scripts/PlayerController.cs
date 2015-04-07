@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour {
 	public Ball possessedBall;
 	public bool isBallPossessed = false;
 
-	private Color playerColor;
+	public Color playerColor;
 
 	// player aim stuff
 	public PlayerAim playerAim;
@@ -82,9 +82,7 @@ public class PlayerController : MonoBehaviour {
 //		this.GetComponent<Rigidbody>().velocity = Vector3.zero;
 //		isBallPossessed = true;
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
-		PickUpBall (possessedBall.gameObject);
-		playerColor = this.GetComponent<Renderer>().material.color;
-		
+		PickUpBall (possessedBall.gameObject);		
 	}
 	
 	// Update is called once per frame
@@ -115,7 +113,6 @@ public class PlayerController : MonoBehaviour {
 		//Characters blinks when they were hit for stunnedDuration (can customize to stun, add more effects)
 		if (justHit) {
 			if(timeHit + stunnedDuration <= Time.time){
-				this.GetComponent<Renderer>().material.color = playerColor;
 				justHit = false;
 			}
 		}
@@ -166,14 +163,14 @@ public class PlayerController : MonoBehaviour {
 			BarrelRoll ();
 		
 		if (playerControl.LeftTrigger.IsPressed && !isStunned) {
-			lockPosition = true;
+			//lockPosition = true;
 			bubbleShield.GetComponent<BubbleShield>().startShield();
 		}
 		
 		if (playerControl.Action1.WasReleased)
 			jumpCancel = true;
 		if (playerControl.LeftTrigger.WasReleased && !isStunned) {
-			lockPosition = false;
+			//lockPosition = false;
 			bubbleShield.GetComponent<BubbleShield>().endShield();
 		}
 
@@ -248,17 +245,19 @@ public class PlayerController : MonoBehaviour {
 	public void HitByBall() {
 		print ("hit by ball");
 
+		this.transform.position -= new Vector3 (0, 0, 40f);
+
 		if (Application.loadedLevelName.Equals ("_OneToTwo")) {
 			CaptureTheFlagMode.access.playerScore(this.gameObject);
 			justHit = true;
 			if (!isBallPossessed) {
 				PickUpBall(possessedBall.gameObject);
 			}
-			possessedBall.gameObject.SetActive(false);
+			//possessedBall.gameObject.SetActive(false);
 			playerMovement.isOnMovingPlatform = false;
 			MainCamera.access.players.Remove (this.gameObject);
 			MainCamera.access.players.Remove (possessedBall.gameObject);
-			Invoke("returnToStart",4f);
+			Invoke("returnToStart",2f);
 		}
 		else if (Application.loadedLevelName.Equals("_ThreeToFour")) {
 //			if (KingOfTheHill.access != null && KingOfTheHill.access.isKing(playerMovement.playerColor)) {
@@ -273,14 +272,14 @@ public class PlayerController : MonoBehaviour {
 			}
 	
 				justHit = true;
-				if (!isBallPossessed) {
-					PickUpBall(possessedBall.gameObject);
-				}
-				possessedBall.gameObject.SetActive(false);
+//				if (!isBallPossessed) {
+//					PickUpBall(possessedBall.gameObject);
+//				}
+				//possessedBall.gameObject.SetActive(false);
 				playerMovement.isOnMovingPlatform = false;
 				MainCamera.access.players.Remove (this.gameObject);
 				MainCamera.access.players.Remove (possessedBall.gameObject);
-				Invoke("returnToStart",4f);
+				Invoke("returnToStart",2f);
 			}
 //		}
 	}
@@ -301,8 +300,9 @@ public class PlayerController : MonoBehaviour {
 			print("threefour");
 			this.transform.position = RespawnPosition.access.generateRespawnPoint ();
 		}
-		possessedBall.gameObject.SetActive(true);
-		possessedBall.transform.position = this.transform.position;
+		//possessedBall.gameObject.SetActive(true);
+		//possessedBall.transform.position = this.transform.position;
+		possessedBall.ballShouldReturn = true;
 		rigid.constraints = RigidbodyConstraints.FreezeRotation ^ RigidbodyConstraints.FreezePositionZ;
 		rigid.rotation = Quaternion.identity;
 		rigid.velocity = Vector3.zero;

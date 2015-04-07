@@ -9,23 +9,21 @@ public class BubbleShield : MonoBehaviour {
 	public float rechargeSpeed;
 	public Vector3 minimumSize;
 	private Vector3 originalSize;
-	private float percentDone;
+	private float percentDone = 0;
 
 	// Use this for initialization
 	void Start () {
-		Color assign = player.GetComponent<Renderer> ().material.color;
+		Color assign = player.GetComponent<PlayerController> ().playerColor;
 		this.GetComponent<Renderer> ().material.color = new Color (assign.a, assign.g, assign.b, 0.5f);
 
 		originalSize = this.transform.localScale;
 		control = player.GetComponent<PlayerController> ();
 		move = player.GetComponent<PlayerMove> ();
 
-		//ignore all collisions except with ball
-		Physics.IgnoreLayerCollision (11, 10);
-		//Physics.IgnoreLayerCollision (11, 9);
 		Physics.IgnoreCollision (GetComponent<Collider> (), player.GetComponent<Collider> ());
-		Physics.IgnoreLayerCollision (11, 8);
-		Physics.IgnoreLayerCollision (11, 0);
+		Physics.IgnoreCollision (GetComponent<Collider> (), control.possessedBall.GetComponent<Collider>());
+		//Physics.IgnoreLayerCollision (11, 8);
+
 		this.GetComponent<Renderer> ().enabled = false;
 		this.GetComponent<Collider>().isTrigger = true;
 
@@ -33,7 +31,7 @@ public class BubbleShield : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		this.transform.position = player.transform.position;
+		this.transform.position = player.transform.position + new Vector3(0,5f,0);
 
 		if (control.isStunned) {
 			return;
@@ -60,7 +58,7 @@ public class BubbleShield : MonoBehaviour {
 	}
 
 	public void startShield() {
-		if (move.canShield ()) {
+		if (((FlagRotate.access.currentPlayer == -1) || !player.name.Equals(FlagRotate.access.possessingPlayer.name)) && !move.isPlayerFalling) {
 			control.shieldOn = true;
 			this.GetComponent<Renderer> ().enabled = true;
 			this.GetComponent<Collider>().isTrigger = false;
