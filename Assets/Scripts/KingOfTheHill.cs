@@ -6,6 +6,8 @@ public class KingOfTheHill : MonoBehaviour {
 
 	public static KingOfTheHill access;
 
+	public InstantGuiWindow endGameUI;
+	public InstantGuiElement[] playerReady;
 
 	private Color origColor;
 	
@@ -27,6 +29,7 @@ public class KingOfTheHill : MonoBehaviour {
 	void Start() {
 		access = this;
 		roundClock.enabled = false;
+		//endGameUI.gameObject.SetActive(false);
 		StartCoroutine ("CountdownToBeginRound");
 		origColor = this.gameObject.GetComponent<Renderer> ().material.color;
 	}
@@ -35,11 +38,14 @@ public class KingOfTheHill : MonoBehaviour {
 	void Update () {
 		if (startGame) {
 			int currentTime = Mathf.CeilToInt(roundLength-(Time.time - startGameTime));
-			if(currentTime%60 == 0)
-				roundClock.text = (currentTime/60).ToString()+":00";
-			else
-				roundClock.text = (currentTime/60).ToString()+":"+(currentTime%60).ToString();
+			if(currentTime%60 < 10){
+				roundClock.text = (currentTime/60).ToString() + ":0"+(currentTime%60).ToString();
+			}
+			else{
+				roundClock.text = (currentTime/60).ToString() + ":"+(currentTime%60).ToString();
+			}
 			if (currentTime == 0) {
+				endGameUI.gameObject.SetActive(true);
 				startGame = false;
 				Time.timeScale = 0;
 			}

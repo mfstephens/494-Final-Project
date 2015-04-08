@@ -139,7 +139,6 @@ public class PlayerMove : MonoBehaviour {
 		
 		if(collision.gameObject.CompareTag("Ball")){
 			if ((collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (collision.gameObject.GetComponent<Ball>().possesed == false)) {
-				print ("in if");
 				playerController.HitByBall();
 				isPlayerFalling = true;
 				playerFall.fallOff(collision.gameObject);
