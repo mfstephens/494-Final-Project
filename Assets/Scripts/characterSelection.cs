@@ -91,7 +91,7 @@ public class characterSelection : MonoBehaviour {
 		for (int i = 0; i < numPlayers; i++) {
 			if(InputManager.Devices[i].Action1.WasPressed) readyButton_Handler(i, true);
 			if(InputManager.Devices[i].Action2.WasPressed) readyButton_Handler(i, false);
-			if(players_ready[i]) return;
+			if(players_ready[i]) continue;
 			horizontal = InputManager.Devices[i].LeftStickX;
 			vertical = InputManager.Devices[i].LeftStickY;
 			if(Mathf.Abs(horizontal) < .3f) cursorMoveHoriz_ready[i] = true;
