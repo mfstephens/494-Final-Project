@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using InControl;
+
 
 public class KingOfTheHill : MonoBehaviour {
 
 	public static KingOfTheHill access;
-
 
 	private Color origColor;
 	
@@ -19,7 +20,8 @@ public class KingOfTheHill : MonoBehaviour {
 	bool flagDropped = false;
 	private float startGameTime;
 
-
+	private int numberOfPlayersReady = 0;
+	
 	void Awake() {
 		access = this;
 	}
@@ -27,12 +29,14 @@ public class KingOfTheHill : MonoBehaviour {
 	void Start() {
 		access = this;
 		roundClock.enabled = false;
+		//endGameUI.gameObject.SetActive(false);
 		StartCoroutine ("CountdownToBeginRound");
 		origColor = this.gameObject.GetComponent<Renderer> ().material.color;
 	}
 
 	// Update is called once per frame
 	void Update () {
+		//Game Currently in Progress
 		if (startGame) {
 			int currentTime = Mathf.CeilToInt(roundLength-(Time.time - startGameTime));
 			if(currentTime%60 < 10){
@@ -42,6 +46,7 @@ public class KingOfTheHill : MonoBehaviour {
 				roundClock.text = (currentTime/60).ToString() + ":"+(currentTime%60).ToString();
 			}
 			if (currentTime == 0) {
+				EndGameMenu.access.EndOfGame();
 				startGame = false;
 				Time.timeScale = 0;
 			}
@@ -78,6 +83,4 @@ public class KingOfTheHill : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		this.gameObject.GetComponent<Renderer> ().material.color = other.gameObject.GetComponent<PlayerController>().playerColor;
 	}
-
-
 }

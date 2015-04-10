@@ -147,7 +147,7 @@ public class PlayerController : MonoBehaviour {
 		
 		if (playerControl.Action1.WasPressed) {
 			jump = true;
-		}
+		} 
 		else if (playerControl.RightTrigger.WasPressed) {
 			if (isBallPossessed && !shieldOn && !lockPosition && (Time.time - lastThrow > throwCoolDown)) {
 				ThrowBall();
@@ -166,6 +166,8 @@ public class PlayerController : MonoBehaviour {
 		}
 		else if (playerControl.Action4.WasPressed)
 			BarrelRoll ();
+		else if (playerControl.MenuWasPressed)
+			PauseMenu.access.PlayerPausedGame (playerNumber - 1);
 		
 		if (playerControl.LeftTrigger.IsPressed && !lockPosition) {
 			//lockPosition = true;
@@ -199,10 +201,11 @@ public class PlayerController : MonoBehaviour {
 				
 	//Throw ball in direction of left stick
 	void ThrowBall(){
-
 		if (playerMovement.isPlayerFalling) {
 			return;
 		}
+
+		FinalStatistics.finalStatistics.PlayerThrewBall (playerNumber);
 
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
@@ -248,7 +251,7 @@ public class PlayerController : MonoBehaviour {
 	
 	//React to getting hit by a ball
 	public void HitByBall() {
-		print ("hit by ball");
+	
 
 		this.transform.position -= new Vector3 (0, 0, 40f);
 
@@ -322,6 +325,8 @@ public class PlayerController : MonoBehaviour {
 		Physics.IgnoreCollision(this.gameObject.GetComponent<Collider>(), FlagRotate.access.gameObject.GetComponent<Collider>(), false);
 		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
+	
 
 }
+
 

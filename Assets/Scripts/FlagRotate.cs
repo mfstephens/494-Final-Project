@@ -38,6 +38,7 @@ public class FlagRotate : MonoBehaviour {
 //			this.gameObject.GetComponentInChildren<KingOfTheHill>().updateCurrentPlayer(-1);
 //		}
 		if (possessingPlayer != null) {
+			FinalStatistics.finalStatistics.AddCubePosession(currentPlayer+1,Time.deltaTime);
 			this.transform.position = possessingPlayer.transform.position + new Vector3(0,30f,0);
 		} else {
 			print ("player is null");
@@ -56,11 +57,9 @@ public class FlagRotate : MonoBehaviour {
 		
 		if (other.gameObject.CompareTag ("Player")) {
 
-
 			if (this.gameObject.GetComponentInChildren<Renderer> ().material.color == other.gameObject.GetComponent<PlayerController>().playerColor) {
 				return;
 			}
-
 			//this.transform.parent = other.gameObject.transform;
 
 			currentPlayer = other.gameObject.GetComponent<PlayerMove>().playerColor - 1;
