@@ -13,6 +13,11 @@ public class FinalStatistics : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		finalStatistics = this;
+		player1Stats = new PlayerStatistics();
+		player2Stats = new PlayerStatistics();
+		player3Stats = new PlayerStatistics();
+		player4Stats = new PlayerStatistics();
+		print ("Yo nigga");
 	}
 	
 	// Update is called once per frame
@@ -20,8 +25,30 @@ public class FinalStatistics : MonoBehaviour {
 	
 	}
 
-	public void PlayerHitByBall(int playerHit,int byPlayer){
+	public void PlayerThrewBall(int player){
 
+		switch (player) {
+			case 1:
+				player1Stats.ThrewBall();
+				break;
+			case 2:
+				player2Stats.ThrewBall();
+				break;
+			case 3:
+				player3Stats.ThrewBall();
+				break;
+			case 4:
+				player4Stats.ThrewBall();
+				break;
+			default:
+				break;
+		}
+
+	}
+
+	public void PlayerHitByBall(int playerHit,int byPlayer){
+		print ("Player Hit: " + playerHit);
+		print ("By Player: " + byPlayer);
 		switch (playerHit) {
 			case 1:
 				player1Stats.HitByBall(byPlayer);
@@ -39,21 +66,38 @@ public class FinalStatistics : MonoBehaviour {
 				break;
 
 		}
+
+		switch (byPlayer) {
+			case 1:
+				player1Stats.SuccessfulHit();
+				break;
+			case 2:
+				player2Stats.SuccessfulHit();
+				break;
+			case 3:
+				player3Stats.SuccessfulHit();
+				break;
+			case 4:
+				player4Stats.SuccessfulHit();
+				break;
+			default:
+				break;
+		}
 	}
 
-	public void BeginCubePosession(int playerNumber){
+	public void AddCubePosession(int playerNumber,float time){
 		switch (playerNumber) {
 		case 1:
-			player1Stats.BeginCubePosession();
+			player1Stats.AddTimePossession(time);
 			break;
 		case 2:
-			player2Stats.BeginCubePosession();
+			player2Stats.AddTimePossession(time);
 			break;
 		case 3:
-			player3Stats.BeginCubePosession();
+			player3Stats.AddTimePossession(time);
 			break;
 		case 4:
-			player4Stats.BeginCubePosession();
+			player4Stats.AddTimePossession(time);
 			break;
 		default:
 			break;
@@ -61,23 +105,25 @@ public class FinalStatistics : MonoBehaviour {
 		}
 	}
 
-	public void EndCubePosession(int playerNumber){
+	public PlayerStatistics getPlayer(int playerNumber){
+
 		switch (playerNumber) {
-		case 1:
-			player1Stats.EndCubePosession();
-			break;
-		case 2:
-			player2Stats.EndCubePosession();
-			break;
-		case 3:
-			player3Stats.EndCubePosession();
-			break;
-		case 4:
-			player4Stats.EndCubePosession();
-			break;
-		default:
-			break;
-			
+			case 1:
+				return player1Stats;
+				break;
+			case 2:
+				return player2Stats;
+				break;
+			case 3:
+				return player3Stats;
+				break;
+			case 4:
+				return player4Stats;
+				break;
+			default:
+				return player1Stats;
+				break;
+
 		}
 	}
 }

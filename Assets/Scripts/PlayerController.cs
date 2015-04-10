@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour {
 	public float stunnedDuration;
 	public float rotateSpeed;
 	public Vector3 startPos;
+	public GameObject bubbleShield;
 	
 	private float totalRotation = 0;
 	private float timeHit;
@@ -20,8 +21,10 @@ public class PlayerController : MonoBehaviour {
 	private bool justHit = false;
 	private bool playerStunned = false;
 	private bool barrelRoll = false;
-	private bool lockPosition = false;
+	public bool lockPosition = false;
 	private bool dropThroughPlatform = false;
+	public bool isStunned = false;
+	public bool shieldOn = false;
 	
 	public InputDevice playerControl;
 	private PlayerMove playerMovement;
@@ -29,7 +32,7 @@ public class PlayerController : MonoBehaviour {
 	public Ball possessedBall;
 	public bool isBallPossessed = false;
 
-	private Color playerColor;
+	public Color playerColor;
 
 	// player aim stuff
 	public PlayerAim playerAim;
@@ -79,9 +82,7 @@ public class PlayerController : MonoBehaviour {
 //		this.GetComponent<Rigidbody>().velocity = Vector3.zero;
 //		isBallPossessed = true;
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
-		PickUpBall (possessedBall.gameObject);
-		playerColor = this.GetComponent<Renderer>().material.color;
-		
+		PickUpBall (possessedBall.gameObject);		
 	}
 	
 	// Update is called once per frame
@@ -112,7 +113,6 @@ public class PlayerController : MonoBehaviour {
 		//Characters blinks when they were hit for stunnedDuration (can customize to stun, add more effects)
 		if (justHit) {
 			if(timeHit + stunnedDuration <= Time.time){
-				this.GetComponent<Renderer>().material.color = playerColor;
 				justHit = false;
 			}
 		}
@@ -145,31 +145,36 @@ public class PlayerController : MonoBehaviour {
 		
 		if (playerControl.Action1.WasPressed) {
 			jump = true;
-		}
-		else if (playerControl.RightTrigger.WasReleased) {
-			if (isBallPossessed) {
-				ThrowBall();
-			} else {
-				possessedBall.returnBall();
+		} 
+		else if (playerControl.RightTrigger.WasPressed) {
+			if (isBallPossessed && !shieldOn && !isStunned) {
+				ThrowBall ();
+			} else if (!shieldOn && !isStunned) {
+				possessedBall.returnBall ();
 			}
-		} else if (!isBallPossessed && ballTarget == null) {
-			Vector3 forceVector = new Vector3(horizontalMovement * throwSpeed, verticalMovement * throwSpeed, 1);
-			possessedBall.applyExtraControl(forceVector); 
-		}
+		} 
+		else if (!isBallPossessed && ballTarget == null) {
+			Vector3 forceVector = new Vector3 (horizontalMovement * throwSpeed, verticalMovement * throwSpeed, 1);
+			possessedBall.applyExtraControl (forceVector); 
+		} 
 		else if (playerControl.Action3.WasPressed) {
 			speedBoost = true;
 		}
 		else if (playerControl.Action4.WasPressed)
 			BarrelRoll ();
+		else if (playerControl.MenuWasPressed)
+			PauseMenu.access.PlayerPausedGame (playerNumber - 1);
 		
-		if (playerControl.LeftTrigger.IsPressed) {
-			lockPosition = true;
+		if (playerControl.LeftTrigger.IsPressed && !isStunned) {
+			//lockPosition = true;
+			bubbleShield.GetComponent<BubbleShield>().startShield();
 		}
 		
 		if (playerControl.Action1.WasReleased)
 			jumpCancel = true;
-		if (playerControl.LeftTrigger.WasReleased) {
-			lockPosition = false;
+		if (playerControl.LeftTrigger.WasReleased && !isStunned) {
+			//lockPosition = false;
+			bubbleShield.GetComponent<BubbleShield>().endShield();
 		}
 
 		//TODO: person in charge of animations 
@@ -192,10 +197,11 @@ public class PlayerController : MonoBehaviour {
 				
 	//Throw ball in direction of left stick
 	void ThrowBall(){
-
 		if (playerMovement.isPlayerFalling) {
 			return;
 		}
+
+		FinalStatistics.finalStatistics.PlayerThrewBall (playerNumber);
 
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
@@ -242,6 +248,7 @@ public class PlayerController : MonoBehaviour {
 	//React to getting hit by a ball
 	public void HitByBall() {
 
+		this.transform.position -= new Vector3 (0, 0, 40f);
 
 		if (Application.loadedLevelName.Equals ("_OneToTwo")) {
 			CaptureTheFlagMode.access.playerScore(this.gameObject);
@@ -249,11 +256,11 @@ public class PlayerController : MonoBehaviour {
 			if (!isBallPossessed) {
 				PickUpBall(possessedBall.gameObject);
 			}
-			possessedBall.gameObject.SetActive(false);
+			//possessedBall.gameObject.SetActive(false);
 			playerMovement.isOnMovingPlatform = false;
 			MainCamera.access.players.Remove (this.gameObject);
 			MainCamera.access.players.Remove (possessedBall.gameObject);
-			Invoke("returnToStart",4f);
+			Invoke("returnToStart",2f);
 		}
 		else if (Application.loadedLevelName.Equals("_ThreeToFour")) {
 //			if (KingOfTheHill.access != null && KingOfTheHill.access.isKing(playerMovement.playerColor)) {
@@ -268,14 +275,14 @@ public class PlayerController : MonoBehaviour {
 			}
 	
 				justHit = true;
-				if (!isBallPossessed) {
-					PickUpBall(possessedBall.gameObject);
-				}
-				possessedBall.gameObject.SetActive(false);
+//				if (!isBallPossessed) {
+//					PickUpBall(possessedBall.gameObject);
+//				}
+				//possessedBall.gameObject.SetActive(false);
 				playerMovement.isOnMovingPlatform = false;
 				MainCamera.access.players.Remove (this.gameObject);
 				MainCamera.access.players.Remove (possessedBall.gameObject);
-				Invoke("returnToStart",4f);
+				Invoke("returnToStart",2f);
 			}
 //		}
 	}
@@ -293,10 +300,12 @@ public class PlayerController : MonoBehaviour {
 			this.transform.position = RespawnPositionTwo.access.generateRespawnPoint ();
 		}
 		else {
+			print("threefour");
 			this.transform.position = RespawnPosition.access.generateRespawnPoint ();
 		}
-		possessedBall.gameObject.SetActive(true);
-		possessedBall.transform.position = this.transform.position;
+		//possessedBall.gameObject.SetActive(true);
+		//possessedBall.transform.position = this.transform.position;
+		possessedBall.ballShouldReturn = true;
 		rigid.constraints = RigidbodyConstraints.FreezeRotation ^ RigidbodyConstraints.FreezePositionZ;
 		rigid.rotation = Quaternion.identity;
 		rigid.velocity = Vector3.zero;
@@ -309,6 +318,5 @@ public class PlayerController : MonoBehaviour {
 		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
 
-	
 }
 

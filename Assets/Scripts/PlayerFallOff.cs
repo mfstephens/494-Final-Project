@@ -18,11 +18,13 @@ public class PlayerFallOff : MonoBehaviour {
 	public void fallOff(GameObject ball) {
 		rigid.constraints = RigidbodyConstraints.None;
 
-		rigid.AddForce (0, 55000f, -10000f);
-		rigid.AddExplosionForce (2000, ball.transform.position, 20);
+		GetComponent<PlayerController> ().bubbleShield.GetComponent<BubbleShield> ().endShield ();
 
-		rigid.AddTorque(transform.up * 10000);
-		rigid.AddTorque(transform.forward * 10000);
-		rigid.AddTorque (transform.right * 10000);
+		rigid.AddForce (0, 55000f, 0);
+		rigid.AddExplosionForce (2000f, ball.transform.position, 20f);
+
+		rigid.AddTorque(transform.up * 10000f);
+		rigid.AddTorque(transform.forward * 10000f);
+		rigid.AddTorque (transform.right * 10000f);
 	}
 }
