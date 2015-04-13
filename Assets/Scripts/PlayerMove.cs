@@ -27,6 +27,8 @@ public class PlayerMove : MonoBehaviour {
 	private PlayerFallOff playerFall;
 	public bool isPlayerFalling = false;
 
+	public GameObject fireeeeee;
+
 	
 	private PlayerController playerController;
 
@@ -141,6 +143,29 @@ public class PlayerMove : MonoBehaviour {
 			if ((collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (collision.gameObject.GetComponent<Ball>().possesed == false)) {
 				//Add Stats for player hit and player who threw ball
 				FinalStatistics.finalStatistics.PlayerHitByBall(playerColor,collision.gameObject.GetComponent<Ball>().playerColor);
+
+				int temp = FlagRotate.access.playerScores[playerColor - 1] / 5;
+
+				FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1] += temp;
+				FlagRotate.access.playerScoreTexts[collision.gameObject.GetComponent<Ball>().playerColor - 1].text = FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString();
+				
+//				if (FlagRotate.access.currentPlayer != playerColor) {
+//					if (FlagRotate.access.playerScores[playerColor - 1] - temp >= 0) {
+//						FlagRotate.access.playerScores[playerColor - 1] += temp;
+//						FlagRotate.access.playerScoreTexts[playerColor - 1].text = FlagRotate.access.playerScores[playerColor - 1].ToString();
+//					}
+//					else {
+//						FlagRotate.access.playerScores[playerColor - 1] = 0;
+//						FlagRotate.access.playerScoreTexts[playerColor - 1].text = FlagRotate.access.playerScores[playerColor - 1].ToString();
+//					}
+//				}
+//				else {
+//					FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1] += temp;
+//					FlagRotate.access.playerScoreTexts[collision.gameObject.GetComponent<Ball>().playerColor - 1].text = FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString();
+//				}
+				//print ("assigning kill points" + FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor);
+
+				Instantiate(fireeeeee,transform.position,Quaternion.identity);
 
 				playerController.HitByBall();
 				isPlayerFalling = true;

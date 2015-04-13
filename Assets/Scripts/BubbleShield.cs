@@ -39,7 +39,7 @@ public class BubbleShield : MonoBehaviour {
 
 		if (percentDone >= 1) {
 			percentDone = 1;
-			control.isStunned = true;
+			control.lockPosition = true;
 			endShield ();
 			Invoke("unStun", 4f);
 		}
@@ -58,7 +58,12 @@ public class BubbleShield : MonoBehaviour {
 	}
 
 	public void startShield() {
-		if (((FlagRotate.access.currentPlayer == -1) || !player.name.Equals(FlagRotate.access.possessingPlayer.name)) && !move.isPlayerFalling) {
+		if (Application.loadedLevelName.Equals("_ThreeToFour") && ((FlagRotate.access.currentPlayer == -1) || !player.name.Equals(FlagRotate.access.possessingPlayer.name)) && !move.isPlayerFalling) {
+			control.shieldOn = true;
+			this.GetComponent<Renderer> ().enabled = true;
+			this.GetComponent<Collider>().isTrigger = false;
+		}
+		else if (Application.loadedLevelName.Equals("_OneToTwo")) {
 			control.shieldOn = true;
 			this.GetComponent<Renderer> ().enabled = true;
 			this.GetComponent<Collider>().isTrigger = false;
@@ -73,7 +78,7 @@ public class BubbleShield : MonoBehaviour {
 	}
 
 	public void unStun() {
-		control.isStunned = false;
+		//control.isStunned = false;
 		percentDone = 0;
 		control.lockPosition = false;
 	}

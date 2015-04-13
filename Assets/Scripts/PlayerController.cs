@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour {
 	private float timeHit;
 	private float initialFlickDownTime = -5f;
 	private int playerNumber;
+	public float throwCoolDown;
+	private float lastThrow = 0;
 			
 	private bool jump = false;
 	private bool jumpCancel = false;
@@ -147,16 +149,18 @@ public class PlayerController : MonoBehaviour {
 			jump = true;
 		} 
 		else if (playerControl.RightTrigger.WasPressed) {
-			if (isBallPossessed && !shieldOn && !isStunned) {
-				ThrowBall ();
-			} else if (!shieldOn && !isStunned) {
-				possessedBall.returnBall ();
+			if (isBallPossessed && !shieldOn && !lockPosition && (Time.time - lastThrow > throwCoolDown)) {
+				ThrowBall();
+				lastThrow = Time.time;
+			} 
+			else if (!shieldOn && !lockPosition) {
+				possessedBall.returnBall();
 			}
-		} 
-		else if (!isBallPossessed && ballTarget == null) {
-			Vector3 forceVector = new Vector3 (horizontalMovement * throwSpeed, verticalMovement * throwSpeed, 1);
-			possessedBall.applyExtraControl (forceVector); 
-		} 
+
+		} else if (!isBallPossessed && ballTarget == null) {
+			Vector3 forceVector = new Vector3(horizontalMovement * throwSpeed, verticalMovement * throwSpeed, 1);
+			possessedBall.applyExtraControl(forceVector); 
+		}
 		else if (playerControl.Action3.WasPressed) {
 			speedBoost = true;
 		}
@@ -165,14 +169,14 @@ public class PlayerController : MonoBehaviour {
 		else if (playerControl.MenuWasPressed)
 			PauseMenu.access.PlayerPausedGame (playerNumber - 1);
 		
-		if (playerControl.LeftTrigger.IsPressed && !isStunned) {
+		if (playerControl.LeftTrigger.IsPressed && !lockPosition) {
 			//lockPosition = true;
 			bubbleShield.GetComponent<BubbleShield>().startShield();
 		}
 		
 		if (playerControl.Action1.WasReleased)
 			jumpCancel = true;
-		if (playerControl.LeftTrigger.WasReleased && !isStunned) {
+		if (playerControl.LeftTrigger.WasReleased && !lockPosition) {
 			//lockPosition = false;
 			bubbleShield.GetComponent<BubbleShield>().endShield();
 		}
@@ -247,15 +251,17 @@ public class PlayerController : MonoBehaviour {
 	
 	//React to getting hit by a ball
 	public void HitByBall() {
+	
 
 		this.transform.position -= new Vector3 (0, 0, 40f);
 
 		if (Application.loadedLevelName.Equals ("_OneToTwo")) {
 			CaptureTheFlagMode.access.playerScore(this.gameObject);
 			justHit = true;
-			if (!isBallPossessed) {
-				PickUpBall(possessedBall.gameObject);
-			}
+			CrowdBehavior.access.crowdFlash();
+//			if (!isBallPossessed) {
+//				PickUpBall(possessedBall.gameObject);
+//			}
 			//possessedBall.gameObject.SetActive(false);
 			playerMovement.isOnMovingPlatform = false;
 			MainCamera.access.players.Remove (this.gameObject);
@@ -275,6 +281,8 @@ public class PlayerController : MonoBehaviour {
 			}
 	
 				justHit = true;
+				CrowdBehavior.access.crowdFlash();
+
 //				if (!isBallPossessed) {
 //					PickUpBall(possessedBall.gameObject);
 //				}
@@ -317,6 +325,8 @@ public class PlayerController : MonoBehaviour {
 		Physics.IgnoreCollision(this.gameObject.GetComponent<Collider>(), FlagRotate.access.gameObject.GetComponent<Collider>(), false);
 		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
+	
 
 }
+
 

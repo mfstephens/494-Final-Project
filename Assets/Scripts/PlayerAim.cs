@@ -10,5 +10,6 @@ public class PlayerAim : MonoBehaviour {
 		float angle = Mathf.Atan2 (pos.y, pos.x) * Mathf.Rad2Deg;
 		pos = Quaternion.AngleAxis (angle, Vector3.forward) * (Vector3.right * fRadius);
 		transform.position = player.transform.position + pos;
+		transform.LookAt (player.transform.position);
 	}
 }

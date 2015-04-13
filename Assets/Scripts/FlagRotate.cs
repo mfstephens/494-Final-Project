@@ -39,7 +39,7 @@ public class FlagRotate : MonoBehaviour {
 //		}
 		if (possessingPlayer != null) {
 			FinalStatistics.finalStatistics.AddCubePosession(currentPlayer+1,Time.deltaTime);
-			this.transform.position = possessingPlayer.transform.position + new Vector3(0,23f,0);
+			this.transform.position = possessingPlayer.transform.position + new Vector3(0,30f,0);
 		} else {
 			print ("player is null");
 		}
