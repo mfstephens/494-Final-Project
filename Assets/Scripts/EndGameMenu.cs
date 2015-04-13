@@ -8,7 +8,7 @@ public class EndGameMenu : MonoBehaviour {
 
 	public InstantGuiWindow finalResultsMenu;
 	public InstantGuiWindow newGameMenu;
-	public InstantGuiElement[] playerReady;
+	public InstantGuiButton[] playerReady;
 	public InstantGuiElement[] newGameOptions;
 	public InstantGuiList[] playerStatistics;
 
@@ -30,21 +30,25 @@ public class EndGameMenu : MonoBehaviour {
 	void Update () {
 		if (finalResultsMenu.gameObject.activeSelf == true) {
 			if(InputManager.Devices[0].Action1.WasPressed){
-				playerReady[0].text = "Waiting";
+				playerReady[0].check = true;
 				numberOfPlayersReady++;
 			}
 			if(InputManager.Devices[1].Action1.WasPressed){
-				playerReady[1].text = "Waiting";
+				playerReady[1].check = true;
 				numberOfPlayersReady++;
 			}
-			/*if(InputManager.Devices[2].Action1.WasPressed){
-				playerReady[2].text = "Waiting";
-				numberOfPlayersReady++;
+			if(InputManager.Devices.Count == 3){
+				if(InputManager.Devices[2].Action1.WasPressed){
+					playerReady[2].text = "Waiting";
+					numberOfPlayersReady++;
+				}
 			}
-			if(InputManager.Devices[3].Action1.WasPressed){
-				playerReady[3].text = "Waiting";
-				numberOfPlayersReady++;
-			}*/
+			if(InputManager.Devices.Count == 4){
+				if(InputManager.Devices[3].Action1.WasPressed){
+					playerReady[3].text = "Waiting";
+					numberOfPlayersReady++;
+				}
+			}
 
 			if(numberOfPlayersReady == InputManager.Devices.Count){
 				finalResultsMenu.gameObject.SetActive(false);
@@ -73,7 +77,6 @@ public class EndGameMenu : MonoBehaviour {
 				if(currentMenuSelection == 0){
 					Application.LoadLevel(Application.loadedLevelName);
 				}
-
 				else if(currentMenuSelection == 1){
 					Application.LoadLevel("_StartScreen");
 				}

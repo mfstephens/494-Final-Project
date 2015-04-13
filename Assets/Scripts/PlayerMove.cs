@@ -27,6 +27,8 @@ public class PlayerMove : MonoBehaviour {
 	private PlayerFallOff playerFall;
 	public bool isPlayerFalling = false;
 
+	public GameObject fireeeeee;
+
 	
 	private PlayerController playerController;
 
@@ -169,6 +171,8 @@ public class PlayerMove : MonoBehaviour {
 //					FlagRotate.access.playerScoreTexts[collision.gameObject.GetComponent<Ball>().playerColor - 1].text = FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString();
 //				}
 				//print ("assigning kill points" + FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor);
+
+				//Instantiate(fireeeeee,transform.position,Quaternion.identity);
 
 				playerController.HitByBall();
 				isPlayerFalling = true;
