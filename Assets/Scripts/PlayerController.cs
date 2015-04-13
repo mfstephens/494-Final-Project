@@ -16,7 +16,9 @@ public class PlayerController : MonoBehaviour {
 	private int playerNumber;
 	public float throwCoolDown;
 	private float lastThrow = 0;
-			
+		
+	public bool invincible = false;
+	private bool isSuspended = false;
 	private bool jump = false;
 	private bool jumpCancel = false;
 	private bool speedBoost = false;
@@ -35,6 +37,8 @@ public class PlayerController : MonoBehaviour {
 	public bool isBallPossessed = false;
 
 	public Color playerColor;
+	private int lerpDirection;
+	private float curLerp = 0;
 
 	// player aim stuff
 	public PlayerAim playerAim;
@@ -45,6 +49,7 @@ public class PlayerController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
 		playerMovement = GetComponent<PlayerMove> ();
 		int temp = InputManager.Devices.Count;
 		ballTarget = null;
@@ -121,7 +126,7 @@ public class PlayerController : MonoBehaviour {
 		
 		//Change Z Axis of ball when possessed to appear in front of you
 		if (isBallPossessed) {
-			possessedBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y,this.transform.position.z);
+			possessedBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y + 6f,this.transform.position.z);
 		}
 		
 		//Check if player flicked down on joystick so they can drop through platform
@@ -186,13 +191,35 @@ public class PlayerController : MonoBehaviour {
 			Flip();
 		if(horizontalMovement < 0 && transform.eulerAngles.y == 0)
 			Flip();
-		
+
+		if (isSuspended) {
+			
+		}
+
+
+
 		playerMovement.Movement (horizontalMovement, verticalMovement, jump, jumpCancel,speedBoost,lockPosition,dropThroughPlatform);
 		
 		jump = false;
 		jumpCancel = false;
 		speedBoost = false;
 		dropThroughPlatform = false;
+	}
+
+	void FixedUpdate() {
+		if (invincible) {
+			if (curLerp >= 0.8f) {
+				lerpDirection = -1;
+			}
+			else if (curLerp <= 0) {
+				lerpDirection = 1;
+			}
+
+			print (lerpDirection);
+
+			curLerp += 0.03f * lerpDirection;
+			GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.Lerp(playerColor, GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.black, curLerp);
+		}
 	}
 
 	void Flip(){
@@ -251,7 +278,6 @@ public class PlayerController : MonoBehaviour {
 	
 	//React to getting hit by a ball
 	public void HitByBall() {
-	
 
 		this.transform.position -= new Vector3 (0, 0, 40f);
 
@@ -303,6 +329,9 @@ public class PlayerController : MonoBehaviour {
 
 	public void returnToStart() {
 		Rigidbody rigid = this.gameObject.GetComponent<Rigidbody> ();
+		rigid.useGravity = false;
+		invincible = true;
+
 		if (Application.loadedLevelName.Equals("_OneToTwo")) {
 			print ("onetwo");
 			this.transform.position = RespawnPositionTwo.access.generateRespawnPoint ();
@@ -311,6 +340,7 @@ public class PlayerController : MonoBehaviour {
 			print("threefour");
 			this.transform.position = RespawnPosition.access.generateRespawnPoint ();
 		}
+
 		//possessedBall.gameObject.SetActive(true);
 		//possessedBall.transform.position = this.transform.position;
 		possessedBall.ballShouldReturn = true;
@@ -322,10 +352,24 @@ public class PlayerController : MonoBehaviour {
 		MainCamera.access.players.Add (this.gameObject);
 		MainCamera.access.players.Add (possessedBall.gameObject);
 		playerMovement.isPlayerFalling = false;
-		Physics.IgnoreCollision(this.gameObject.GetComponent<Collider>(), FlagRotate.access.gameObject.GetComponent<Collider>(), false);
+		if (Application.loadedLevelName.Equals ("_ThreeToFour")) {
+			Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), FlagRotate.access.gameObject.GetComponent<Collider> (), false);
+		}
+		Invoke ("dropPlayer", 0.5f);
+		Invoke ("endInvincible", 4f);
 		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
-	
+
+	public void dropPlayer() {
+		GetComponent<Rigidbody> ().useGravity = true;
+		isSuspended = false;
+	}
+
+	public void endInvincible() {
+		invincible = false;
+		GetComponentInChildren<SkinnedMeshRenderer> ().material.color = playerColor;
+		curLerp = 0;
+	}
 
 }
 

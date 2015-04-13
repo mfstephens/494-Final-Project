@@ -138,15 +138,22 @@ public class PlayerMove : MonoBehaviour {
 		}
 		
 		if(collision.gameObject.CompareTag("Ball")){
+
+			if (playerController.invincible) {
+				return;
+			}
+
 			if ((collision.gameObject.GetComponent<Ball>().playerColor != playerColor) && (collision.gameObject.GetComponent<Ball>().possesed == false)) {
 				//Add Stats for player hit and player who threw ball
 				FinalStatistics.finalStatistics.PlayerHitByBall(playerColor,collision.gameObject.GetComponent<Ball>().playerColor);
 
-				int temp = FlagRotate.access.playerScores[playerColor - 1] / 5;
+				if (Application.loadedLevelName.Equals("_ThreeToFour")) {
+					int temp = FlagRotate.access.playerScores[playerColor - 1] / 5;
 
-				FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1] += temp;
-				FlagRotate.access.playerScoreTexts[collision.gameObject.GetComponent<Ball>().playerColor - 1].text = FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString();
-				
+					FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1] += temp;
+					FlagRotate.access.playerScoreTexts[collision.gameObject.GetComponent<Ball>().playerColor - 1].text = FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString();
+				}
+
 //				if (FlagRotate.access.currentPlayer != playerColor) {
 //					if (FlagRotate.access.playerScores[playerColor - 1] - temp >= 0) {
 //						FlagRotate.access.playerScores[playerColor - 1] += temp;
