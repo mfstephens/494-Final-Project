@@ -50,16 +50,16 @@ public class FinalStatistics : MonoBehaviour {
 		print ("By Player: " + byPlayer);
 		switch (playerHit) {
 			case 1:
-				player1Stats.HitByBall(byPlayer);
+				player1Stats.HitByPlayer();
 				break;
 			case 2:
-				player2Stats.HitByBall(byPlayer);
+				player2Stats.HitByPlayer();
 				break;
 			case 3:
-				player3Stats.HitByBall(byPlayer);
+				player3Stats.HitByPlayer();
 				break;
 			case 4:
-				player4Stats.HitByBall(byPlayer);
+				player4Stats.HitByPlayer();
 				break;
 			default:
 				break;
@@ -69,15 +69,19 @@ public class FinalStatistics : MonoBehaviour {
 		switch (byPlayer) {
 			case 1:
 				player1Stats.SuccessfulHit();
+				player1Stats.HitPlayer(playerHit);
 				break;
 			case 2:
 				player2Stats.SuccessfulHit();
+				player2Stats.HitPlayer(playerHit);
 				break;
 			case 3:
 				player3Stats.SuccessfulHit();
+				player3Stats.HitPlayer(playerHit);
 				break;
 			case 4:
 				player4Stats.SuccessfulHit();
+				player4Stats.HitPlayer(playerHit);
 				break;
 			default:
 				break;
@@ -105,7 +109,6 @@ public class FinalStatistics : MonoBehaviour {
 	}
 
 	public PlayerStatistics getPlayer(int playerNumber){
-
 		switch (playerNumber) {
 			case 1:
 				return player1Stats;
@@ -123,6 +126,26 @@ public class FinalStatistics : MonoBehaviour {
 				return player1Stats;
 				break;
 
+		}
+	}
+
+	public void CrownLeaderKilledBy(int playerNumber){
+		switch (playerNumber) {
+		case 1:
+			player1Stats.KilledCrownLeader();
+			break;
+		case 2:
+			player2Stats.KilledCrownLeader();
+			break;
+		case 3:
+			player3Stats.KilledCrownLeader();
+			break;
+		case 4:
+			player4Stats.KilledCrownLeader();
+			break;
+		default:
+			break;
+			
 		}
 	}
 }

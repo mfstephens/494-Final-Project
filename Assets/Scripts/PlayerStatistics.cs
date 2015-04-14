@@ -7,12 +7,16 @@ public class PlayerStatistics : MonoBehaviour {
 	public int successfulHits = 0;
 	public int hitByBall = 0;
 	public float timePossessedCube = 0;
-	public int[] hitByPlayer = new int[]{0,0,0,0};
+	public int[] hitPlayer = new int[]{0,0,0,0};
+	public int crownKills = 0;
 	
 
-	public void HitByBall(int byPlayer){
+	public void HitByPlayer(){
 		hitByBall++;
-		hitByPlayer[byPlayer - 1]++;
+	}
+
+	public void HitPlayer(int player){
+		hitPlayer [player - 1]++;
 	}
 
 	public void AddTimePossession(float time){
@@ -25,5 +29,9 @@ public class PlayerStatistics : MonoBehaviour {
 
 	public void SuccessfulHit(){
 		successfulHits++;
+	}
+
+	public void KilledCrownLeader(){
+		crownKills++;
 	}
 }

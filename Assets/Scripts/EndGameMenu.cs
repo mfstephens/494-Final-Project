@@ -126,36 +126,37 @@ public class EndGameMenu : MonoBehaviour {
 			}
 			playerStatistics [i-1].labels[3] += currentPlayer.hitByBall;
 			playerStatistics [i-1].labels[4] += currentPlayer.timePossessedCube.ToString("F2");
+			playerStatistics [i-1].labels[5] += currentPlayer.crownKills.ToString();
 		}
 
 	}
 
 	private void AdvancedPlayer1Statistics(){
 		PlayerStatistics currentPlayer = FinalStatistics.finalStatistics.getPlayer (1);
-		playerStatistics [0].labels[5] += currentPlayer.hitByPlayer[1];
-		playerStatistics [0].labels[6] += currentPlayer.hitByPlayer[2];
-		playerStatistics [0].labels[7] += currentPlayer.hitByPlayer[3];
+		playerStatistics [0].labels[6] += currentPlayer.hitPlayer[1];
+		playerStatistics [0].labels[7] += currentPlayer.hitPlayer[2];
+		playerStatistics [0].labels[8] += currentPlayer.hitPlayer[3];
 	}
 
 	private void AdvancedPlayer2Statistics(){
 		PlayerStatistics currentPlayer = FinalStatistics.finalStatistics.getPlayer (2);
-		playerStatistics [1].labels[5] += currentPlayer.hitByPlayer[0];
-		playerStatistics [1].labels[6] += currentPlayer.hitByPlayer[2];
-		playerStatistics [1].labels[7] += currentPlayer.hitByPlayer[3];
+		playerStatistics [1].labels[6] += currentPlayer.hitPlayer[0];
+		playerStatistics [1].labels[7] += currentPlayer.hitPlayer[2];
+		playerStatistics [1].labels[8] += currentPlayer.hitPlayer[3];
 	}
 
 	private void AdvancedPlayer3Statistics(){
 		PlayerStatistics currentPlayer = FinalStatistics.finalStatistics.getPlayer (3);
-		playerStatistics [2].labels[5] += currentPlayer.hitByPlayer[0];
-		playerStatistics [2].labels[6] += currentPlayer.hitByPlayer[1];
-		playerStatistics [2].labels[7] += currentPlayer.hitByPlayer[3];
+		playerStatistics [2].labels[6] += currentPlayer.hitPlayer[0];
+		playerStatistics [2].labels[7] += currentPlayer.hitPlayer[1];
+		playerStatistics [2].labels[8] += currentPlayer.hitPlayer[3];
 	}
 
 	private void AdvancedPlayer4Statistics(){
 		PlayerStatistics currentPlayer = FinalStatistics.finalStatistics.getPlayer (4);
-		playerStatistics [3].labels[5] += currentPlayer.hitByPlayer[0];
-		playerStatistics [3].labels[6] += currentPlayer.hitByPlayer[1];
-		playerStatistics [3].labels[7] += currentPlayer.hitByPlayer[2];
+		playerStatistics [3].labels[6] += currentPlayer.hitPlayer[0];
+		playerStatistics [3].labels[7] += currentPlayer.hitPlayer[1];
+		playerStatistics [3].labels[8] += currentPlayer.hitPlayer[2];
 	}
 	
 }

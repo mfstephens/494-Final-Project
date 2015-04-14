@@ -29,7 +29,7 @@ public class PlayerMove : MonoBehaviour {
 
 	public GameObject fireeeeee;
 
-	
+	public BountyDisplay showScore;
 	private PlayerController playerController;
 
 	
@@ -150,45 +150,30 @@ public class PlayerMove : MonoBehaviour {
 				FinalStatistics.finalStatistics.PlayerHitByBall(playerColor,collision.gameObject.GetComponent<Ball>().playerColor);
 
 				if (Application.loadedLevelName.Equals("_ThreeToFour")) {
-					int temp = 0;
+					int temp = 100;
 
-					temp = FlagRotate.access.playerScores[playerColor - 1] / 5;
-
-//					if (FlagRotate.access.currentPlayer == (this.playerColor - 1)) {
-//						 temp = FlagRotate.access.playerScores[playerColor - 1] / 5;
-//					}
+					if (FlagRotate.access.currentPlayer == (this.playerColor - 1)) {
+						foreach (GameObject cur in this.playerController.coins) {
+							cur.GetComponent<CoinBehavior>().playerHit(collision.gameObject.GetComponent<Ball>().ballOwner);
+						}
+						this.playerController.coins.Clear();
+						temp = FlagRotate.access.currentBounty;
+					}
 
 					FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1] += temp;
 					FlagRotate.access.playerScoreTexts[collision.gameObject.GetComponent<Ball>().playerColor - 1].text = FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString();
 
+					collision.gameObject.GetComponent<Ball>().ballOwner.GetComponent<PlayerMove>().showScore.addScore(temp);
 				}
 
-//				if (FlagRotate.access.currentPlayer != playerColor) {
-//					if (FlagRotate.access.playerScores[playerColor - 1] - temp >= 0) {
-//						FlagRotate.access.playerScores[playerColor - 1] += temp;
-//						FlagRotate.access.playerScoreTexts[playerColor - 1].text = FlagRotate.access.playerScores[playerColor - 1].ToString();
-//					}
-//					else {
-//						FlagRotate.access.playerScores[playerColor - 1] = 0;
-//						FlagRotate.access.playerScoreTexts[playerColor - 1].text = FlagRotate.access.playerScores[playerColor - 1].ToString();
-//					}
-//				}
-//				else {
-//					FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1] += temp;
-//					FlagRotate.access.playerScoreTexts[collision.gameObject.GetComponent<Ball>().playerColor - 1].text = FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString();
-//				}
-				//print ("assigning kill points" + FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor);
-
-				//Instantiate(fireeeeee,transform.position,Quaternion.identity);
+				if ((FlagRotate.access.possessingPlayer != null) && FlagRotate.access.possessingPlayer.name.Equals(this.gameObject.name)) {
+					FinalStatistics.finalStatistics.CrownLeaderKilledBy(collision.gameObject.GetComponent<Ball>().playerColor);
+				}
 
 				playerController.HitByBall();
 				isPlayerFalling = true;
 				playerFall.fallOff(collision.gameObject);
 				
-			}
-
-			if (collision.gameObject.GetComponent<Ball>().playerColor != -1)  {
-//				collision.gameObject.GetComponent<Ball>().findPlayerAndReturn();
 			}
 		}
 	}

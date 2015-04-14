@@ -28,7 +28,6 @@ public class KingOfTheHill : MonoBehaviour {
 	void Start() {
 		access = this;
 		roundClock.enabled = false;
-		//endGameUI.gameObject.SetActive(false);
 		StartCoroutine ("CountdownToBeginRound");
 		origColor = this.gameObject.GetComponent<Renderer> ().material.color;
 		getCubeText.enabled = false;

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using InControl;
 
 public class PlayerController : MonoBehaviour {
@@ -46,11 +47,19 @@ public class PlayerController : MonoBehaviour {
 	Vector3 lastShotDirection;
 	public Ball ballTarget;
 
+	public List<GameObject> coins;
+
+	void Awake() {
+		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
+	}
 
 	// Use this for initialization
 	void Start () {
-		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
 		playerMovement = GetComponent<PlayerMove> ();
+
+		//Set the font color to correspond to player color
+		ScoreBoard.scoreBoard.setPlayerColor (playerMovement.playerColor-1, playerColor);
+
 		int temp = InputManager.Devices.Count;
 		ballTarget = null;
 		if (gameObject.name == "Player1") {
@@ -215,8 +224,6 @@ public class PlayerController : MonoBehaviour {
 				lerpDirection = 1;
 			}
 
-			print (lerpDirection);
-
 			curLerp += 0.03f * lerpDirection;
 			GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.Lerp(playerColor, GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.black, curLerp);
 		}
@@ -302,6 +309,7 @@ public class PlayerController : MonoBehaviour {
 //			else {
 
 			if ((FlagRotate.access.possessingPlayer != null) && FlagRotate.access.possessingPlayer.name.Equals(this.gameObject.name)) {
+				//FinalStatistics.finalStatistics.CrownLeaderKilledBy(
 				FlagRotate.access.dropFlag();
 				FlagRotate.access.currentPlayer = -1;
 			}
@@ -356,7 +364,7 @@ public class PlayerController : MonoBehaviour {
 			Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), FlagRotate.access.gameObject.GetComponent<Collider> (), false);
 		}
 		Invoke ("dropPlayer", 0.5f);
-		Invoke ("endInvincible", 4f);
+		Invoke ("endInvincible", 2f);
 		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
 
