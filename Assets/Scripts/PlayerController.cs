@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using InControl;
 
 public class PlayerController : MonoBehaviour {
@@ -46,10 +47,14 @@ public class PlayerController : MonoBehaviour {
 	Vector3 lastShotDirection;
 	public Ball ballTarget;
 
+	public List<GameObject> coins;
+
+	void Awake() {
+		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
+	}
 
 	// Use this for initialization
 	void Start () {
-		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
 		playerMovement = GetComponent<PlayerMove> ();
 		int temp = InputManager.Devices.Count;
 		ballTarget = null;
@@ -215,8 +220,6 @@ public class PlayerController : MonoBehaviour {
 				lerpDirection = 1;
 			}
 
-			print (lerpDirection);
-
 			curLerp += 0.03f * lerpDirection;
 			GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.Lerp(playerColor, GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.black, curLerp);
 		}
@@ -356,7 +359,7 @@ public class PlayerController : MonoBehaviour {
 			Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), FlagRotate.access.gameObject.GetComponent<Collider> (), false);
 		}
 		Invoke ("dropPlayer", 0.5f);
-		Invoke ("endInvincible", 4f);
+		Invoke ("endInvincible", 2f);
 		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
 

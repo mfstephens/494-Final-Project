@@ -6,9 +6,11 @@ public class FlagRotate : MonoBehaviour {
 
 	public static FlagRotate access;
 
+	public GameObject coinPrefab;
+
 	public float rotateSpeed;
 	public Vector3[] positions;
-	private float startTime = 0;
+	private float lastCoin = 0;
 
 	public GameObject possessingPlayer;
 	public int currentPlayer = -1;
@@ -16,6 +18,7 @@ public class FlagRotate : MonoBehaviour {
 
 	public Text[] playerScoreTexts;
 	public int[] playerScores;
+	public int currentBounty = 0;
 
 	void Start() {
 		access = this;
@@ -43,6 +46,13 @@ public class FlagRotate : MonoBehaviour {
 		} else {
 			print ("player is null");
 		}
+
+		if ((currentPlayer != -1) && (Time.time - lastCoin > 2f)) {
+			lastCoin = Time.time;
+			makeCoin(possessingPlayer);
+			currentBounty += 100;
+		}
+
 	}
 
 	void FixedUpdate() {
@@ -98,6 +108,13 @@ public class FlagRotate : MonoBehaviour {
 			return true;
 		else 
 			return false;
+	}
+
+	void makeCoin(GameObject player) {
+		coinPrefab.GetComponent<CoinBehavior>().assignPlayer(player);
+		coinPrefab.transform.position = player.transform.position + new Vector3(30f, 0, 0);
+		GameObject coin = Instantiate(coinPrefab);
+		possessingPlayer.GetComponent<PlayerController> ().coins.Add (coin);
 	}
 
 }
