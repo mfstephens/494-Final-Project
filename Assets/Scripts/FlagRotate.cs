@@ -39,7 +39,7 @@ public class FlagRotate : MonoBehaviour {
 //		}
 		if (possessingPlayer != null) {
 			FinalStatistics.finalStatistics.AddCubePosession(currentPlayer+1,Time.deltaTime);
-			this.transform.position = possessingPlayer.transform.position + new Vector3(0,30f,0);
+			this.transform.position = possessingPlayer.transform.position + new Vector3(0,25f,0);
 		} else {
 			print ("player is null");
 		}
@@ -49,6 +49,12 @@ public class FlagRotate : MonoBehaviour {
 		if (currentPlayer != -1) {
 			playerScores[currentPlayer]++;
 			playerScoreTexts[currentPlayer].text = playerScores[currentPlayer].ToString();
+
+			//Pass array of player scores to be sorted to print out their rank
+			ScoreBoard.scoreBoard.setPlayerRank(playerScores);
+				
+			//Set the player score on the scoreboard
+			ScoreBoard.scoreBoard.setPlayerScore(currentPlayer,playerScores[currentPlayer].ToString());
 		}
 		this.transform.Rotate (0, rotateSpeed, 0);
 	}
@@ -65,6 +71,8 @@ public class FlagRotate : MonoBehaviour {
 			currentPlayer = other.gameObject.GetComponent<PlayerMove>().playerColor - 1;
 			possessingPlayer = other.gameObject;
 			this.transform.localScale = this.transform.localScale / 2f;
+			this.transform.rotation = Quaternion.identity;
+			this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
 			this.GetComponent<Collider>().isTrigger = true;
 			this.GetComponent<Rigidbody>().useGravity = false;
 
@@ -79,6 +87,7 @@ public class FlagRotate : MonoBehaviour {
 		this.GetComponent<Collider>().isTrigger = false;
 		Physics.IgnoreCollision(possessingPlayer.gameObject.GetComponent<Collider>(), this.GetComponent<Collider>());
 		this.GetComponent<Rigidbody>().AddExplosionForce(65000f, this.transform.position, 20f);
+		this.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.None ^ RigidbodyConstraints.FreezePositionZ;
 		this.transform.localScale = this.transform.localScale * 2f;
 		possessingPlayer = null;
 		this.GetComponent<Rigidbody>().useGravity = true;

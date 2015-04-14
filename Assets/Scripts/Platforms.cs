@@ -25,7 +25,7 @@ public class Platforms : MonoBehaviour {
 	}
 
 	void OnTriggerStay(Collider other) {
-		other.gameObject.GetComponent<PlayerMove> ().doubleJump = false;
+		//other.gameObject.GetComponent<PlayerMove> ().doubleJump = false;
 	}
 
 	void OnTriggerExit(Collider other){

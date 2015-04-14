@@ -202,8 +202,13 @@ public class InstantGuiStyle
 			//setting text params
 			for (int i=0;i<element.guiTexts.Length;i++) 
 			{
+				if (element.textMaterial == null) {
+					Debug.Log(element.guiTexts[i].name);
+				}
+
 				if (i==0) element.textMaterial.color = sub.textColor;
 				else element.textEffectMaterial.color = textEffectColor;
+
 				
 				element.guiTexts[i].transform.localPosition = new Vector3(0,0,element.transform.localPosition.z+0.01f - i*0.001f);
 				
@@ -321,5 +326,4 @@ public class InstantGuiStyle
 			result.borders = new RectOffset(result.borders.left, result.borders.right, result.borders.top, result.borders.bottom);
 			return result;
 	}
-		
 }
