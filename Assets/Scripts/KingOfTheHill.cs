@@ -12,12 +12,11 @@ public class KingOfTheHill : MonoBehaviour {
 	
 	public float roundLength = 120f;
 	
-	public Text countdownText;
+	public Text countdownText, getCubeText;
 	public Text roundClock;
 	public float RoundLength = 3.0f;
 	
 	private bool startGame = false;
-	bool flagDropped = false;
 	private float startGameTime;
 
 	private int numberOfPlayersReady = 0;
@@ -31,6 +30,8 @@ public class KingOfTheHill : MonoBehaviour {
 		roundClock.enabled = false;
 		StartCoroutine ("CountdownToBeginRound");
 		origColor = this.gameObject.GetComponent<Renderer> ().material.color;
+		getCubeText.enabled = false;
+		StartCoroutine ("ShowGetCubeText");
 	}
 
 	// Update is called once per frame
@@ -49,11 +50,18 @@ public class KingOfTheHill : MonoBehaviour {
 				startGame = false;
 				Time.timeScale = 0;
 			}
+		}
+	}
 
-			if (!flagDropped) {
-				FlagRotate.access.GetComponent<Rigidbody>().useGravity = true;
-				flagDropped = true;
-			}
+	IEnumerator ShowGetCubeText () {
+		yield return new WaitForSeconds(3f);
+		int numBlinks = 0;
+		while(numBlinks <= 4) {
+			getCubeText.enabled = true;
+			yield return new WaitForSeconds(.3f);
+			getCubeText.enabled = false;
+			yield return new WaitForSeconds(.3f);
+			numBlinks++;
 		}
 	}
 
@@ -80,6 +88,7 @@ public class KingOfTheHill : MonoBehaviour {
 	}
 
 	void OnTriggerEnter(Collider other) {
+		FlagRotate.access.GetComponent<Rigidbody>().useGravity = true;
 		this.gameObject.GetComponent<Renderer> ().material.color = other.gameObject.GetComponent<PlayerController>().playerColor;
 	}
 }
