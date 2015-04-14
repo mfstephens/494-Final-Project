@@ -56,6 +56,10 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		playerMovement = GetComponent<PlayerMove> ();
+
+		//Set the font color to correspond to player color
+		ScoreBoard.scoreBoard.setPlayerColor (playerMovement.playerColor-1, playerColor);
+
 		int temp = InputManager.Devices.Count;
 		ballTarget = null;
 		if (gameObject.name == "Player1") {
@@ -305,6 +309,7 @@ public class PlayerController : MonoBehaviour {
 //			else {
 
 			if ((FlagRotate.access.possessingPlayer != null) && FlagRotate.access.possessingPlayer.name.Equals(this.gameObject.name)) {
+				//FinalStatistics.finalStatistics.CrownLeaderKilledBy(
 				FlagRotate.access.dropFlag();
 				FlagRotate.access.currentPlayer = -1;
 			}

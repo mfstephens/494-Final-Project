@@ -59,6 +59,12 @@ public class FlagRotate : MonoBehaviour {
 		if (currentPlayer != -1) {
 			playerScores[currentPlayer]++;
 			playerScoreTexts[currentPlayer].text = playerScores[currentPlayer].ToString();
+
+			//Pass array of player scores to be sorted to print out their rank
+			ScoreBoard.scoreBoard.setPlayerRank(playerScores);
+				
+			//Set the player score on the scoreboard
+			ScoreBoard.scoreBoard.setPlayerScore(currentPlayer,playerScores[currentPlayer].ToString());
 		}
 		this.transform.Rotate (0, rotateSpeed, 0);
 	}

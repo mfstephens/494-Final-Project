@@ -20,11 +20,13 @@ public class characterSelection : MonoBehaviour {
 	float offsetDown = -9f;
 	SpriteRenderer[] sp;
 	InstantGuiButton readyButton;
-
+	bool controlScreenIsShowing = false;
+	public Canvas canvas;
 
 
 	// Use this for initialization
 	void Start () {
+		canvas.enabled = false;
 		numPlayers = InputManager.Devices.Count;
 		selections = new GameObject[8];
 		selections_occupied = new int[numPlayers];
@@ -77,7 +79,13 @@ public class characterSelection : MonoBehaviour {
 			readyButton.disabled = false;
 			readyButton.pressed = true;
 			for (int i = 0; i < numPlayers; i++) {
-				if(InputManager.Devices[i].Action1.WasPressed) startGame_Handler();
+				if(InputManager.Devices[i].Action1.WasPressed) {
+					if (controlScreenIsShowing) {
+						startGame_Handler();
+					} else {
+						showControlScreen ();
+					}
+				}
 				if(InputManager.Devices[i].Action2.WasPressed){
 					readyButton_Handler(i, false);
 					readyButton.disabled = true;
@@ -107,6 +115,11 @@ public class characterSelection : MonoBehaviour {
 		}
 	}
 
+	void showControlScreen () {
+		canvas.enabled = true;
+		controlScreenIsShowing = true;
+	}
+
 	void startGame_Handler(){
 		Material[] meshMats;
 		for (int i = 0; i < numPlayers; i++) {
@@ -118,6 +131,7 @@ public class characterSelection : MonoBehaviour {
 				}
 			}
 		}
+
 		Application.LoadLevel(PassInfoOnLoad.gameNameToLoad);
 	}
 

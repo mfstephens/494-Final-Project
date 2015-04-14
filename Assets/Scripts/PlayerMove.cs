@@ -166,6 +166,10 @@ public class PlayerMove : MonoBehaviour {
 					collision.gameObject.GetComponent<Ball>().ballOwner.GetComponent<PlayerMove>().showScore.addScore(temp);
 				}
 
+				if ((FlagRotate.access.possessingPlayer != null) && FlagRotate.access.possessingPlayer.name.Equals(this.gameObject.name)) {
+					FinalStatistics.finalStatistics.CrownLeaderKilledBy(collision.gameObject.GetComponent<Ball>().playerColor);
+				}
+
 				playerController.HitByBall();
 				isPlayerFalling = true;
 				playerFall.fallOff(collision.gameObject);
