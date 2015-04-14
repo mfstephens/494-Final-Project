@@ -150,10 +150,17 @@ public class PlayerMove : MonoBehaviour {
 				FinalStatistics.finalStatistics.PlayerHitByBall(playerColor,collision.gameObject.GetComponent<Ball>().playerColor);
 
 				if (Application.loadedLevelName.Equals("_ThreeToFour")) {
-					int temp = FlagRotate.access.playerScores[playerColor - 1] / 5;
+					int temp = 0;
+
+					temp = FlagRotate.access.playerScores[playerColor - 1] / 5;
+
+//					if (FlagRotate.access.currentPlayer == (this.playerColor - 1)) {
+//						 temp = FlagRotate.access.playerScores[playerColor - 1] / 5;
+//					}
 
 					FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1] += temp;
 					FlagRotate.access.playerScoreTexts[collision.gameObject.GetComponent<Ball>().playerColor - 1].text = FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString();
+
 				}
 
 //				if (FlagRotate.access.currentPlayer != playerColor) {

@@ -17,7 +17,6 @@ public class FinalStatistics : MonoBehaviour {
 		player2Stats = new PlayerStatistics();
 		player3Stats = new PlayerStatistics();
 		player4Stats = new PlayerStatistics();
-		print ("Yo nigga");
 	}
 	
 	// Update is called once per frame
