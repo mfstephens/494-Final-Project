@@ -163,6 +163,12 @@ public class PlayerMove : MonoBehaviour {
 					FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1] += temp;
 					FlagRotate.access.playerScoreTexts[collision.gameObject.GetComponent<Ball>().playerColor - 1].text = FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString();
 
+					//Pass array of player scores to be sorted to print out their rank
+					ScoreBoard.scoreBoard.setPlayerRank(FlagRotate.access.playerScores);
+					
+					//Set the player score on the scoreboard
+					ScoreBoard.scoreBoard.setPlayerScore(collision.gameObject.GetComponent<Ball>().playerColor - 1,FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString());
+
 					collision.gameObject.GetComponent<Ball>().ballOwner.GetComponent<PlayerMove>().showScore.addScore(temp);
 				}
 
