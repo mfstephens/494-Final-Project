@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using InControl;
 
 public class PlayerController : MonoBehaviour {
@@ -17,6 +18,7 @@ public class PlayerController : MonoBehaviour {
 	public float throwCoolDown;
 	private float lastThrow = 0;
 	Animator anim;
+	public GameObject bounty;
 		
 	public bool invincible = false;
 	private bool isSuspended = false;
@@ -48,13 +50,23 @@ public class PlayerController : MonoBehaviour {
 	Vector3 lastShotDirection;
 	public Ball ballTarget;
 
+	public List<GameObject> coins;
+
+	void Awake() {
+		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
+	}
 
 	// Use this for initialization
 	void Start () {
 		anim = GetComponent<Animator> ();
 		myMesh = GetComponentInChildren<SkinnedMeshRenderer> ();
 		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
+
 		playerMovement = GetComponent<PlayerMove> ();
+
+		//Set the font color to correspond to player color
+		ScoreBoard.scoreBoard.setPlayerColor (playerMovement.playerColor-1, playerColor);
+
 		int temp = InputManager.Devices.Count;
 		ballTarget = null;
 		if (gameObject.name == "Player1") {
@@ -193,10 +205,16 @@ public class PlayerController : MonoBehaviour {
 		}
 
 
-		if (horizontalMovement > .05 && transform.eulerAngles.y != 110f)
-			transform.eulerAngles = new Vector3 (0, 110f, 0);
-		if(horizontalMovement < -.05 && transform.eulerAngles.y != -110f)
-			transform.eulerAngles = new Vector3 (0, -110f, 0);
+		if (horizontalMovement > .05 && transform.eulerAngles.y != 110f) {
+			transform.eulerAngles = new Vector3 (0, 120f, 0);
+			bounty.transform.eulerAngles = new Vector3(0, -120f, 0);
+		}
+			
+		if (horizontalMovement < -.05 && transform.eulerAngles.y != -110f) {
+			transform.eulerAngles = new Vector3 (0, -120f, 0);
+			bounty.transform.eulerAngles = new Vector3 (0, 120f, 0);
+		}
+
 
 		if (isSuspended) {
 			
@@ -303,6 +321,7 @@ public class PlayerController : MonoBehaviour {
 //			else {
 
 			if ((FlagRotate.access.possessingPlayer != null) && FlagRotate.access.possessingPlayer.name.Equals(this.gameObject.name)) {
+				//FinalStatistics.finalStatistics.CrownLeaderKilledBy(
 				FlagRotate.access.dropFlag();
 				FlagRotate.access.currentPlayer = -1;
 			}
@@ -356,7 +375,7 @@ public class PlayerController : MonoBehaviour {
 			Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), FlagRotate.access.gameObject.GetComponent<Collider> (), false);
 		}
 		Invoke ("dropPlayer", 0.5f);
-		Invoke ("endInvincible", 4f);
+		Invoke ("endInvincible", 2f);
 		//MainCamera.access.players.Add (possessedBall.gameObject);
 	}
 

@@ -326,5 +326,4 @@ public class InstantGuiStyle
 			result.borders = new RectOffset(result.borders.left, result.borders.right, result.borders.top, result.borders.bottom);
 			return result;
 	}
-		
 }
