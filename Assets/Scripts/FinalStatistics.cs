@@ -46,8 +46,6 @@ public class FinalStatistics : MonoBehaviour {
 	}
 
 	public void PlayerHitByBall(int playerHit,int byPlayer){
-		print ("Player Hit: " + playerHit);
-		print ("By Player: " + byPlayer);
 		switch (playerHit) {
 			case 1:
 				player1Stats.HitByPlayer();

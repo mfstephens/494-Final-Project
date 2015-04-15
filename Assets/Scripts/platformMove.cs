@@ -14,7 +14,6 @@ public class platformMove : MonoBehaviour {
 	void Update () {
 		if ((this.transform.position.y <= platformMin) || (this.transform.position.y >= platformMax)) {
 			moveSpeed = moveSpeed * -1;
-			print ("changing directions");
 		}
 
 		this.transform.position += new Vector3 (0, moveSpeed, 0);

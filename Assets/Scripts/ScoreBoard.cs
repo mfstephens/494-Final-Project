@@ -42,21 +42,21 @@ public class ScoreBoard : MonoBehaviour {
 
 	public void setPlayerRank(int[] tempScores){
 
-		ArrayList tempContainer = new ArrayList ();
-		for (int i = 0; i < tempScores.Length; i++) {
-			playerAndScore temp;
-			temp.score = tempScores[i];
-			temp.player = i;
-			tempContainer.Add(temp);
-		}
-
-		tempContainer.Sort ();
-
-		int currentRank = 1;
-		foreach (playerAndScore i in tempContainer) {
-			playerRank[i.player].text = currentRank.ToString();
-			currentRank++;
-		}
+//		ArrayList tempContainer = new ArrayList ();
+//		for (int i = 0; i < tempScores.Length; i++) {
+//			playerAndScore temp;
+//			temp.score = tempScores[i];
+//			temp.player = i;
+//			tempContainer.Add(temp);
+//		}
+//
+//		tempContainer.Sort ();
+//
+//		int currentRank = 1;
+//		foreach (playerAndScore i in tempContainer) {
+//			playerRank[i.player].text = currentRank.ToString();
+//			currentRank++;
+//		}
 
 	}
 }

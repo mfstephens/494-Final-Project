@@ -6,9 +6,11 @@ public class FlagRotate : MonoBehaviour {
 
 	public static FlagRotate access;
 
+	public GameObject coinPrefab;
+
 	public float rotateSpeed;
 	public Vector3[] positions;
-	private float startTime = 0;
+	private float lastCoin = 0;
 
 	public GameObject possessingPlayer;
 	public int currentPlayer = -1;
@@ -16,33 +18,24 @@ public class FlagRotate : MonoBehaviour {
 
 	public Text[] playerScoreTexts;
 	public int[] playerScores;
+	public int currentBounty = 0;
 
 	void Start() {
 		access = this;
 	}
 
 	void Update() {
-//		if ((Time.time < 3) && (Time.time - startTime > 0.1f)) {
-//			startTime = Time.time;
-//			int random = Random.Range(0,2);
-//			Vector3 newPos = positions[random];
-//			positions[random] = this.transform.position;
-//			this.transform.position = newPos;
-//		}
-//		if (Time.time - startTime > 20f) {
-//			startTime = Time.time;
-//			int random = Random.Range(0,2);
-//			Vector3 newPos = positions[random];
-//			positions[random] = this.transform.position;
-//			this.transform.position = newPos;	
-//			this.gameObject.GetComponentInChildren<KingOfTheHill>().updateCurrentPlayer(-1);
-//		}
 		if (possessingPlayer != null) {
-			FinalStatistics.finalStatistics.AddCubePosession(currentPlayer+1,Time.deltaTime);
-			this.transform.position = possessingPlayer.transform.position + new Vector3(0,25f,0);
-		} else {
-			print ("player is null");
+			FinalStatistics.finalStatistics.AddCubePosession (currentPlayer + 1, Time.deltaTime);
+			this.transform.position = possessingPlayer.transform.position + new Vector3 (0, 25f, 0);
 		}
+
+		if ((currentPlayer != -1) && (Time.time - lastCoin > 2f)) {
+			lastCoin = Time.time;
+			makeCoin(possessingPlayer);
+			currentBounty += 100;
+		}
+		
 	}
 
 	void FixedUpdate() {
@@ -83,7 +76,6 @@ public class FlagRotate : MonoBehaviour {
 	}
 
 	public void dropFlag() {
-		print ("dropped flag");
 		this.GetComponent<Collider>().isTrigger = false;
 		Physics.IgnoreCollision(possessingPlayer.gameObject.GetComponent<Collider>(), this.GetComponent<Collider>());
 		this.GetComponent<Rigidbody>().AddExplosionForce(65000f, this.transform.position, 20f);
@@ -104,6 +96,13 @@ public class FlagRotate : MonoBehaviour {
 			return true;
 		else 
 			return false;
+	}
+
+	void makeCoin(GameObject player) {
+		coinPrefab.GetComponent<CoinBehavior>().assignPlayer(player);
+		coinPrefab.transform.position = player.transform.position + new Vector3(30f, 0, 0);
+		GameObject coin = Instantiate(coinPrefab);
+		possessingPlayer.GetComponent<PlayerController> ().coins.Add (coin);
 	}
 
 }

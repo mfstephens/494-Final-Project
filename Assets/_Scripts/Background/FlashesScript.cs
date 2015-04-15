@@ -25,7 +25,7 @@ public class FlashesScript : MonoBehaviour {
 		if (isFlashing) {
 			int willFlash = Random.Range (0, 3);
 			if (willFlash == 0) {
-				int randomNumber = Random.Range (0, 8);
+				int randomNumber = Random.Range (0, 3);
 				LFlashScript cur = largeFlashes [randomNumber].GetComponent<LFlashScript> ();
 				StartCoroutine (cur.flash ());
 			}
