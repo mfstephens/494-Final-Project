@@ -84,6 +84,7 @@ public class FlagRotate : MonoBehaviour {
 		possessingPlayer = null;
 		this.GetComponent<Rigidbody>().useGravity = true;
 		currentPlayer = -1;
+		currentBounty = 0;
 
 	}
 

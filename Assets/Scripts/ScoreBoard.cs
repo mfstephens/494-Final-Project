@@ -14,9 +14,13 @@ public class ScoreBoard : MonoBehaviour {
 	public InstantGuiElement[] playerScores;
 	public InstantGuiElement[] playerRank;
 
+	void Awake() {
+		scoreBoard = this;
+	}
+
 	// Use this for initialization
 	void Start () {
-		scoreBoard = this;
+
 	}
 	
 	// Update is called once per frame
