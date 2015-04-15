@@ -205,14 +205,14 @@ public class PlayerController : MonoBehaviour {
 		}
 
 
-		if (horizontalMovement > .05 && transform.eulerAngles.y != 110f) {
+		if (horizontalMovement > .05 && transform.eulerAngles.y != 120f) {
 			transform.eulerAngles = new Vector3 (0, 120f, 0);
-			bounty.transform.eulerAngles = new Vector3(0, -120f, 0);
+			//bounty.transform.localEulerAngles = new Vector3(0, -120f, 0);
 		}
 			
-		if (horizontalMovement < -.05 && transform.eulerAngles.y != -110f) {
+		if (horizontalMovement < -.05 && transform.eulerAngles.y != -120f) {
 			transform.eulerAngles = new Vector3 (0, -120f, 0);
-			bounty.transform.eulerAngles = new Vector3 (0, 120f, 0);
+			//bounty.transform.Rotate (new Vector3(0, 120f, 0));
 		}
 
 
@@ -250,6 +250,9 @@ public class PlayerController : MonoBehaviour {
 		if (playerMovement.isPlayerFalling) {
 			return;
 		}
+
+		if (invincible)
+			endInvincible ();
 
 		FinalStatistics.finalStatistics.PlayerThrewBall (playerNumber);
 
