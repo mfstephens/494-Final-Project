@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour {
 	private int playerNumber;
 	public float throwCoolDown;
 	private float lastThrow = 0;
+	Animator anim;
 		
 	public bool invincible = false;
 	private bool isSuspended = false;
@@ -37,6 +38,7 @@ public class PlayerController : MonoBehaviour {
 	public bool isBallPossessed = false;
 
 	public Color playerColor;
+	SkinnedMeshRenderer myMesh;
 	private int lerpDirection;
 	private float curLerp = 0;
 
@@ -49,6 +51,8 @@ public class PlayerController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		anim = GetComponent<Animator> ();
+		myMesh = GetComponentInChildren<SkinnedMeshRenderer> ();
 		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
 		playerMovement = GetComponent<PlayerMove> ();
 		int temp = InputManager.Devices.Count;
@@ -157,6 +161,8 @@ public class PlayerController : MonoBehaviour {
 			if (isBallPossessed && !shieldOn && !lockPosition && (Time.time - lastThrow > throwCoolDown)) {
 				ThrowBall();
 				lastThrow = Time.time;
+				anim.SetTrigger("Throw");
+
 			} 
 			else if (!shieldOn && !lockPosition) {
 				possessedBall.returnBall();
@@ -186,11 +192,11 @@ public class PlayerController : MonoBehaviour {
 			bubbleShield.GetComponent<BubbleShield>().endShield();
 		}
 
-		//TODO: person in charge of animations 
-		if (horizontalMovement > 0 && transform.eulerAngles.y == 180)
-			Flip();
-		if(horizontalMovement < 0 && transform.eulerAngles.y == 0)
-			Flip();
+
+		if (horizontalMovement > .05 && transform.eulerAngles.y != 110f)
+			transform.eulerAngles = new Vector3 (0, 110f, 0);
+		if(horizontalMovement < -.05 && transform.eulerAngles.y != -110f)
+			transform.eulerAngles = new Vector3 (0, -110f, 0);
 
 		if (isSuspended) {
 			
@@ -215,16 +221,11 @@ public class PlayerController : MonoBehaviour {
 				lerpDirection = 1;
 			}
 
-			print (lerpDirection);
-
 			curLerp += 0.03f * lerpDirection;
-			GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.Lerp(playerColor, GetComponentInChildren<SkinnedMeshRenderer>().material.color = Color.black, curLerp);
-		}
+			myMesh.material.color = Color.Lerp(playerColor, myMesh.material.color = Color.black, curLerp);
+		} 
 	}
-
-	void Flip(){
-		transform.eulerAngles += new Vector3 (0, 180f, 0);
-	}
+	
 				
 	//Throw ball in direction of left stick
 	void ThrowBall(){
@@ -278,7 +279,7 @@ public class PlayerController : MonoBehaviour {
 	
 	//React to getting hit by a ball
 	public void HitByBall() {
-
+		anim.SetTrigger ("Hit");
 		this.transform.position -= new Vector3 (0, 0, 40f);
 
 		if (Application.loadedLevelName.Equals ("_OneToTwo")) {
@@ -333,11 +334,9 @@ public class PlayerController : MonoBehaviour {
 		invincible = true;
 
 		if (Application.loadedLevelName.Equals("_OneToTwo")) {
-			print ("onetwo");
 			this.transform.position = RespawnPositionTwo.access.generateRespawnPoint ();
 		}
 		else {
-			print("threefour");
 			this.transform.position = RespawnPosition.access.generateRespawnPoint ();
 		}
 
@@ -347,6 +346,7 @@ public class PlayerController : MonoBehaviour {
 		rigid.constraints = RigidbodyConstraints.FreezeRotation ^ RigidbodyConstraints.FreezePositionZ;
 		rigid.rotation = Quaternion.identity;
 		rigid.velocity = Vector3.zero;
+
 		possessedBall.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 		Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), possessedBall.gameObject.GetComponent<Collider> ());
 		MainCamera.access.players.Add (this.gameObject);
@@ -363,12 +363,14 @@ public class PlayerController : MonoBehaviour {
 	public void dropPlayer() {
 		GetComponent<Rigidbody> ().useGravity = true;
 		isSuspended = false;
+		transform.eulerAngles = new Vector3 (0, 180f, 0);
 	}
 
 	public void endInvincible() {
 		invincible = false;
 		GetComponentInChildren<SkinnedMeshRenderer> ().material.color = playerColor;
 		curLerp = 0;
+		anim.SetTrigger ("EndInvincible");
 	}
 
 }

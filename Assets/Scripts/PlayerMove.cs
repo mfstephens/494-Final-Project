@@ -14,6 +14,9 @@ public class PlayerMove : MonoBehaviour {
 	public int hitSpeed;
 	public float reducedAirFactor;
 
+	Animator anim;
+	float lastTimeGrounded = 0f;
+	float okToJumpWhenInAir = .3f;
 	private bool inForcePad = false;
 	private bool barrelRoll = false;
 	private bool isOnGround = false;
@@ -35,6 +38,7 @@ public class PlayerMove : MonoBehaviour {
 	
 	// Use this for initializationx
 	void Start () {
+		anim = GetComponent<Animator> ();
 		playerFall = GetComponent<PlayerFallOff> ();
 		playerController = this.GetComponent<PlayerController> ();
 	}
@@ -42,6 +46,7 @@ public class PlayerMove : MonoBehaviour {
 	public void Movement(float moveX, float moveY, bool jump, bool cancelJump, bool speedBoost,bool lockPosition,bool drop){
 
 		if (isPlayerFalling) {
+
 			return;
 		}
 
@@ -63,28 +68,41 @@ public class PlayerMove : MonoBehaviour {
 		//After player hits a force pad, they are subject to force pads velocity until they hit something
 		if (!inForcePad) {
 			GetComponent<Rigidbody>().velocity = new Vector2 (moveX * speed, GetComponent<Rigidbody>().velocity.y);
+
 			if (!isOnGround && !isOnPlatform) {
 				GetComponent<Rigidbody>().velocity = new Vector2 (GetComponent<Rigidbody>().velocity.x * reducedAirFactor, GetComponent<Rigidbody>().velocity.y);
 			}
+
 		}
 		
 		if (jump) {
-			if (isOnGround || isOnPlatform)
+			if (isOnGround || isOnPlatform || ((Time.time - lastTimeGrounded) < okToJumpWhenInAir)){
 				GetComponent<Rigidbody>().velocity = new Vector2 (GetComponent<Rigidbody>().velocity.x, jumpSpeed);
+				anim.SetTrigger("Jump");
+				lastTimeGrounded = 0f;
+			}
 			else if (doubleJump) {
 				GetComponent<Rigidbody>().velocity = new Vector2 (GetComponent<Rigidbody>().velocity.x, jumpSpeed);
+				anim.SetTrigger("DoubleJump");
 				doubleJump = false;
+				EllipsoidParticleEmitter[] e = GetComponentsInChildren<EllipsoidParticleEmitter>();
+				for(int i = 0; i < e.Length; i++){
+					e[i].emit = true;
+				}
+				Invoke("stopEmission",.3f);
 			}
 		} 
 		
 		else if (cancelJump) {
 			if (GetComponent<Rigidbody>().velocity.y > jumpShortSpeed)
 				GetComponent<Rigidbody>().velocity = new Vector2 (GetComponent<Rigidbody>().velocity.x, jumpShortSpeed);
+				lastTimeGrounded = 0f;
+
 		} 
 		
 		//Player can use speed boost if they have enough energy
 //		else if (speedBoost) {
-//			print("Speed Boost");
+//	
 //			if(playerHealth.UseSpeedBoost())
 //				StartCoroutine("SpeedBoost");
 //		}
@@ -93,14 +111,28 @@ public class PlayerMove : MonoBehaviour {
 		if (isOnMovingPlatform) {
 			GetComponent<Rigidbody>().velocity += movingPlatform.GetComponent<Rigidbody>().velocity;
 		}
-		
+
+		if (!isOnGround && !isOnPlatform) {
+			anim.SetBool ("InAir", true);
+			anim.SetFloat ("Running", 0f);
+		}
+		else {
+			anim.SetBool ("InAir", false);
+			anim.SetFloat ("Running", Mathf.Abs (moveX));	
+		}
+	}
+
+	void stopEmission(){
+		EllipsoidParticleEmitter[] e = GetComponentsInChildren<EllipsoidParticleEmitter>();
+		for(int i = 0; i < e.Length; i++){
+			e[i].emit = false;
+		}
 	}
 	
 	//Coroutine adds force over a period of speed boost duration (Maybe Add In Direction of Stick)
 	IEnumerator SpeedBoost()
 	{
 		float startSpeedBoost = Time.time;
-		print ("Speed Boost");
 		while (Time.time < startSpeedBoost + speedBoostDuration) {
 			//rigidbody.AddForce(transform.localScale.x*speedBoostForce,0,0);
 			GetComponent<Rigidbody>().velocity = new Vector2(transform.localScale.x * speedBoostForce,0);
@@ -118,15 +150,19 @@ public class PlayerMove : MonoBehaviour {
 	
 	void OnCollisionEnter(Collision collision){
 		if (collision.gameObject.CompareTag("Ground")) {
-			isOnGround = true;
-			doubleJump = true;
-			inForcePad = false;
+			if(!isCollisionAboveMe(collision)){
+				isOnGround = true;
+				doubleJump = true;
+				inForcePad = false;
+			}
 		}
 		
 		if (collision.gameObject.CompareTag ("Platform")) {
-			isOnPlatform = true;
-			doubleJump = true;
-			inForcePad = false;
+			if(!isCollisionAboveMe(collision)){
+				isOnPlatform = true;
+				doubleJump = true;
+				inForcePad = false;
+			}
 		}
 		
 		if (collision.gameObject.CompareTag ("LeftWall")) {
@@ -177,7 +213,6 @@ public class PlayerMove : MonoBehaviour {
 //					FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1] += temp;
 //					FlagRotate.access.playerScoreTexts[collision.gameObject.GetComponent<Ball>().playerColor - 1].text = FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString();
 //				}
-				//print ("assigning kill points" + FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor);
 
 				//Instantiate(fireeeeee,transform.position,Quaternion.identity);
 
@@ -204,57 +239,76 @@ public class PlayerMove : MonoBehaviour {
 		}
 		
 		if (collision.gameObject.name == "Moving Platform") {
-			isOnMovingPlatform = true;
-			movingPlatform = collision.gameObject;
+			if(!isCollisionAboveMe(collision)){
+				isOnMovingPlatform = true;
+				movingPlatform = collision.gameObject;
+			}
 		}
 
 		if (collision.gameObject.CompareTag("Ground")) {
-			isOnGround = true;
-			doubleJump = true;
-			inForcePad = false;
+			if(!isCollisionAboveMe(collision)){
+				isOnGround = true;
+				doubleJump = true;
+				inForcePad = false;
+			}
 		}
 		
 		if (collision.gameObject.CompareTag ("Platform")) {
-			isOnPlatform = true;
-			doubleJump = true;
-			inForcePad = false;
+			if(!isCollisionAboveMe(collision)){
+				isOnPlatform = true;
+				doubleJump = true;
+				inForcePad = false;
+			}
 		}
 		
 	}
 	
 	void OnCollisionExit(Collision collision){
-		if (collision.gameObject.CompareTag ("Ground"))
+		if (collision.gameObject.CompareTag ("Ground")) {
 			isOnGround = false;
+			if(!isCollisionAboveMe(collision))
+				lastTimeGrounded = Time.time;
+		}
 		
-		if (collision.gameObject.CompareTag ("Platform"))
+		if (collision.gameObject.CompareTag ("Platform")){
 			isOnPlatform = false;
+			if(!isCollisionAboveMe(collision))
+				lastTimeGrounded = Time.time;
+		}
 		
 		if (collision.gameObject.CompareTag ("LeftWall"))
 			isOnLeftWall = false;
 		
 		if (collision.gameObject.CompareTag ("RightWall"))
 			isOnRightWall = false;
-		if (collision.gameObject.name == "Moving Platform") 
+		if (collision.gameObject.name == "Moving Platform") {
 			isOnMovingPlatform = false;
+			if(!isCollisionAboveMe(collision))
+				lastTimeGrounded = Time.time;
+		}
 	}
 	
+
 	void OnTriggerEnter(Collider other){
 		if (other.gameObject.CompareTag ("ForcePad")) {
 			this.GetComponent<Rigidbody>().velocity = forcePadForce * other.gameObject.transform.up;
 			inForcePad = true;
 		}
-		if (playerController.possessedBall.Equals(other.gameObject.GetComponent<Ball>())) {
+		if (!playerController.isBallPossessed && playerController.possessedBall.Equals(other.gameObject.GetComponent<Ball>())) {
 			playerController.PickUpBall(other.gameObject);
 		}
 	}
 
 	public bool canShield() {
-		print ("calling canshield");
 		if (isOnPlatform || isOnGround) 
 			return true;
 
 		return false;
 	}
 
+	bool isCollisionAboveMe(Collision other){
+		return(other.transform.position.y > transform.position.y);
+
+	}
 
 }

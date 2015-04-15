@@ -40,9 +40,7 @@ public class FlagRotate : MonoBehaviour {
 		if (possessingPlayer != null) {
 			FinalStatistics.finalStatistics.AddCubePosession(currentPlayer+1,Time.deltaTime);
 			this.transform.position = possessingPlayer.transform.position + new Vector3(0,25f,0);
-		} else {
-			print ("player is null");
-		}
+		} 
 	}
 
 	void FixedUpdate() {
@@ -77,7 +75,6 @@ public class FlagRotate : MonoBehaviour {
 	}
 
 	public void dropFlag() {
-		print ("dropped flag");
 		this.GetComponent<Collider>().isTrigger = false;
 		Physics.IgnoreCollision(possessingPlayer.gameObject.GetComponent<Collider>(), this.GetComponent<Collider>());
 		this.GetComponent<Rigidbody>().AddExplosionForce(65000f, this.transform.position, 20f);
