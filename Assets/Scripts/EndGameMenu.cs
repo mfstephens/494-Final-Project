@@ -37,18 +37,28 @@ public class EndGameMenu : MonoBehaviour {
 				playerReady[1].check = true;
 				numberOfPlayersReady++;
 			}
-			if(InputManager.Devices.Count == 3){
-				if(InputManager.Devices[2].Action1.WasPressed){
-					playerReady[2].text = "Waiting";
-					numberOfPlayersReady++;
-				}
+			if(InputManager.Devices[2].Action1.WasPressed){
+				playerReady[2].check = true;
+				numberOfPlayersReady++;
 			}
-			if(InputManager.Devices.Count == 4){
-				if(InputManager.Devices[3].Action1.WasPressed){
-					playerReady[3].text = "Waiting";
-					numberOfPlayersReady++;
-				}
+			if(InputManager.Devices[3].Action1.WasPressed){
+				playerReady[3].check = true;
+				numberOfPlayersReady++;
 			}
+
+
+//			if(InputManager.Devices.Count == 3){
+//				if(InputManager.Devices[2].Action1.WasPressed){
+//					playerReady[2].text = "Waiting";
+//					numberOfPlayersReady++;
+//				}
+//			}
+//			if(InputManager.Devices.Count == 4){
+//				if(InputManager.Devices[3].Action1.WasPressed){
+//					playerReady[3].text = "Waiting";
+//					numberOfPlayersReady++;
+//				}
+//			}
 
 			if(numberOfPlayersReady == InputManager.Devices.Count){
 				finalResultsMenu.gameObject.SetActive(false);
@@ -75,6 +85,7 @@ public class EndGameMenu : MonoBehaviour {
 
 			if(InputManager.Devices[0].Action1.WasPressed){
 				if(currentMenuSelection == 0){
+					Time.timeScale = 1;
 					Application.LoadLevel(Application.loadedLevelName);
 				}
 				else if(currentMenuSelection == 1){

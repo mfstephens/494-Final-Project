@@ -19,7 +19,8 @@ public class PlayerController : MonoBehaviour {
 	private float lastThrow = 0;
 	Animator anim;
 	public GameObject bounty;
-		
+	public GameObject ballHoldPosition;	
+
 	public bool invincible = false;
 	private bool isSuspended = false;
 	private bool jump = false;
@@ -65,7 +66,9 @@ public class PlayerController : MonoBehaviour {
 		playerMovement = GetComponent<PlayerMove> ();
 
 		//Set the font color to correspond to player color
-		ScoreBoard.scoreBoard.setPlayerColor (playerMovement.playerColor-1, playerColor);
+		if (Application.loadedLevelName.Equals ("_ThreeToFour")) {
+			ScoreBoard.scoreBoard.setPlayerColor (playerMovement.playerColor - 1, playerColor);
+		}
 
 		int temp = InputManager.Devices.Count;
 		ballTarget = null;
@@ -142,7 +145,8 @@ public class PlayerController : MonoBehaviour {
 		
 		//Change Z Axis of ball when possessed to appear in front of you
 		if (isBallPossessed) {
-			possessedBall.transform.position = new Vector3(this.transform.position.x,this.transform.position.y + 6f,this.transform.position.z);
+			possessedBall.transform.position = new Vector3(this.transform.position.x + 9f,this.transform.position.y + 6f,this.transform.position.z);
+			possessedBall.transform.position = ballHoldPosition.transform.position;
 		}
 		
 		//Check if player flicked down on joystick so they can drop through platform
