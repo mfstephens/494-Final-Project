@@ -320,7 +320,7 @@ public class PlayerController : MonoBehaviour {
 			MainCamera.access.players.Remove (possessedBall.gameObject);
 			Invoke("returnToStart",2f);
 		}
-		else if (Application.loadedLevelName.Equals("_ThreeToFour")) {
+		else if (Application.loadedLevelName.Equals("_ThreeToFour") || Application.loadedLevelName.Equals("_ThreeToFour_small")) {
 //			if (KingOfTheHill.access != null && KingOfTheHill.access.isKing(playerMovement.playerColor)) {
 //				this.transform.localScale -= new Vector3(1f, 3f, 0.625f);
 //				possessedBall.transform.localScale -= new Vector3(1.125f, 1.125f, 1.125f);
@@ -359,12 +359,7 @@ public class PlayerController : MonoBehaviour {
 		rigid.useGravity = false;
 		invincible = true;
 
-		if (Application.loadedLevelName.Equals("_OneToTwo")) {
-			this.transform.position = RespawnPositionTwo.access.generateRespawnPoint ();
-		}
-		else {
-			this.transform.position = RespawnPosition.access.generateRespawnPoint ();
-		}
+		this.transform.position = RespawnPositionTwo.access.generateRespawnPoint ();
 
 		//possessedBall.gameObject.SetActive(true);
 		//possessedBall.transform.position = this.transform.position;
@@ -378,7 +373,7 @@ public class PlayerController : MonoBehaviour {
 		MainCamera.access.players.Add (this.gameObject);
 		MainCamera.access.players.Add (possessedBall.gameObject);
 		playerMovement.isPlayerFalling = false;
-		if (Application.loadedLevelName.Equals ("_ThreeToFour")) {
+		if (Application.loadedLevelName.Equals ("_ThreeToFour") || Application.loadedLevelName.Equals("_ThreeToFour_small")) {
 			Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), FlagRotate.access.gameObject.GetComponent<Collider> (), false);
 		}
 		Invoke ("dropPlayer", 0.5f);
