@@ -44,10 +44,10 @@ public class FlagRotate : MonoBehaviour {
 			playerScoreTexts[currentPlayer].text = playerScores[currentPlayer].ToString();
 
 			//Pass array of player scores to be sorted to print out their rank
-			ScoreBoard.scoreBoard.setPlayerRank(playerScores);
+			//ScoreBoard.scoreBoard.setPlayerRank(playerScores);
 				
 			//Set the player score on the scoreboard
-			ScoreBoard.scoreBoard.setPlayerScore(currentPlayer,playerScores[currentPlayer].ToString());
+			//ScoreBoard.scoreBoard.setPlayerScore(currentPlayer,playerScores[currentPlayer].ToString());
 		}
 		this.transform.Rotate (0, rotateSpeed, 0);
 	}
@@ -106,4 +106,7 @@ public class FlagRotate : MonoBehaviour {
 		possessingPlayer.GetComponent<PlayerController> ().coins.Add (coin);
 	}
 
+	public int getScoreForPlayer(int playerNumber){
+		return playerScores[playerNumber];
+	}
 }

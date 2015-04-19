@@ -11,6 +11,7 @@ public class EndGameMenu : MonoBehaviour {
 	public InstantGuiButton[] playerReady;
 	public InstantGuiElement[] newGameOptions;
 	public InstantGuiList[] playerStatistics;
+	public InstantGuiElement[] playerColors;
 
 	private int currentMenuSelection = 0;
 	
@@ -19,15 +20,19 @@ public class EndGameMenu : MonoBehaviour {
 
 	private int numberOfPlayersReady = 0;
 
+	void Awake(){
+		access = this;
+	}
+
 	// Use this for initialization
 	void Start () {
-		access = this;
 		finalResultsMenu.gameObject.SetActive (false);
 		newGameMenu.gameObject.SetActive (false);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+
 		if (finalResultsMenu.gameObject.activeSelf == true) {
 			if(InputManager.Devices[0].Action1.WasPressed){
 				playerReady[0].check = true;
@@ -45,20 +50,6 @@ public class EndGameMenu : MonoBehaviour {
 				playerReady[3].check = true;
 				numberOfPlayersReady++;
 			}
-
-
-//			if(InputManager.Devices.Count == 3){
-//				if(InputManager.Devices[2].Action1.WasPressed){
-//					playerReady[2].text = "Waiting";
-//					numberOfPlayersReady++;
-//				}
-//			}
-//			if(InputManager.Devices.Count == 4){
-//				if(InputManager.Devices[3].Action1.WasPressed){
-//					playerReady[3].text = "Waiting";
-//					numberOfPlayersReady++;
-//				}
-//			}
 
 			if(numberOfPlayersReady == InputManager.Devices.Count){
 				finalResultsMenu.gameObject.SetActive(false);
@@ -116,58 +107,76 @@ public class EndGameMenu : MonoBehaviour {
 	public void EndOfGame(){
 		finalResultsMenu.gameObject.SetActive (true);
 		SetBasicStatistics();
+
 		AdvancedPlayer1Statistics ();
 		AdvancedPlayer2Statistics ();
-		AdvancedPlayer3Statistics ();
-		AdvancedPlayer4Statistics ();
+
+		if(InputManager.Devices.Count >= 3)
+			AdvancedPlayer3Statistics ();
+
+		if(InputManager.Devices.Count == 4)
+			AdvancedPlayer4Statistics ();
 	}
 
 	private void SetBasicStatistics(){
-		for (int i =1; i <= 4; i++) { 
+		for (int i =1; i <= InputManager.Devices.Count; i++) { 
 			PlayerStatistics currentPlayer = FinalStatistics.finalStatistics.getPlayer (i);
-			playerStatistics [i-1].labels [0] += currentPlayer.ballsThrown.ToString ();
-			playerStatistics [i-1].labels [1] += currentPlayer.successfulHits.ToString();
+			playerStatistics [i-1].labels[0] += FlagRotate.access.getScoreForPlayer(i-1);
+			playerStatistics [i-1].labels [1] += currentPlayer.ballsThrown.ToString ();
+			playerStatistics [i-1].labels [2] += currentPlayer.successfulHits.ToString();
 			print (currentPlayer.successfulHits);
 			if(currentPlayer.ballsThrown == 0){
-				playerStatistics [i-1].labels [2] += "0.00";
+				playerStatistics [i-1].labels [3] += "0.00";
 			}
 			else{
 				float hitPercentage = ((1.0f*currentPlayer.successfulHits)/currentPlayer.ballsThrown)*100f;
-				playerStatistics [i-1].labels [2] += hitPercentage.ToString("F2");
+				playerStatistics [i-1].labels [3] += hitPercentage.ToString("F2");
 			}
-			playerStatistics [i-1].labels[3] += currentPlayer.hitByBall;
-			playerStatistics [i-1].labels[4] += currentPlayer.timePossessedCube.ToString("F2");
-			playerStatistics [i-1].labels[5] += currentPlayer.crownKills.ToString();
+			playerStatistics [i-1].labels[4] += currentPlayer.hitByBall;
+			playerStatistics [i-1].labels[5] += currentPlayer.timePossessedCube.ToString("F2");
+			playerStatistics [i-1].labels[6] += currentPlayer.crownKills.ToString();
 		}
 
 	}
 
 	private void AdvancedPlayer1Statistics(){
 		PlayerStatistics currentPlayer = FinalStatistics.finalStatistics.getPlayer (1);
-		playerStatistics [0].labels[6] += currentPlayer.hitPlayer[1];
-		playerStatistics [0].labels[7] += currentPlayer.hitPlayer[2];
-		playerStatistics [0].labels[8] += currentPlayer.hitPlayer[3];
+		playerStatistics [0].labels[7] += currentPlayer.hitPlayer[1];
+		playerStatistics [0].labels[8] += currentPlayer.hitPlayer[2];
+		playerStatistics [0].labels[9] += currentPlayer.hitPlayer[3];
+
+		playerColors [0].text = "Player 1";
 	}
 
 	private void AdvancedPlayer2Statistics(){
 		PlayerStatistics currentPlayer = FinalStatistics.finalStatistics.getPlayer (2);
-		playerStatistics [1].labels[6] += currentPlayer.hitPlayer[0];
-		playerStatistics [1].labels[7] += currentPlayer.hitPlayer[2];
-		playerStatistics [1].labels[8] += currentPlayer.hitPlayer[3];
+		playerStatistics [1].labels[7] += currentPlayer.hitPlayer[0];
+		playerStatistics [1].labels[8] += currentPlayer.hitPlayer[2];
+		playerStatistics [1].labels[9] += currentPlayer.hitPlayer[3];
+
+		playerColors [1].text = "Player 2";
 	}
 
 	private void AdvancedPlayer3Statistics(){
 		PlayerStatistics currentPlayer = FinalStatistics.finalStatistics.getPlayer (3);
-		playerStatistics [2].labels[6] += currentPlayer.hitPlayer[0];
-		playerStatistics [2].labels[7] += currentPlayer.hitPlayer[1];
-		playerStatistics [2].labels[8] += currentPlayer.hitPlayer[3];
+		playerStatistics [2].labels[7] += currentPlayer.hitPlayer[0];
+		playerStatistics [2].labels[8] += currentPlayer.hitPlayer[1];
+		playerStatistics [2].labels[9] += currentPlayer.hitPlayer[3];
+
+		playerColors [2].text = "Player 3";
 	}
 
 	private void AdvancedPlayer4Statistics(){
 		PlayerStatistics currentPlayer = FinalStatistics.finalStatistics.getPlayer (4);
-		playerStatistics [3].labels[6] += currentPlayer.hitPlayer[0];
-		playerStatistics [3].labels[7] += currentPlayer.hitPlayer[1];
-		playerStatistics [3].labels[8] += currentPlayer.hitPlayer[2];
+		playerStatistics [3].labels[7] += currentPlayer.hitPlayer[0];
+		playerStatistics [3].labels[8] += currentPlayer.hitPlayer[1];
+		playerStatistics [3].labels[9] += currentPlayer.hitPlayer[2];
+
+		playerColors [3].text = "Player 4";
 	}
-	
+
+	public void setPlayerColor(int player,Color playerColor){
+		print ("Set Color for player " + player);
+		playerColors [player].style.main.textColor = playerColor;
+	}
 }

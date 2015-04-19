@@ -71,10 +71,7 @@ public class PlayerController : MonoBehaviour {
 
 		playerMovement = GetComponent<PlayerMove> ();
 
-		//Set the font color to correspond to player color
-//		if (Application.loadedLevelName.Equals ("_ThreeToFour")) {
-			ScoreBoard.scoreBoard.setPlayerColor (playerMovement.playerColor - 1, playerColor);
-//		}
+		EndGameMenu.access.setPlayerColor (playerMovement.playerColor - 1, playerColor);
 
 		int temp = InputManager.Devices.Count;
 		ballTarget = null;
