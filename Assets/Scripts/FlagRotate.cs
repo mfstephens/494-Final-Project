@@ -15,10 +15,12 @@ public class FlagRotate : MonoBehaviour {
 	public GameObject possessingPlayer;
 	public int currentPlayer = -1;
 	private Color origColor;
-
-	public Text[] playerScoreTexts;
+	
 	public int[] playerScores;
 	public int currentBounty = 0;
+
+	public GameObject[] playerIcons;
+	public float pointToDistanceFactor;
 
 	void Start() {
 		access = this;
@@ -41,7 +43,7 @@ public class FlagRotate : MonoBehaviour {
 	void FixedUpdate() {
 		if (currentPlayer != -1) {
 			playerScores[currentPlayer]++;
-			playerScoreTexts[currentPlayer].text = playerScores[currentPlayer].ToString();
+			MovePlayerCursor (currentPlayer);
 
 			//Pass array of player scores to be sorted to print out their rank
 			//ScoreBoard.scoreBoard.setPlayerRank(playerScores);
@@ -52,6 +54,16 @@ public class FlagRotate : MonoBehaviour {
 		this.transform.Rotate (0, rotateSpeed, 0);
 	}
 
+	public void MovePlayerCursor (int player) {
+		GameObject playerIcon = playerIcons[player];
+		Vector3 temp = playerIcon.GetComponent<RectTransform> ().anchoredPosition3D;
+		temp.x = Mathf.Lerp(-360f, 360f, playerScores[player]/5000f);
+		playerIcon.GetComponent<RectTransform> ().anchoredPosition3D = temp;
+		print (playerIcon.GetComponent<RectTransform> ().position);
+
+		//		temp.x += (playerScores[player] * pointToDistanceFactor);
+	}
+	
 	void OnCollisionEnter(Collision other) {
 		
 		if (other.gameObject.CompareTag ("Player")) {

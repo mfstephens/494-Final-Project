@@ -13,13 +13,14 @@ public class KingOfTheHill : MonoBehaviour {
 	public float roundLength = 120f;
 	
 	public Text countdownText, getCubeText;
-	public Text roundClock;
 	public float RoundLength = 3.0f;
 	
 	private bool startGame = false;
 	private float startGameTime;
 
 	private int numberOfPlayersReady = 0;
+	public int pointGoal;
+	public GameObject trophyIcon;
 	
 	void Awake() {
 		access = this;
@@ -27,7 +28,6 @@ public class KingOfTheHill : MonoBehaviour {
 
 	void Start() {
 		access = this;
-		roundClock.enabled = false;
 		StartCoroutine ("CountdownToBeginRound");
 		origColor = this.gameObject.GetComponent<Renderer> ().material.color;
 		getCubeText.enabled = false;
@@ -38,17 +38,13 @@ public class KingOfTheHill : MonoBehaviour {
 	void Update () {
 		//Game Currently in Progress
 		if (startGame) {
-			int currentTime = Mathf.CeilToInt(roundLength-(Time.time - startGameTime));
-			if(currentTime%60 < 10){
-				roundClock.text = (currentTime/60).ToString() + ":0"+(currentTime%60).ToString();
-			}
-			else{
-				roundClock.text = (currentTime/60).ToString() + ":"+(currentTime%60).ToString();
-			}
-			if (currentTime == 0) {
-				EndGameMenu.access.EndOfGame();
-				startGame = false;
-				Time.timeScale = 0;
+			trophyIcon.transform.Rotate(Vector3.up);
+			foreach (int score in FlagRotate.access.playerScores) {
+				if (score >= pointGoal) {
+					EndGameMenu.access.EndOfGame();
+					startGame = false;
+					Time.timeScale = 0;
+				}
 			}
 		}
 	}
@@ -81,7 +77,6 @@ public class KingOfTheHill : MonoBehaviour {
 			
 			yield return null;
 		}
-		roundClock.enabled = true;
 		startGame = true;
 		startGameTime = Time.time;
 		countdownText.enabled = false;
