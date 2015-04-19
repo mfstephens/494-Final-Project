@@ -14,9 +14,13 @@ public class ScoreBoard : MonoBehaviour {
 	public InstantGuiElement[] playerScores;
 	public InstantGuiElement[] playerRank;
 
+	void Awake() {
+		scoreBoard = this;
+	}
+
 	// Use this for initialization
 	void Start () {
-		scoreBoard = this;
+
 	}
 	
 	// Update is called once per frame
@@ -34,10 +38,16 @@ public class ScoreBoard : MonoBehaviour {
 
 	public void setPlayerColor(int player,Color playerColor){
 		playerScoreboard [player].style.main.textColor = playerColor;
+
+		EndGameMenu.access.setPlayerColor (player, playerColor);
 	}
 
 	public void setPlayerScore(int player,string score){
 		playerScores [player].text = score;
+	}
+
+	public string getPlayerScore(int player){
+		return playerScores[player].text;
 	}
 
 	public void setPlayerRank(int[] tempScores){

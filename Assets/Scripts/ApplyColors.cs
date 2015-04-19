@@ -9,7 +9,7 @@ public class ApplyColors : MonoBehaviour {
 	void Awake () {
 		SkinnedMeshRenderer smr;
 		for (int i = 0; i < InputManager.Devices.Count; i++) {
-			GameObject.Find ("P" + (i + 1) + "Score").GetComponent<Text>().color = PassInfoOnLoad.playerColor[i];
+			//GameObject.Find ("P" + (i + 1) + "Score").GetComponent<Text>().color = PassInfoOnLoad.playerColor[i];
 			string playerName = "Player" + (i + 1);
 			ballMesh = GameObject.Find (playerName + "Ball").GetComponent<MeshRenderer>();
 			ballMesh.material.color = PassInfoOnLoad.playerColor[i];

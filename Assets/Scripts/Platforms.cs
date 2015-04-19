@@ -17,9 +17,9 @@ public class Platforms : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other){
 
-		//if(other.gameObject.CompareTag("Player")){
-			//Physics.IgnoreCollision(parentCollider,other.gameObject.GetComponent<Collider>(),true);
-		//}
+		if(other.gameObject.CompareTag("Player")){
+			Physics.IgnoreCollision(parentCollider,other.gameObject.GetComponent<Collider>(),true);
+		}
 	}
 
 	void OnTriggerStay(Collider other) {
@@ -27,9 +27,9 @@ public class Platforms : MonoBehaviour {
 	}
 
 	void OnTriggerExit(Collider other){
-		//if(other.gameObject.CompareTag("Player")){
-			//Physics.IgnoreCollision(parentCollider,other.gameObject.GetComponent<Collider>(),false);
-		//}
+		if(other.gameObject.CompareTag("Player")){
+			Physics.IgnoreCollision(parentCollider,other.gameObject.GetComponent<Collider>(),false);
+		}
 	}
 
 
