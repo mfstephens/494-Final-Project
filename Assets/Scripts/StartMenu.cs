@@ -47,52 +47,75 @@ public class StartMenu : MonoBehaviour {
 			} 
 
 			if (player1.Action1.WasPressed) {
-				menuOptions [currentMainMenuSelection].onPressed.Activate (menuOptions [currentMainMenuSelection]);
+
 				currentScreen = currentMainMenuSelection;
 
-				//Check if there's enough controllers connected to choose both options
 				if(currentScreen == 0){
-					if(InputManager.Devices.Count < 3)
-						chooseGameOptions[1].disabled = true;
+					if (InputManager.Devices.Count == 1) {
+						return;
+					}
+					
+					if (InputManager.Devices.Count == 2){
+						PassInfoOnLoad.gameNameToLoad = "_Two";
+					}
+					else if (InputManager.Devices.Count == 3){
+						PassInfoOnLoad.gameNameToLoad = "_Three";
+					}
+					else if (InputManager.Devices.Count == 4) {
+						PassInfoOnLoad.gameNameToLoad = "_Four";
+					}
+					Application.LoadLevel("_CharSelect");
 				}
+				else {
+					menuOptions [currentMainMenuSelection].onPressed.Activate (menuOptions [currentMainMenuSelection]);
+				}
+
+				//currentScreen = currentMainMenuSelection;
+
+				//Check if there's enough controllers connected to choose both options
+//				if(currentScreen == 0){
+//					if(InputManager.Devices.Count < 3)
+//						chooseGameOptions[1].disabled = true;
+//				}
+
 			}
 			return;
 		}
 
 		//Selections from the choose game menu
-		if (currentScreen == 0) {
-			chooseGameOptions[currentChooseGameSelection].check = true;
-			if(player1.LeftStickX != 0 && !nextSelection){
-				chooseGameOptions[currentChooseGameSelection].check = false;
-				currentChooseGameSelection = (currentChooseGameSelection + 1)%chooseGameOptions.Length;
-
-				//If next selection requires 3-4 players and not enough devices are connected, don't highlight that button
-				if(currentChooseGameSelection == 1){
-					if(chooseGameOptions[1].disabled == true){
-						currentChooseGameSelection = 0;
-					}
-				}
-
-				chooseGameOptions[currentChooseGameSelection].check = true;
-				nextSelection = true;
-			}
-			else if (!player1.LeftStickX){
-				nextSelection = false;
-				previousSelection = false;
-			}
-
-			//Player selects game to play
-			if(player1.Action1.WasPressed){
-				//1-2 Players Required
-				if(currentChooseGameSelection == 0){
-					PassInfoOnLoad.gameNameToLoad = "_OneToTwo";
-				}
-				else{
-					PassInfoOnLoad.gameNameToLoad = "_ThreeToFour";
-				}
-				Application.LoadLevel("_CharSelect");
-			}
-		}
+//		if (currentScreen == 0) {
+//			chooseGameOptions[currentChooseGameSelection].check = true;
+//			if(player1.LeftStickX != 0 && !nextSelection){
+//				chooseGameOptions[currentChooseGameSelection].check = false;
+//				currentChooseGameSelection = (currentChooseGameSelection + 1)%chooseGameOptions.Length;
+//
+//				//If next selection requires 3-4 players and not enough devices are connected, don't highlight that button
+//				if(currentChooseGameSelection == 1){
+//					if(chooseGameOptions[1].disabled == true){
+//						currentChooseGameSelection = 0;
+//					}
+//				}
+//
+//				chooseGameOptions[currentChooseGameSelection].check = true;
+//				nextSelection = true;
+//			}
+//			else if (!player1.LeftStickX){
+//				nextSelection = false;
+//				previousSelection = false;
+//			}
+//
+//			//Player selects game to play
+//			if(player1.Action1.WasPressed){
+//				//1-2 Players Required
+//				if(currentChooseGameSelection == 0){
+//					PassInfoOnLoad.gameNameToLoad = "_OneToTwo";
+//				}
+//				else{
+//					PassInfoOnLoad.gameNameToLoad = "_ThreeToFour";
+//				}
+//				Application.LoadLevel("_CharSelect");
+//			}
+//		}
 
 		//Selections from the controller menu
 		if (currentScreen == 1) {

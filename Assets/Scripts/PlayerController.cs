@@ -52,9 +52,15 @@ public class PlayerController : MonoBehaviour {
 	public Ball ballTarget;
 
 	public List<GameObject> coins;
+	private TrailRenderer killTrail;
+	public ParticleSystem killExplosion;
 
 	void Awake() {
 		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
+		killTrail = GetComponent<TrailRenderer> ();
+		killTrail.material.color = playerColor;
+		killTrail.enabled = false;
+		killExplosion.Stop ();
 	}
 
 	// Use this for initialization
@@ -66,9 +72,9 @@ public class PlayerController : MonoBehaviour {
 		playerMovement = GetComponent<PlayerMove> ();
 
 		//Set the font color to correspond to player color
-		if (Application.loadedLevelName.Equals ("_ThreeToFour")) {
+//		if (Application.loadedLevelName.Equals ("_ThreeToFour")) {
 			ScoreBoard.scoreBoard.setPlayerColor (playerMovement.playerColor - 1, playerColor);
-		}
+//		}
 
 		int temp = InputManager.Devices.Count;
 		ballTarget = null;
@@ -303,24 +309,27 @@ public class PlayerController : MonoBehaviour {
 	}
 	
 	//React to getting hit by a ball
-	public void HitByBall() {
+	public void HitByBall(Collision ball) {
 		anim.SetTrigger ("Hit");
 		this.transform.position -= new Vector3 (0, 0, 40f);
+		killExplosion.transform.position = ball.gameObject.transform.position;
+		killExplosion.Play ();
+		killTrail.enabled = true;
 
-		if (Application.loadedLevelName.Equals ("_OneToTwo")) {
-			CaptureTheFlagMode.access.playerScore(this.gameObject);
-			justHit = true;
-			CrowdBehavior.access.crowdFlash();
-//			if (!isBallPossessed) {
-//				PickUpBall(possessedBall.gameObject);
-//			}
-			//possessedBall.gameObject.SetActive(false);
-			playerMovement.isOnMovingPlatform = false;
-			MainCamera.access.players.Remove (this.gameObject);
-			MainCamera.access.players.Remove (possessedBall.gameObject);
-			Invoke("returnToStart",2f);
-		}
-		else if (Application.loadedLevelName.Equals("_ThreeToFour") || Application.loadedLevelName.Equals("_ThreeToFour_small")) {
+//		if (Application.loadedLevelName.Equals ("_OneToTwo")) {
+//			CaptureTheFlagMode.access.playerScore(this.gameObject);
+//			justHit = true;
+//			CrowdBehavior.access.crowdFlash();
+////			if (!isBallPossessed) {
+////				PickUpBall(possessedBall.gameObject);
+////			}
+//			//possessedBall.gameObject.SetActive(false);
+//			playerMovement.isOnMovingPlatform = false;
+//			MainCamera.access.players.Remove (this.gameObject);
+//			MainCamera.access.players.Remove (possessedBall.gameObject);
+//			Invoke("returnToStart",2f);
+//		}
+		//else if (Application.loadedLevelName.Equals("_ThreeToFour") || Application.loadedLevelName.Equals("_ThreeToFour_small")) {
 //			if (KingOfTheHill.access != null && KingOfTheHill.access.isKing(playerMovement.playerColor)) {
 //				this.transform.localScale -= new Vector3(1f, 3f, 0.625f);
 //				possessedBall.transform.localScale -= new Vector3(1.125f, 1.125f, 1.125f);
@@ -344,7 +353,7 @@ public class PlayerController : MonoBehaviour {
 				MainCamera.access.players.Remove (this.gameObject);
 				MainCamera.access.players.Remove (possessedBall.gameObject);
 				Invoke("returnToStart",2f);
-			}
+			//}
 //		}
 	}
 	
@@ -358,8 +367,8 @@ public class PlayerController : MonoBehaviour {
 		Rigidbody rigid = this.gameObject.GetComponent<Rigidbody> ();
 		rigid.useGravity = false;
 		invincible = true;
-
-		this.transform.position = RespawnPositionTwo.access.generateRespawnPoint ();
+		killTrail.enabled = false;
+		this.transform.position = RespawnPosition.access.generateRespawnPoint ();
 
 		//possessedBall.gameObject.SetActive(true);
 		//possessedBall.transform.position = this.transform.position;
@@ -373,9 +382,9 @@ public class PlayerController : MonoBehaviour {
 		MainCamera.access.players.Add (this.gameObject);
 		MainCamera.access.players.Add (possessedBall.gameObject);
 		playerMovement.isPlayerFalling = false;
-		if (Application.loadedLevelName.Equals ("_ThreeToFour") || Application.loadedLevelName.Equals("_ThreeToFour_small")) {
+		//if (Application.loadedLevelName.Equals ("_ThreeToFour") || Application.loadedLevelName.Equals("_ThreeToFour_small")) {
 			Physics.IgnoreCollision (this.gameObject.GetComponent<Collider> (), FlagRotate.access.gameObject.GetComponent<Collider> (), false);
-		}
+		//}
 		Invoke ("dropPlayer", 0.5f);
 		Invoke ("endInvincible", 2f);
 		//MainCamera.access.players.Add (possessedBall.gameObject);

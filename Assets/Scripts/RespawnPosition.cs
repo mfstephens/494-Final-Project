@@ -5,7 +5,7 @@ public class RespawnPosition : MonoBehaviour {
 
 	public static RespawnPosition access;
 
-	public GameObject flag;
+	//public GameObject flag;
 	private Vector3[] respawnPoints;
 	private Vector3 lastRespawnPoint = Vector3.zero;
 
@@ -15,8 +15,8 @@ public class RespawnPosition : MonoBehaviour {
 //			{ new Vector3(-155.4f, -116.4f, 5f), new Vector3(-155.4f, -13.6f, 5f), new Vector3(-155.4f, 88.7f, 5f), new Vector3(-110.3f, 37.9f, 5f), new Vector3(-110.3f, -60.6f, 5f) },
 //			{ new Vector3(418.7f, -116.4f, 5f), new Vector3(418.7f, -13.6f, 5f), new Vector3(418.7f, 88.7f, 5f), new Vector3(375.3f, 37.9f, 5f), new Vector3(375.3f, -60.6f, 5f) } };
 		respawnPoints = new Vector3[2];
-		respawnPoints [0] = new Vector3 (-149f, 158f, 5f);
-		respawnPoints [1] = new Vector3 (-113f, 158f, 5f);
+		respawnPoints [0] = new Vector3 (20f, 158f, 5f);
+		respawnPoints [1] = new Vector3 (-20f, 158f, 5f);
 		access = this;
 	}
 	
