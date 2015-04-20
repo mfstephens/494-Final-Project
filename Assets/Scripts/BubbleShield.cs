@@ -58,7 +58,7 @@ public class BubbleShield : MonoBehaviour {
 	}
 
 	public void startShield() {
-		if (Application.loadedLevelName.Equals("_ThreeToFour") && ((FlagRotate.access.currentPlayer == -1) || !player.name.Equals(FlagRotate.access.possessingPlayer.name)) && !move.isPlayerFalling) {
+		if (((FlagRotate.access.currentPlayer == -1) || !player.name.Equals(FlagRotate.access.possessingPlayer.name)) && !move.isPlayerFalling) {
 			control.shieldOn = true;
 			this.GetComponent<Renderer> ().enabled = true;
 			this.GetComponent<Collider>().isTrigger = false;

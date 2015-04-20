@@ -24,6 +24,12 @@ public class FlagRotate : MonoBehaviour {
 
 	void Start() {
 		access = this;
+
+		for (int i = 1;i <= playerIcons.Length;i++) {
+			playerIcons[i - 1].GetComponent<Text>().color = GameObject.Find("Player" + i.ToString()).GetComponentInChildren<SkinnedMeshRenderer>().material.color;
+			playerIcons[i - 1].GetComponentInChildren<Image>().color = playerIcons[i - 1].GetComponent<Text>().color;
+		}
+
 	}
 
 	void Update() {
@@ -59,9 +65,6 @@ public class FlagRotate : MonoBehaviour {
 		Vector3 temp = playerIcon.GetComponent<RectTransform> ().anchoredPosition3D;
 		temp.x = Mathf.Lerp(-360f, 360f, playerScores[player]/5000f);
 		playerIcon.GetComponent<RectTransform> ().anchoredPosition3D = temp;
-		print (playerIcon.GetComponent<RectTransform> ().position);
-
-		//		temp.x += (playerScores[player] * pointToDistanceFactor);
 	}
 	
 	void OnCollisionEnter(Collision other) {
@@ -75,11 +78,11 @@ public class FlagRotate : MonoBehaviour {
 
 			currentPlayer = other.gameObject.GetComponent<PlayerMove>().playerColor - 1;
 			possessingPlayer = other.gameObject;
-			this.transform.localScale = this.transform.localScale / 2f;
 			this.transform.rotation = Quaternion.identity;
 			this.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.FreezeRotation;
 			this.GetComponent<Collider>().isTrigger = true;
 			this.GetComponent<Rigidbody>().useGravity = false;
+			this.transform.localScale = this.transform.localScale / 2f;
 
 			//other.transform.localScale += new Vector3(8f, 24f, 5f);
 			//other.gameObject.GetComponent<PlayerController>().possessedBall.transform.localScale += new Vector3(9f,9f,9f);
@@ -88,11 +91,11 @@ public class FlagRotate : MonoBehaviour {
 	}
 
 	public void dropFlag() {
+		this.transform.localScale = this.transform.localScale * 2f;
 		this.GetComponent<Collider>().isTrigger = false;
 		Physics.IgnoreCollision(possessingPlayer.gameObject.GetComponent<Collider>(), this.GetComponent<Collider>());
 		this.GetComponent<Rigidbody>().AddExplosionForce(65000f, this.transform.position, 20f);
 		this.GetComponent<Rigidbody> ().constraints = RigidbodyConstraints.None ^ RigidbodyConstraints.FreezePositionZ;
-		this.transform.localScale = this.transform.localScale * 2f;
 		possessingPlayer = null;
 		this.GetComponent<Rigidbody>().useGravity = true;
 		currentPlayer = -1;

@@ -57,21 +57,21 @@ public class PlayerController : MonoBehaviour {
 
 	void Awake() {
 		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
-		killTrail = GetComponent<TrailRenderer> ();
-		killTrail.material.color = playerColor;
-		killTrail.enabled = false;
 		killExplosion.Stop ();
 	}
 
 	// Use this for initialization
 	void Start () {
+		killTrail = GetComponent<TrailRenderer> ();
+		killTrail.material.color = playerColor;
+		killTrail.enabled = false;
+
 		anim = GetComponent<Animator> ();
 		myMesh = GetComponentInChildren<SkinnedMeshRenderer> ();
 		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
 
 		playerMovement = GetComponent<PlayerMove> ();
 
-		EndGameMenu.access.setPlayerColor (playerMovement.playerColor - 1, playerColor);
 
 		int temp = InputManager.Devices.Count;
 		ballTarget = null;
@@ -105,6 +105,8 @@ public class PlayerController : MonoBehaviour {
 			print ("4 player!!!");
 
 		}
+
+		EndGameMenu.access.setPlayerColor (playerMovement.playerColor - 1, playerColor);
 
 		/* Moves ball to player, sets balls velocity to 0, tells the player he has a ball and their player color*/
 //		possessedBall.transform.position = this.transform.position;
@@ -349,7 +351,7 @@ public class PlayerController : MonoBehaviour {
 				playerMovement.isOnMovingPlatform = false;
 				MainCamera.access.players.Remove (this.gameObject);
 				MainCamera.access.players.Remove (possessedBall.gameObject);
-				Invoke("returnToStart",2f);
+				Invoke("returnToStart",3f);
 			//}
 //		}
 	}

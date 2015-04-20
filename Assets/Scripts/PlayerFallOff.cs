@@ -20,8 +20,8 @@ public class PlayerFallOff : MonoBehaviour {
 
 		GetComponent<PlayerController> ().bubbleShield.GetComponent<BubbleShield> ().endShield ();
 
-		rigid.AddForce (0, 55000f, 0);
-		rigid.AddExplosionForce (2000f, ball.transform.position, 10f);
+		rigid.AddForce (0, 100000f, 0);
+		rigid.AddExplosionForce (10000f, ball.transform.position, 5f);
 
 		rigid.AddTorque(transform.up * 10000f);
 		rigid.AddTorque(transform.forward * 10000f);

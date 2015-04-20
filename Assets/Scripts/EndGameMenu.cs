@@ -119,7 +119,7 @@ public class EndGameMenu : MonoBehaviour {
 	}
 
 	private void SetBasicStatistics(){
-		for (int i =1; i <= InputManager.Devices.Count; i++) { 
+		for (int i = 1; i <= InputManager.Devices.Count; i++) { 
 			PlayerStatistics currentPlayer = FinalStatistics.finalStatistics.getPlayer (i);
 			playerStatistics [i-1].labels[0] += FlagRotate.access.getScoreForPlayer(i-1);
 			playerStatistics [i-1].labels [1] += currentPlayer.ballsThrown.ToString ();
@@ -176,7 +176,7 @@ public class EndGameMenu : MonoBehaviour {
 	}
 
 	public void setPlayerColor(int player,Color playerColor){
-		print ("Set Color for player " + player);
+		print ("Set Color for player " + player + playerColor.ToString());
 		playerColors [player].style.main.textColor = playerColor;
 	}
 }
