@@ -21,16 +21,29 @@ public class KingOfTheHill : MonoBehaviour {
 	private int numberOfPlayersReady = 0;
 	public int pointGoal;
 	public GameObject trophyIcon;
+
+	public GameObject[] players;
+	public GameObject crown;
+
+	private AudioSource audioSource;
+	public AudioClip beginGameClip;
 	
 	void Awake() {
 		access = this;
 	}
 
 	void Start() {
-		access = this;
+		audioSource = GetComponent<AudioSource> ();
 		StartCoroutine ("CountdownToBeginRound");
+		audioSource.Play ();
 		origColor = this.gameObject.GetComponent<Renderer> ().material.color;
 		getCubeText.enabled = false;
+
+		//Disable the player move scripts and crown until the countdown is finished
+		for (int i = 0; i < players.Length; i++) {
+			players[i].GetComponent<PlayerController>().enabled = false;
+		}
+
 		StartCoroutine ("ShowGetCubeText");
 	}
 
@@ -80,6 +93,11 @@ public class KingOfTheHill : MonoBehaviour {
 		startGame = true;
 		startGameTime = Time.time;
 		countdownText.enabled = false;
+		audioSource.PlayOneShot (beginGameClip);
+		for (int i = 0; i < players.Length; i++) {
+			players[i].GetComponent<PlayerController>().enabled = true;
+		}
+		crown.GetComponent<Rigidbody> ().isKinematic = false;
 	}
 
 	void OnTriggerEnter(Collider other) {
