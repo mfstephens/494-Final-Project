@@ -183,7 +183,7 @@ public class PlayerController : MonoBehaviour {
 		if (playerControl.Action1.WasPressed) {
 			jump = true;
 		} 
-		else if (playerControl.RightTrigger.WasPressed) {
+		else if (playerControl.RightTrigger.WasPressed || playerControl.RightBumper.WasPressed) {
 			if (isBallPossessed && !shieldOn && !lockPosition && (Time.time - lastThrow > throwCoolDown)) {
 				ThrowBall();
 				lastThrow = Time.time;
@@ -208,14 +208,14 @@ public class PlayerController : MonoBehaviour {
 		else if (playerControl.MenuWasPressed)
 			PauseMenu.access.PlayerPausedGame (playerNumber - 1);
 		
-		if (playerControl.LeftTrigger.IsPressed && !lockPosition) {
+		if ((playerControl.LeftTrigger.IsPressed || playerControl.LeftBumper.WasPressed) && !lockPosition) {
 			//lockPosition = true;
 			bubbleShield.GetComponent<BubbleShield>().startShield();
 		}
 		
 		if (playerControl.Action1.WasReleased)
 			jumpCancel = true;
-		if (playerControl.LeftTrigger.WasReleased && !lockPosition) {
+		if ((playerControl.LeftTrigger.WasReleased || playerControl.LeftBumper.WasReleased) && !lockPosition) {
 			//lockPosition = false;
 			bubbleShield.GetComponent<BubbleShield>().endShield();
 		}

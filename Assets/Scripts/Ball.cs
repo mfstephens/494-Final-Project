@@ -29,6 +29,7 @@ public class Ball : MonoBehaviour {
 	public float controlFactor;
 	public float kingControlFactor;
 
+	private Vector3 ballVel;
 	public PhysicMaterial bouncy;
 	public PhysicMaterial bouncyUnlimited;
 
@@ -60,11 +61,18 @@ public class Ball : MonoBehaviour {
 			ballShouldReturn = false;
 		}
 		
-		if (ballShouldReturn && !ballOwner.GetComponent<PlayerMove>().isPlayerFalling) {
+		if (ballShouldReturn && !ballOwner.GetComponent<PlayerMove> ().isPlayerFalling) {
 			float step = returnSpeed * Time.deltaTime;
-			gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-			gameObject.GetComponent<Rigidbody>().angularVelocity = Vector3.zero;
-			transform.position = Vector3.MoveTowards(transform.position, ballOwner.transform.position, step);
+			gameObject.GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			gameObject.GetComponent<Rigidbody> ().angularVelocity = Vector3.zero;
+			transform.position = Vector3.MoveTowards (transform.position, ballOwner.transform.position, step);
+			ballVel = Vector3.MoveTowards (transform.position, ballOwner.transform.position, step);
+
+		}
+		else if (ballShouldReturn && ballVel.magnitude > 0) {
+			GetComponent<Rigidbody>().velocity = ballVel;
+			ballVel = Vector3.zero;
+			ballShouldReturn = false;
 		}
 
 	}
