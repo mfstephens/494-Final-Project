@@ -37,7 +37,7 @@ public class Ball : MonoBehaviour {
 		ballTrail = GetComponent<TrailRenderer> ();
 		ballTrail.enabled = false;
 		controlBallPowerUp = GameObject.Find ("Power Up 1");
-		ballShouldReturn = false;
+		ballShouldReturn = true;
 		ballCanBeControlled = false;
 
 		ballTrail.material = this.gameObject.GetComponent<Renderer>().material;

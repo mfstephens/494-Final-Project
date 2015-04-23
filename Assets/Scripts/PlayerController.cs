@@ -36,6 +36,10 @@ public class PlayerController : MonoBehaviour {
 	
 	public InputDevice playerControl;
 	private PlayerMove playerMovement;
+	private AudioSource audioSource;
+	public AudioClip shot;
+	public AudioClip hit;
+	public AudioClip returnBall;
 
 	public Ball possessedBall;
 	public bool isBallPossessed = false;
@@ -58,6 +62,7 @@ public class PlayerController : MonoBehaviour {
 	void Awake() {
 		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
 		killExplosion.Stop ();
+		audioSource = GetComponent<AudioSource> ();
 	}
 
 	// Use this for initialization
@@ -183,10 +188,12 @@ public class PlayerController : MonoBehaviour {
 				ThrowBall();
 				lastThrow = Time.time;
 				anim.SetTrigger("Throw");
+				audioSource.PlayOneShot(shot);
 
 			} 
 			else if (!shieldOn && !lockPosition) {
 				possessedBall.returnBall();
+				//audioSource.PlayOneShot(returnBall);
 			}
 
 		} else if (!isBallPossessed && ballTarget == null) {
@@ -309,6 +316,7 @@ public class PlayerController : MonoBehaviour {
 	
 	//React to getting hit by a ball
 	public void HitByBall(Collision ball) {
+		audioSource.PlayOneShot (hit);
 		anim.SetTrigger ("Hit");
 		this.transform.position -= new Vector3 (0, 0, 40f);
 		killExplosion.transform.position = ball.gameObject.transform.position;

@@ -22,6 +22,7 @@ public class FlagRotate : MonoBehaviour {
 	public GameObject[] playerIcons;
 	public float pointToDistanceFactor;
 
+
 	void Start() {
 		access = this;
 
@@ -29,6 +30,8 @@ public class FlagRotate : MonoBehaviour {
 			playerIcons[i - 1].GetComponent<Text>().color = GameObject.Find("Player" + i.ToString()).GetComponentInChildren<SkinnedMeshRenderer>().material.color;
 			playerIcons[i - 1].GetComponentInChildren<Image>().color = playerIcons[i - 1].GetComponent<Text>().color;
 		}
+
+		GetComponent<Rigidbody> ().isKinematic = true;
 
 	}
 
@@ -50,12 +53,6 @@ public class FlagRotate : MonoBehaviour {
 		if (currentPlayer != -1) {
 			playerScores[currentPlayer]++;
 			MovePlayerCursor (currentPlayer);
-
-			//Pass array of player scores to be sorted to print out their rank
-			//ScoreBoard.scoreBoard.setPlayerRank(playerScores);
-				
-			//Set the player score on the scoreboard
-			//ScoreBoard.scoreBoard.setPlayerScore(currentPlayer,playerScores[currentPlayer].ToString());
 		}
 		this.transform.Rotate (0, rotateSpeed, 0);
 	}
