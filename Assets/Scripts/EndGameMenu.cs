@@ -42,13 +42,17 @@ public class EndGameMenu : MonoBehaviour {
 				playerReady[1].check = true;
 				numberOfPlayersReady++;
 			}
-			if(InputManager.Devices[2].Action1.WasPressed){
-				playerReady[2].check = true;
-				numberOfPlayersReady++;
+			if (InputManager.Devices.Count >= 3) {
+				if(InputManager.Devices[2].Action1.WasPressed){
+					playerReady[2].check = true;
+					numberOfPlayersReady++;
+				}
 			}
-			if(InputManager.Devices[3].Action1.WasPressed){
-				playerReady[3].check = true;
-				numberOfPlayersReady++;
+			if (InputManager.Devices.Count == 4) {
+				if(InputManager.Devices[3].Action1.WasPressed){
+					playerReady[3].check = true;
+					numberOfPlayersReady++;
+				}
 			}
 
 			if(numberOfPlayersReady == InputManager.Devices.Count){

@@ -27,7 +27,7 @@ public class FlagRotate : MonoBehaviour {
 	void Start() {
 		access = this;
 
-		playerIconParticles.Play();
+		//playerIconParticles.Play();
 		for (int i = 1;i <= playerIcons.Length;i++) {
 			playerIcons[i - 1].GetComponent<Text>().color = GameObject.Find("Player" + i.ToString()).GetComponentInChildren<SkinnedMeshRenderer>().material.color;
 			playerIcons[i - 1].GetComponentInChildren<Image>().color = playerIcons[i - 1].GetComponent<Text>().color;
@@ -65,7 +65,7 @@ public class FlagRotate : MonoBehaviour {
 		temp.x = Mathf.Lerp(-360f, 360f, playerScores[player]/5000f);
 		playerIcon.GetComponent<RectTransform> ().anchoredPosition3D = temp;
 		temp.z -= 50f;
-		playerIconParticles.GetComponent<RectTransform> ().anchoredPosition3D = temp;
+		//playerIconParticles.GetComponent<RectTransform> ().anchoredPosition3D = temp;
 	}
 
 	void OnCollisionEnter(Collision other) {

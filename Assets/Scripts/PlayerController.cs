@@ -126,18 +126,18 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		Vector2 pos = gameObject.transform.position;  // get the game object position
-		Vector2 viewportPoint = Camera.main.WorldToViewportPoint(pos);  //convert game object position to VievportPoint
+//		Vector2 pos = gameObject.transform.position;  // get the game object position
+//		Vector2 viewportPoint = Camera.main.WorldToViewportPoint(pos);  //convert game object position to VievportPoint
 		
 		
-		if (FlagRotate.access.possessingPlayer == this.gameObject) {
-			viewportPoint.y += 0.06f;
-		} else {
-			viewportPoint.y += 0.04f;
-		}
-		// set MIN and MAX Anchor values(positions) to the same position (ViewportPoint)
-		playerNumberText.GetComponent<RectTransform>().anchorMin = viewportPoint;  
-		playerNumberText.GetComponent<RectTransform>().anchorMax = viewportPoint; 
+//		if (FlagRotate.access.possessingPlayer == this.gameObject) {
+//			viewportPoint.y += 0.06f;
+//		} else {
+//			viewportPoint.y += 0.04f;
+//		}
+//		// set MIN and MAX Anchor values(positions) to the same position (ViewportPoint)
+//		playerNumberText.GetComponent<RectTransform>().anchorMin = viewportPoint;  
+//		playerNumberText.GetComponent<RectTransform>().anchorMax = viewportPoint; 
 
 		if (startFreeze) {
 			if (!isBallPossessed) {
