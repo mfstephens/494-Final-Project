@@ -56,10 +56,13 @@ public class Ball : MonoBehaviour {
 		}
 
 
+
 		float playerBallDistance = Vector3.Distance(transform.position, ballOwner.transform.position);
 		if (playerBallDistance  <= recallDistanceThreshold) {
 			ballShouldReturn = false;
 		}
+
+
 		
 		if (ballShouldReturn && !ballOwner.GetComponent<PlayerMove> ().isPlayerFalling) {
 			float step = returnSpeed * Time.deltaTime;

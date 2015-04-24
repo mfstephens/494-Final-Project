@@ -291,6 +291,7 @@ public class PlayerMove : MonoBehaviour {
 			this.GetComponent<Rigidbody>().velocity = forcePadForce * other.gameObject.transform.up;
 			inForcePad = true;
 		}
+
 		if (!playerController.isBallPossessed && playerController.possessedBall.Equals(other.gameObject.GetComponent<Ball>())) {
 			playerController.PickUpBall(other.gameObject);
 		}

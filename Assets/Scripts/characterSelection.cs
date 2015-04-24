@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using InControl;
 
+public enum screenState {
+	charSelect,
+	controls,
+	instructions,
+}
+
 public class characterSelection : MonoBehaviour {
 	GameObject[] selections; // The 8 different character selections
 
@@ -20,13 +26,17 @@ public class characterSelection : MonoBehaviour {
 	float offsetDown = -9f;
 	SpriteRenderer[] sp;
 	InstantGuiButton readyButton;
-	bool controlScreenIsShowing = false;
-	public Canvas canvas;
+	screenState state;
+	public Canvas canvas1, canvas2;
+	public GameObject[] characterSelect;
+	public GameObject instantGui;
 
 
 	// Use this for initialization
 	void Start () {
-		canvas.enabled = false;
+		canvas1.enabled = false;
+		canvas2.enabled = false;
+		state = screenState.charSelect;
 		numPlayers = InputManager.Devices.Count;
 		selections = new GameObject[8];
 		selections_occupied = new int[numPlayers];
@@ -80,10 +90,16 @@ public class characterSelection : MonoBehaviour {
 			readyButton.pressed = true;
 			for (int i = 0; i < numPlayers; i++) {
 				if(InputManager.Devices[i].Action1.WasPressed) {
-					if (controlScreenIsShowing) {
-						startGame_Handler();
-					} else {
+					switch (state) {
+					case screenState.controls:
+						showInstructionScreen ();
+						break;
+					case screenState.charSelect:
 						showControlScreen ();
+						break;
+					case screenState.instructions:
+						startGame_Handler ();
+						break;
 					}
 				}
 				if(InputManager.Devices[i].Action2.WasPressed){
@@ -116,8 +132,19 @@ public class characterSelection : MonoBehaviour {
 	}
 
 	void showControlScreen () {
-		canvas.enabled = true;
-		controlScreenIsShowing = true;
+		canvas1.enabled = true;
+		canvas2.enabled = false;
+		foreach (GameObject go in characterSelect) {
+			go.transform.position += new Vector3 (1000f, 0, 0);
+		}
+		instantGui.SetActive (false);
+		state = screenState.controls;
+	}
+
+	void showInstructionScreen () {
+		canvas1.enabled = false;
+		canvas2.enabled = true;
+		state = screenState.instructions;
 	}
 
 	void startGame_Handler(){
