@@ -38,7 +38,7 @@ public class Ball : MonoBehaviour {
 		ballTrail = GetComponent<TrailRenderer> ();
 		ballTrail.enabled = false;
 		controlBallPowerUp = GameObject.Find ("Power Up 1");
-		ballShouldReturn = true;
+		ballShouldReturn = false;
 		ballCanBeControlled = false;
 
 		ballTrail.material = this.gameObject.GetComponent<Renderer>().material;
@@ -65,12 +65,19 @@ public class Ball : MonoBehaviour {
 			float step = returnSpeed * Time.deltaTime;
 			gameObject.GetComponent<Rigidbody> ().velocity = Vector3.zero;
 			gameObject.GetComponent<Rigidbody> ().angularVelocity = Vector3.zero;
-			transform.position = Vector3.MoveTowards (transform.position, ballOwner.transform.position, step);
-			ballVel = Vector3.MoveTowards (transform.position, ballOwner.transform.position, step);
+			//transform.position = Vector3.MoveTowards (transform.position, ballOwner.transform.position, step);
+			GetComponent<Rigidbody>().MovePosition(Vector3.MoveTowards (transform.position, ballOwner.transform.position, step));
+			ballVel = ballOwner.transform.position;
 
 		}
 		else if (ballShouldReturn && ballVel.magnitude > 0) {
-			GetComponent<Rigidbody>().velocity = ballVel;
+			print ("adjusting velocity");
+			float step = returnSpeed * Time.deltaTime;
+			Vector3 temp = Vector3.MoveTowards (transform.position, ballVel, step) - transform.position;
+			//Vector3 temp = ballVel = transfo
+			GetComponent<Rigidbody>().velocity = temp / Time.deltaTime;
+			//GetComponent<Rigidbody>().AddForce(temp);
+			//GetComponent<Rigidbody>().add
 			ballVel = Vector3.zero;
 			ballShouldReturn = false;
 		}

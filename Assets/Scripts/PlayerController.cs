@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour {
 
 	public Ball possessedBall;
 	public bool isBallPossessed = false;
+	public bool startFreeze = true;
 
 	public Color playerColor;
 	SkinnedMeshRenderer myMesh;
@@ -58,6 +59,7 @@ public class PlayerController : MonoBehaviour {
 	public List<GameObject> coins;
 	private TrailRenderer killTrail;
 	public ParticleSystem killExplosion;
+	public GameObject playerNumberText;
 
 	void Awake() {
 		playerColor = GetComponentInChildren<SkinnedMeshRenderer> ().material.color;
@@ -124,8 +126,34 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		Vector2 pos = gameObject.transform.position;  // get the game object position
+		Vector2 viewportPoint = Camera.main.WorldToViewportPoint(pos);  //convert game object position to VievportPoint
+		
+		
+		if (FlagRotate.access.possessingPlayer == this.gameObject) {
+			viewportPoint.y += 0.06f;
+		} else {
+			viewportPoint.y += 0.04f;
+		}
+		// set MIN and MAX Anchor values(positions) to the same position (ViewportPoint)
+		playerNumberText.GetComponent<RectTransform>().anchorMin = viewportPoint;  
+		playerNumberText.GetComponent<RectTransform>().anchorMax = viewportPoint; 
+
+		if (startFreeze) {
+			if (!isBallPossessed) {
+				PickUpBall(possessedBall.gameObject);
+			}
+			else {
+				possessedBall.transform.position = new Vector3(this.transform.position.x + 9f,this.transform.position.y + 6f,this.transform.position.z);
+				possessedBall.transform.position = ballHoldPosition.transform.position;
+			}
+			return;
+		}
+
 		float horizontalMovement = playerControl.LeftStickX;
 		float verticalMovement = playerControl.LeftStickY;
+
+
 		
 		//Perform a 360 degree flip if player is not on ground
 		if (barrelRoll) {
@@ -223,12 +251,12 @@ public class PlayerController : MonoBehaviour {
 
 		if (horizontalMovement > .05 && transform.eulerAngles.y != 120f) {
 			transform.eulerAngles = new Vector3 (0, 120f, 0);
-			//bounty.transform.localEulerAngles = new Vector3(0, -120f, 0);
+			bounty.transform.eulerAngles = bounty.GetComponent<BountyDisplay>().forward;
 		}
 			
 		if (horizontalMovement < -.05 && transform.eulerAngles.y != -120f) {
 			transform.eulerAngles = new Vector3 (0, -120f, 0);
-			//bounty.transform.Rotate (new Vector3(0, 120f, 0));
+			bounty.transform.eulerAngles = bounty.GetComponent<BountyDisplay>().forward;
 		}
 
 

@@ -46,7 +46,9 @@ public class PlayerMove : MonoBehaviour {
 	public void Movement(float moveX, float moveY, bool jump, bool cancelJump, bool speedBoost,bool lockPosition,bool drop){
 
 		if (isPlayerFalling) {
-
+			if (transform.position.y > 350f) {
+				transform.position += new Vector3(-1000f, 0, 0);
+			}
 			return;
 		}
 
@@ -207,7 +209,7 @@ public class PlayerMove : MonoBehaviour {
 					//ScoreBoard.scoreBoard.setPlayerScore(collision.gameObject.GetComponent<Ball>().playerColor - 1,FlagRotate.access.playerScores[collision.gameObject.GetComponent<Ball>().playerColor - 1].ToString());
 
 
-					collision.gameObject.GetComponent<Ball>().ballOwner.GetComponent<PlayerMove>().showScore.addScore(temp);
+					//collision.gameObject.GetComponent<Ball>().ballOwner.GetComponent<PlayerMove>().showScore.addScore(temp);
 				//}
 
 				//if (Application.loadedLevelName.Equals("_ThreeToFour")) {

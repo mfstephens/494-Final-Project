@@ -7,15 +7,14 @@ public class BountyDisplay : MonoBehaviour {
 	private PlayerMove move;
 	public float score;
 	TextMesh myText;
-	Vector3 forward;
+	public Vector3 forward;
 
 	// Use this for initialization
 	void Start () {
 		control = GetComponentInParent<PlayerController> ();
 		move = GetComponentInParent<PlayerMove> ();
 		myText = GetComponent<TextMesh> ();
-		myText.color = control.playerColor;
-		this.gameObject.SetActive (false);
+		myText.color = Color.white;
 		forward = this.transform.eulerAngles;
 	}
 	
@@ -28,7 +27,7 @@ public class BountyDisplay : MonoBehaviour {
 
 
 		if (FlagRotate.access.currentPlayer == (move.playerColor - 1)) {
-			transform.localPosition = new Vector3 (transform.localPosition.x, 40, transform.localPosition.z);
+			transform.localPosition = new Vector3 (transform.localPosition.x, 35, transform.localPosition.z);
 		} else {
 			transform.localPosition = new Vector3 (transform.localPosition.x, 28, transform.localPosition.z);
 
